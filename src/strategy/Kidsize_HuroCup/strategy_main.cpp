@@ -154,6 +154,25 @@ void KidsizeStrategy::strategymain()
             std::printf("  　　    　 ▀■▆▅▅▅▅▅▆■█▀ \n");
             std::printf("  	        ▌        ▌\n");  
             std::printf("                ██       ██ \n");
+            std::printf("-----------------------------------\n");
+            std::printf("　  　      ▃▀▀▀▀▀▀▀▀▀▃n");
+            std::printf("　  　　◢◤　　　　　　     ▀▃\n");
+            std::printf("  　　◢◤　　　　　　　　 　  ◥◣ \n");
+            std::printf("  　　▌　　　 ●--------●      ▌ \n");
+            std::printf("  　  ▌　 　  　　 　　　  　 　 ▌ 　 \n");
+            std::printf("　  　◥◣ 　 　　  　　　   　◢◤ \n");
+            std::printf("　　   ◢▀▅▃▂         ▂▃▅▀\n");
+            std::printf("　   ◢◤　　　             　◥◣ \n");
+            std::printf("   ◢  ▌  　　　　　　　  　　▐  ◣ \n");
+            std::printf("  ▌  ▌　　　　 　　 　　  　　▐   ◣\n");
+            std::printf(" ▌  ▌　　　　　　　　　　  　  ▐   ▌ \n");
+            std::printf(" ▌  ▌　　　　 　　 　　　   　 ▐   ▌ \n");
+            std::printf("  ◣ ▌　　　　　　　　　　　    ▐  ◤ \n");
+            std::printf("   ◣▌　　　　 　　 　　　 　  ▐◢◤ \n");
+            std::printf("　 ▀▅▃　　　　　 　 　　▂  ▅▀ \n");
+            std::printf("　　 　  ▀■▆▅▅▅▅▅▆■█▀ \n");
+            std::printf("　　　   ◣     ▲     ◢ \n\n\n");
+            std::printf("　　　    ◣▃▃◢   ◣▃▃◢ \n\n\n");
             BasketInfo->PrintFlag = true;
         }
 	}
