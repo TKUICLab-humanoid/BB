@@ -137,7 +137,9 @@ void KidsizeStrategy::strategymain()
             std::printf("        ▌　  ▌   ▀ 　  ▌\n");
             std::printf("         ▀     ▃ ▌ 　　 ▌▅▃▂▂▂▂▂\n");
             std::printf("          ▌                     ▀▌\n");
-            std::printf("  　   　 ◢◤　　　　　　s           ▂▐ \n");
+            std::printf("  　   　 ◢◤　　　　　　　　　    ▌\n");
+            std::printf("  　   　◤　　　　　　   ● 　　　 ▐ \n");
+            std::printf("        ▌　 　  ●　              ▂▐ \n");
             std::printf("       ▌　 　  　　 　　　　   ▂▂▌\n");
             std::printf("        ▌　 　  　　 W　　　  ▌ 　   \n");
             std::printf("  　   　◥◣ 　 　　    　　 ◢◤        \n");
