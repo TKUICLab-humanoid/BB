@@ -137,9 +137,7 @@ void KidsizeStrategy::strategymain()
             std::printf("        ▌　  ▌   ▀ 　  ▌\n");
             std::printf("         ▀     ▃ ▌ 　　 ▌▅▃▂▂▂▂▂\n");
             std::printf("          ▌                     ▀▌\n");
-            std::printf("  　   　 ◢◤　　　　　　　　　    ▌\n");
-            std::printf("  　   　◤　　　　　　   ● 　　　 ▐ \n");
-            std::printf("        ▌　 　  ●　              ▂▐ \n");
+            std::printf("  　   　 ◢◤　　　　　　s           ▂▐ \n");
             std::printf("       ▌　 　  　　 　　　　   ▂▂▌\n");
             std::printf("        ▌　 　  　　 W　　　  ▌ 　   \n");
             std::printf("  　   　◥◣ 　 　　    　　 ◢◤        \n");
@@ -861,6 +859,14 @@ void KidsizeStrategy::TraceballBody()
         tool->Delay(1000);
         ros_com->sendBodySector(BB_WaistUpFeedBack);
         tool->Delay(2000);
+        //==========================================change===============================================
+        if(!BasketInfo->LeftHandUpFlag)//將左手抬起，避免壓到球柱
+        {
+            ros_com->sendSingleMotor(4, 1024, 100);
+            tool->Delay(1500);
+            BasketInfo->LeftHandUpFlag = true;  
+        }
+        //==========================================change===============================================
         if(!walk_con->isStartContinuous())
         {
             walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
@@ -1179,12 +1185,6 @@ void KidsizeStrategy::UPbasket()
 	{        
 		if (!walk_con->isStartContinuous())
 		{ 
-            if(!BasketInfo->LeftHandUpFlag)//將左手抬起，避免壓到球柱
-            {
-                ros_com->sendSingleMotor(4, 1024, 100);
-                tool->Delay(1500);
-                BasketInfo->LeftHandUpFlag = true;  
-            }
 			walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             ros::spinOnce();
             gettimeofday(&tstart, NULL);
