@@ -859,8 +859,8 @@ void KidsizeStrategy::TraceballBody()
         }
         ROS_INFO("Hands Back");
         tool->Delay(1000);
-        ros_com->sendBodySector(BB_WaistUpFeedBack);
-        tool->Delay(2000);
+        //ros_com->sendBodySector(BB_WaistUpFeedBack);
+        //tool->Delay(2000);
         if(!walk_con->isStartContinuous())
         {
             walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
