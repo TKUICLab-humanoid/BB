@@ -534,8 +534,8 @@ void KidsizeStrategy::SelectBaseLine()//以測距後的值來判斷BasketVertica
 
 void KidsizeStrategy::FindballInitial()//找球時，頭的初始位置
 {
-    MoveHead(HeadMotorID::VerticalID, 1623, 200);
-    MoveHead(HeadMotorID::HorizontalID, 2651, 200);
+    MoveHead(HeadMotorID::VerticalID, 1645, 200);//1623
+    MoveHead(HeadMotorID::HorizontalID, 2295, 200);//2643
 }
 
 void KidsizeStrategy::FindballHead()//尋找場上的球
@@ -559,7 +559,7 @@ void KidsizeStrategy::FindballHead()//尋找場上的球
         switch(BasketInfo->HeadHorizontalState)
         {
             case HeadTurnRight://頭水平狀態，以右轉為例，轉到頭的刻度-HeadTurnSpeed<=HorizontalMinAngle時，水平狀態&&垂直狀態改變，以此循環，直到Ball.size > Ballfarsize
-                if((BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed) > BasketInfo->HorizontalMinAngle)
+                if((BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed) > BasketInfo->HorizontalMinAngle)//1805
                 {          
                     MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed, 200);
                 }
