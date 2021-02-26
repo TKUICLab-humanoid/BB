@@ -888,6 +888,7 @@ void KidsizeStrategy::TraceballBody()
             BasketInfo->LeftHandUpFlag = true;  
         }
         //==========================================change===============================================
+
         if(!walk_con->isStartContinuous())
         {
             walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
