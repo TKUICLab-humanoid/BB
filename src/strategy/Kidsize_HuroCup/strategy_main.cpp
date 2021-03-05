@@ -195,7 +195,7 @@ void KidsizeStrategy::MoveHead(HeadMotorID ID, int Position, int Speed)//動頭(
 {
     ros_com->sendHeadMotor(ID,Position,Speed);
     tool->Delay(50);
-    if(ID == HeadMotorID::HorizontalID)
+    if(ID == HeadMotorID::HorizontalID) 
     {
         BasketInfo->HorizontalHeadPosition = Position;
     }
@@ -828,13 +828,13 @@ void KidsizeStrategy::TraceballBody()
         ROS_INFO("BasketInfo->Ball.Y = %d", BasketInfo->Ball.Y);
         if(BasketInfo->Ball.Y > BasketInfo->CatchBallYLine)
         {
-            BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
-            BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
+            //BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
+            //BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
             ROS_INFO("IN");
-            ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
-            ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
+            //ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
+            //tool->Delay(1000);
+            //ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
+            //tool->Delay(1000);
             BasketInfo->OutReturnFlag = true;
         }
         else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
@@ -854,10 +854,10 @@ void KidsizeStrategy::TraceballBody()
     else if(BasketInfo->GetBallFlag)//夾球並回歸站立持球動作
     {
         ros_com->sendBodySector(BB_WaistCatch);
-        tool->Delay(1500);
+        tool->Delay(4000);
         ROS_INFO("Waist up");
         ros_com->sendBodySector(BB_WaistUp);
-        tool->Delay(8500);
+        tool->Delay(12000);
         MoveHead(HeadMotorID::VerticalID, 2048, 200);
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         if(BasketInfo->OutReturnFlag)
@@ -878,8 +878,8 @@ void KidsizeStrategy::TraceballBody()
         }
         ROS_INFO("Hands Back");
         tool->Delay(1000);
-        ros_com->sendBodySector(BB_WaistUpFeedBack);
-        tool->Delay(2000);
+        // ros_com->sendBodySector(BB_WaistUpFeedBack);
+        // tool->Delay(2000);
         //==========================================change===============================================
         if(!BasketInfo->LeftHandUpFlag)//將左手抬起，避免壓到球柱
         {
