@@ -535,7 +535,7 @@ void KidsizeStrategy::SelectBaseLine()//以測距後的值來判斷BasketVertica
 void KidsizeStrategy::FindballInitial()//找球時，頭的初始位置
 {
     MoveHead(HeadMotorID::VerticalID, 1645, 200);//1623
-    MoveHead(HeadMotorID::HorizontalID, 2295, 200);//2643
+    MoveHead(HeadMotorID::HorizontalID, 2395, 200);//2643
 }
 
 void KidsizeStrategy::FindballHead()//尋找場上的球
@@ -883,7 +883,7 @@ void KidsizeStrategy::TraceballBody()
         //==========================================change===============================================
         if(!BasketInfo->LeftHandUpFlag)//將左手抬起，避免壓到球柱
         {
-            ros_com->sendSingleMotor(4, 1024, 100);
+            ros_com->sendSingleMotor(4, 900, 100);
             tool->Delay(1500);
             BasketInfo->LeftHandUpFlag = true;  
         }
@@ -971,8 +971,8 @@ void KidsizeStrategy::FindbasketHead()//跟FindballHead()相同概念
             gettimeofday(&tend, NULL);
             timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
         }
-        walk_con->stopContinuous();
-        tool->Delay(3000);//1500+1500(為了穩定機器人的重心與使左手舉起，因而增加1.5秒的Delay)
+        // walk_con->stopContinuous();
+        // tool->Delay(3000);//1500+1500(為了穩定機器人的重心與使左手舉起，因而增加1.5秒的Delay)
     }
     if(BasketInfo->Basket.size > Basketfarsize)
 	{
@@ -1220,19 +1220,19 @@ void KidsizeStrategy::UPbasket()
                 timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
             }
 		}
-		else if(BasketInfo->HorizontalHeadPosition < (2048 - 100))//執行快速前進大右旋修正
+		else if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//執行快速前進大右旋修正
         {
             MoveContinuous(ContinuousFastBigRight);
         } 
-        else if(BasketInfo->HorizontalHeadPosition > (2048 + 100))//執行快速前進大左旋修正
+        else if(BasketInfo->HorizontalHeadPosition > (2048 + 150))//執行快速前進大左旋修正
         {
             MoveContinuous(ContinuousFastBigLeft);
         }
-        else if(BasketInfo->HorizontalHeadPosition < (2048 - 20))//執行快速前進小右旋修正
+        else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//執行快速前進小右旋修正
         {
             MoveContinuous(ContinuousFastSmallRight);
         }
-        else if(BasketInfo->HorizontalHeadPosition > (2048 + 20))//執行快速前進小左旋修正
+        else if(BasketInfo->HorizontalHeadPosition > (2048 + 50))//執行快速前進小左旋修正
         {
             MoveContinuous(ContinuousFastSmallLeft);
         }
