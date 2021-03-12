@@ -64,7 +64,7 @@ public:
 		//Catch Ball
 		BB_WaistDown			= 118,
 		BB_WaistCatch           = 1110,
-		BB_WaistUp			    = 1111,
+		BB_WaistUp			    = 1114,
 		BB_WaistUpFeedBack      = 1112,
 		//Shooting
 		BB_RaiseHand			= 1115,
