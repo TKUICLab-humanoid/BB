@@ -840,7 +840,7 @@ void KidsizeStrategy::TraceballBody()
         else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
         {
             BasketInfo->count = BasketInfo->CatchBallYLine - BasketInfo->Ball.Y;
-            BasketInfo->HandMove = BasketInfo->count * 1.7;
+            BasketInfo->HandMove = BasketInfo->count * 1.6; //1.7
             ROS_INFO("OUT");
             ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);
             tool->Delay(1000);
