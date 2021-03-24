@@ -175,6 +175,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->BallVerticalError = this->readvalue(fin,"BallVerticalError", 0);
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);
         BasketInfo->ContinuousSlowLine = this->readvalue(fin,"ContinuousSlowLine", 0);
+        BasketInfo->ContinuousSlowLine2 = this->readvalue(fin,"ContinuousSlowLine2", 0);//++++++++++++++++++++++++++++++++++++++++++++++++++++
         BasketInfo->CatchBallLine = this->readvalue(fin,"CatchBallLine", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->CatchBallVerticalHeadPosition = this->readvalue(fin,"CatchBallVerticalHeadPosition", 0);

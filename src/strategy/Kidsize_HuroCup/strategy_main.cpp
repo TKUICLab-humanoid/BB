@@ -722,8 +722,26 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
 }
 
 void KidsizeStrategy::TraceballBody()
-{
-    if(BasketInfo->ContinuousFlag)//機器人以連續步態去追蹤球
+{                                                   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if(BasketInfo->BackFlag)
+    {
+        if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)
+        {
+            ROS_INFO("a");
+            tool->Delay(1000);
+            if(!walk_con->isStartContinuous())
+            {
+                walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+            }
+            else if
+            {
+                ROS_INFO("Back");
+                MoveContinuous(ContinuousBackward);
+                BasketInfo->Robot_State = Trace_Ball;
+                tool->Delay(1500);
+            }
+    }
+    else if(BasketInfo->ContinuousFlag)//機器人以連續步態去追蹤球
     {
         ROS_INFO("Catch Ball VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
         if(BasketInfo->Ball.size <= Ballfarsize)//漏球時，切回Find_Ball
@@ -1205,42 +1223,48 @@ void KidsizeStrategy::UPbasket()
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     if (BasketInfo->VerticalHeadPosition > BasketInfo->UpBasketStopLine)//利用頭度刻度來判斷上籃的停止地點，可在ini檔中做更改
 	{        
-		if (!walk_con->isStartContinuous())
-		{ 
-			walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
-            ros::spinOnce();
-            gettimeofday(&tstart, NULL);
-            gettimeofday(&tend, NULL);
-            timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
-            while (timeuse <= 1000)//走1秒鐘的原地踏步，以避免機器人起步的晃動
-            {
-                MoveContinuous(ContinuousStay);
+		if(BasketInfo->VerticalHeadPosition > BasketInfo->ContinuousSlowLine2)//++++++++++++++++++++++++++++++ ADD +++++++++++++++++++++++++++++
+        {
+            if (!walk_con->isStartContinuous())
+		    { 
+			    walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
                 ros::spinOnce();
+                gettimeofday(&tstart, NULL);
                 gettimeofday(&tend, NULL);
                 timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
+                while (timeuse <= 1000)//走1秒鐘的原地踏步，以避免機器人起步的晃動
+                {
+                    MoveContinuous(ContinuousStay);
+                    ros::spinOnce();
+                    gettimeofday(&tend, NULL);
+                    timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
+                }
+		    }
+		    else if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//執行快速前進大右旋修正
+            {
+                MoveContinuous(ContinuousFastBigRight);
+            } 
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 150))//執行快速前進大左旋修正
+            {
+                MoveContinuous(ContinuousFastBigLeft);
             }
-		}
-		else if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//執行快速前進大右旋修正
-        {
-            MoveContinuous(ContinuousFastBigRight);
-        } 
-        else if(BasketInfo->HorizontalHeadPosition > (2048 + 150))//執行快速前進大左旋修正
-        {
-            MoveContinuous(ContinuousFastBigLeft);
+            else
+            {  
+                MoveContinuous(ContinuousFastForward);
+            }       
+            BasketInfo->Robot_State = Trace_Target;
         }
-        else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//執行快速前進小右旋修正
+        else if(BasketInfo->VerticalHeadPosition < BasketInfo->ContinuousSlowLine2)
         {
-            MoveContinuous(ContinuousFastSmallRight);
-        }
-        else if(BasketInfo->HorizontalHeadPosition > (2048 + 50))//執行快速前進小左旋修正
-        {
-            MoveContinuous(ContinuousFastSmallLeft);
-        }
-        else
-        {  
-            MoveContinuous(ContinuousFastForward);
-        }       
-        BasketInfo->Robot_State = Trace_Target;
+            else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//執行快速前進小右旋修正
+            {
+                MoveContinuous(ContinuousFastSmallRight);
+            }
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 50))//執行快速前進小左旋修正
+            {
+                MoveContinuous(ContinuousFastSmallLeft);
+            }
+        }                                       //+++++++++++++++++++++++++++++++++++++++++++ ADD +++++++++++++++++++++++++++++++++++++++
 	}
     else//當進入上籃範圍時，停止連續步態
     {
