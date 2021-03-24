@@ -727,20 +727,27 @@ void KidsizeStrategy::TraceballBody()
     {
         if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)
         {
-            ROS_INFO("a");
+            ROS_INFO("aa");
             tool->Delay(1000);
             if(!walk_con->isStartContinuous())
             {
+                ROS_INFO("bb");
                 walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             }
-            else if
+            else
             {
                 ROS_INFO("Back");
                 MoveContinuous(ContinuousBackward);
                 BasketInfo->Robot_State = Trace_Ball;
                 tool->Delay(1500);
             }
-    }
+        else
+        {
+            ROS_INFO->("BasketInfo->ContinuousFlag = true");
+            BasketInfo->BackFlag = false;
+            BasketInfo->ContinuousFlag = true;
+        }
+    }                                       //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     else if(BasketInfo->ContinuousFlag)//機器人以連續步態去追蹤球
     {
         ROS_INFO("Catch Ball VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
