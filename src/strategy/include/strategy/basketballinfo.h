@@ -230,6 +230,8 @@ public:
     int CatchBallYLine;
     int HandMove;
     double count;
+    int backLine;
+
 
     //TracebasketHead
     bool LayUpFlag;

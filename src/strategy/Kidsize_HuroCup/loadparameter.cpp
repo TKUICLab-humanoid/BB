@@ -179,6 +179,7 @@ void LoadParameter::LoadParameters()
         fin.getline(temp, sizeof(temp));
         BasketInfo->CatchBallVerticalHeadPosition = this->readvalue(fin,"CatchBallVerticalHeadPosition", 0);
         BasketInfo->CatchBallYLine = this->readvalue(fin,"CatchBallYLine", 0);
+        BasketInfo->backLine = this->readvalue(fin,"backLine", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->WaistError = this->readvalue(fin,"WaistError", 0);
         fin.getline(temp, sizeof(temp));
