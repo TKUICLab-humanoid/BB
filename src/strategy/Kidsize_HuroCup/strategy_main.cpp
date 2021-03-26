@@ -762,10 +762,17 @@ void KidsizeStrategy::TraceballBody()
 		else if(BasketInfo->VerticalHeadPosition <= BasketInfo->ContinuousSlowLine)
 		{
             ROS_INFO("Stand_2");
+<<<<<<< HEAD
             if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
             {
                 ROS_INFO("Back");
                 if(!walk_con->isStartContinuous())
+=======
+            if(BasketInfo->VerticalHeadPosition <= BasketInfo->CloseBallLine)
+            {
+                ROS_INFO("Bcak");
+                if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
+>>>>>>> 390ef5f6fe0aaa025542a1da5c18abdae46c2251
                 {
                     walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
                 }
@@ -776,7 +783,11 @@ void KidsizeStrategy::TraceballBody()
                     BasketInfo->Robot_State = Trace_Ball;
                 }
             }
+<<<<<<< HEAD
             else if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
+=======
+            else if(BasketInfo->VerticalHeadPosition < BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition > BasketInfo->CloseBallLine)
+>>>>>>> 390ef5f6fe0aaa025542a1da5c18abdae46c2251
             {
                 if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
                 {
@@ -790,6 +801,15 @@ void KidsizeStrategy::TraceballBody()
             {
                 walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             }
+<<<<<<< HEAD
+=======
+            // else if(BasketInfo->VerticalHeadPosition <= BasketInfo->CloseBallLine)
+            //     {
+            //         ROS_INFO("Back");
+            //         MoveContinuous(ContinuousBackward);
+            //         BasketInfo->Robot_State = Trace_Ball;
+            //     }
+>>>>>>> 390ef5f6fe0aaa025542a1da5c18abdae46c2251
             else if(BasketInfo->HorizontalHeadPosition > (2048 + 10))//在這區間執行原地小左旋修正
             {
                 ROS_INFO("Catch Ball Left");

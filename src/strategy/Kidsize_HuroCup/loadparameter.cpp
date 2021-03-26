@@ -176,6 +176,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);
         BasketInfo->ContinuousSlowLine = this->readvalue(fin,"ContinuousSlowLine", 0);
         BasketInfo->CatchBallLine = this->readvalue(fin,"CatchBallLine", 0);
+        BasketInfo->CloseBallLine = this->readvalue(fin,"CloseBallLine", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->CatchBallVerticalHeadPosition = this->readvalue(fin,"CatchBallVerticalHeadPosition", 0);
         BasketInfo->CatchBallYLine = this->readvalue(fin,"CatchBallYLine", 0);
@@ -463,6 +464,7 @@ void LoadParameter::TestParameters()
     ROS_INFO("ContinuousSlowLine = %d",BasketInfo->ContinuousSlowLine);
     ROS_INFO("ContinuousSlowLine2 = %d",BasketInfo->ContinuousSlowLine2);
     ROS_INFO("CatchBallLine = %d",BasketInfo->CatchBallLine);
+    ROS_INFO("CloseBallLine = %d",BasketInfo->CloseBallLine);
 
     ROS_INFO("---------------  Speed ------------------");
     ROS_INFO("dis35_x = %f",BasketInfo->dis35_x);

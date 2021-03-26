@@ -246,6 +246,7 @@ public:
     int WaistError;
 
     //UPbasket
+    bool BackFlag;
     bool LeftHandUpFlag;
     int UpBasketStopLine;
 
@@ -276,6 +277,7 @@ public:
     int BallHorizontalError;
     int BallVerticalError;
     int CatchBallLine;
+    int CloseBallLine;
     int ContinuousSlowLine;
     int ContinuousSlowLine2;
     int RobotPosition;
