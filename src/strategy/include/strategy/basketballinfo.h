@@ -230,6 +230,8 @@ public:
     int CatchBallYLine;
     int HandMove;
     double count;
+    int backLine;
+
 
     //TracebasketHead
     bool LayUpFlag;
@@ -275,6 +277,7 @@ public:
     int BallVerticalError;
     int CatchBallLine;
     int ContinuousSlowLine;
+    int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
     int SizeOfDist[4];
