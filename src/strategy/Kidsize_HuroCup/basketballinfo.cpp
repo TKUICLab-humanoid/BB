@@ -66,7 +66,6 @@ void basketballinfo::Init()
     BasketInfo->ImgVerticalAngle = 43.3;
 
     //TraceballBody
-    BasketInfo->BackFlag = true;//+++++++++++++++++++++++++++
     BasketInfo->ContinuousFlag = true;
     BasketInfo->StoopFlag = false;
     BasketInfo->MoveFlag = false;

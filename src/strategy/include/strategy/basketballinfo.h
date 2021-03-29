@@ -216,6 +216,7 @@ public:
     double BasketMoveY;
     double ImgHorizontalAngle;
     double ImgVerticalAngle;
+    int backLine;
 
     //TraceballBody
     bool ContinuousFlag;
@@ -229,9 +230,8 @@ public:
     int CatchBallVerticalHeadPosition;
     int CatchBallYLine;
     int HandMove;
-    //int a = 0;//+++++++++++++++++++++++++++++++++
-    //int b = 0;//+++++++++++++++++++++++++++++++++++
     double count;
+
 
     //TracebasketHead
     bool LayUpFlag;
@@ -246,6 +246,7 @@ public:
     int WaistError;
 
     //UPbasket
+    bool BackFlag;
     bool LeftHandUpFlag;
     int UpBasketStopLine;
 
@@ -277,7 +278,7 @@ public:
     int BallVerticalError;
     int CatchBallLine;
     int ContinuousSlowLine;
-    int ContinuousSlowLine2;//++++++++++++++++++++++++++++++++++++++++++++++++++
+    int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
     int SizeOfDist[4];

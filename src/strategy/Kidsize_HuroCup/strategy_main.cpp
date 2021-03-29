@@ -608,7 +608,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
         {
             if(BasketInfo->StraightCatchFlag)
             {
-                if(BasketInfo->HorizontalHeadPosition > (2048 - 408) && BasketInfo->HorizontalHeadPosition < (2048 + 500) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && !walk_con->isStartContinuous())//不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
+                if(BasketInfo->HorizontalHeadPosition > (2048 - 408) && BasketInfo->HorizontalHeadPosition < (2048 + 500) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine && !walk_con->isStartContinuous())//不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
                 {
                     std::printf("\033[0;33mCatch Ball\033[0m\n");
                     BasketInfo->PreRotateFlag = true; 
@@ -722,33 +722,8 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
 }
 
 void KidsizeStrategy::TraceballBody()
-{                                                   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    if(BasketInfo->BackFlag)
-    {
-        if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)
-        {
-            ROS_INFO("aa");
-            tool->Delay(1000);
-            if(!walk_con->isStartContinuous())
-            {
-                ROS_INFO("bb");
-                walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
-            }
-            else
-            {
-                ROS_INFO("Back");
-                MoveContinuous(ContinuousBackward);
-                BasketInfo->Robot_State = Trace_Ball;
-                tool->Delay(1500);
-            }
-        else
-        {
-            ROS_INFO->("BasketInfo->ContinuousFlag = true");
-            BasketInfo->BackFlag = false;
-            BasketInfo->ContinuousFlag = true;
-        }
-    }                                       //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    else if(BasketInfo->ContinuousFlag)//機器人以連續步態去追蹤球
+{
+    if(BasketInfo->ContinuousFlag)//機器人以連續步態去追蹤球
     {
         ROS_INFO("Catch Ball VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
         if(BasketInfo->Ball.size <= Ballfarsize)//漏球時，切回Find_Ball
@@ -787,7 +762,21 @@ void KidsizeStrategy::TraceballBody()
 		else if(BasketInfo->VerticalHeadPosition <= BasketInfo->ContinuousSlowLine)
 		{
             ROS_INFO("Stand_2");
-            if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)
+            if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
+            {
+                ROS_INFO("Back");
+                if(!walk_con->isStartContinuous())
+                {
+                    walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+                }
+                else
+                {
+                    ROS_INFO("Catch Ball Back");
+                    MoveContinuous(ContinuousBackward);
+                    BasketInfo->Robot_State = Trace_Ball;
+                }
+            }
+            else if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
             {
                 if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
                 {
@@ -837,7 +826,7 @@ void KidsizeStrategy::TraceballBody()
                 tool->Delay(1000);
                 ROS_INFO("Waistdown");
                 ros_com->sendBodySector(BB_WaistDown);
-                tool->Delay(7000);
+                tool->Delay(5500);
                 BasketInfo->StoopFlag = false;
                 BasketInfo->MoveFlag = true;
             }
@@ -868,9 +857,9 @@ void KidsizeStrategy::TraceballBody()
             BasketInfo->HandMove = BasketInfo->count * 1.6; //1.7
             ROS_INFO("OUT");
             ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
+            tool->Delay(200);
             ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
+            tool->Delay(500);
             BasketInfo->InReturnFlag = true;
         }
         BasketInfo->MoveFlag = false;
@@ -882,7 +871,7 @@ void KidsizeStrategy::TraceballBody()
         tool->Delay(4000);
         ROS_INFO("Waist up");
         ros_com->sendBodySector(BB_WaistUp);
-        tool->Delay(8500);
+        tool->Delay(4000);
         MoveHead(HeadMotorID::VerticalID, 2048, 200);
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         if(BasketInfo->OutReturnFlag)
@@ -1230,24 +1219,24 @@ void KidsizeStrategy::UPbasket()
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     if (BasketInfo->VerticalHeadPosition > BasketInfo->UpBasketStopLine)//利用頭度刻度來判斷上籃的停止地點，可在ini檔中做更改
 	{        
-		if(BasketInfo->VerticalHeadPosition > BasketInfo->ContinuousSlowLine2)//++++++++++++++++++++++++++++++ ADD +++++++++++++++++++++++++++++
-        {
-            if (!walk_con->isStartContinuous())
-		    { 
-			    walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+		if (!walk_con->isStartContinuous())
+		{ 
+			walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+            ros::spinOnce();
+            gettimeofday(&tstart, NULL);
+            gettimeofday(&tend, NULL);
+            timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
+            while (timeuse <= 1000)//走1秒鐘的原地踏步，以避免機器人起步的晃動
+            {
+                MoveContinuous(ContinuousStay);
                 ros::spinOnce();
-                gettimeofday(&tstart, NULL);
                 gettimeofday(&tend, NULL);
                 timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
-                while (timeuse <= 1000)//走1秒鐘的原地踏步，以避免機器人起步的晃動
-                {
-                    MoveContinuous(ContinuousStay);
-                    ros::spinOnce();
-                    gettimeofday(&tend, NULL);
-                    timeuse = (1000000*(tend.tv_sec - tstart.tv_sec) + (tend.tv_usec - tstart.tv_usec))/1000;
-                }
-		    }
-		    else if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//執行快速前進大右旋修正
+            }
+		}
+        else if(BasketInfo->VerticalHeadPosition >= BasketInfo->ContinuousSlowLine2)
+        {
+            if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//執行快速前進大右旋修正
             {
                 MoveContinuous(ContinuousFastBigRight);
             } 
@@ -1258,12 +1247,12 @@ void KidsizeStrategy::UPbasket()
             else
             {  
                 MoveContinuous(ContinuousFastForward);
-            }       
+            }
             BasketInfo->Robot_State = Trace_Target;
         }
-        else if(BasketInfo->VerticalHeadPosition < BasketInfo->ContinuousSlowLine2)
+		else if(BasketInfo->VerticalHeadPosition < BasketInfo->ContinuousSlowLine2)
         {
-            else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//執行快速前進小右旋修正
+            if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//執行快速前進小右旋修正
             {
                 MoveContinuous(ContinuousFastSmallRight);
             }
@@ -1271,7 +1260,8 @@ void KidsizeStrategy::UPbasket()
             {
                 MoveContinuous(ContinuousFastSmallLeft);
             }
-        }                                       //+++++++++++++++++++++++++++++++++++++++++++ ADD +++++++++++++++++++++++++++++++++++++++
+            BasketInfo->Robot_State = Trace_Target;
+        }
 	}
     else//當進入上籃範圍時，停止連續步態
     {
@@ -1299,10 +1289,10 @@ void KidsizeStrategy::SlamDunk()//灌籃
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
         ROS_INFO("Hand_UP");
         ros_com->sendBodySector(BB_UpHand);
-        tool->Delay(7000);
+        tool->Delay(4500);
         BasketInfo->HandUpFlag = false;
         BasketInfo->SlamDunkFlag = true;
-        ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 0.9, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改     
+        ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
         tool->Delay(2000);
     }
     else if(BasketInfo->SlamDunkFlag)
