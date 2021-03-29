@@ -608,12 +608,13 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
         {
             if(BasketInfo->StraightCatchFlag)
             {
-                if(BasketInfo->HorizontalHeadPosition > (2048 - 408) && BasketInfo->HorizontalHeadPosition < (2048 + 500) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine && !walk_con->isStartContinuous())//不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
+                if(BasketInfo->HorizontalHeadPosition > (2048 - 408) && BasketInfo->HorizontalHeadPosition < (2048 + 500) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && !walk_con->isStartContinuous())//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
                 {
                     std::printf("\033[0;33mCatch Ball\033[0m\n");
                     BasketInfo->PreRotateFlag = true; 
                     BasketInfo->ContinuousFlag = false;
                     BasketInfo->StoopFlag = true;
+                    BasketInfo->CatchBallModeFlag = true;
                     BasketInfo->Robot_State = Goto_Ball;
                 }
                 BasketInfo->StraightCatchFlag = false;   
@@ -762,21 +763,22 @@ void KidsizeStrategy::TraceballBody()
 		else if(BasketInfo->VerticalHeadPosition <= BasketInfo->ContinuousSlowLine)
 		{
             ROS_INFO("Stand_2");
-            if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
-            {
-                ROS_INFO("Back");
-                if(!walk_con->isStartContinuous())
-                {
-                    walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
-                }
-                else
-                {
-                    ROS_INFO("Catch Ball Back");
-                    MoveContinuous(ContinuousBackward);
-                    BasketInfo->Robot_State = Trace_Ball;
-                }
-            }
-            else if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
+            // if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
+            // {
+            //     ROS_INFO("Back");
+            //     if(!walk_con->isStartContinuous())
+            //     {
+            //         walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+            //     }
+            //     else
+            //     {
+            //         ROS_INFO("Catch Ball Back");
+            //         MoveContinuous(ContinuousBackward);
+            //         BasketInfo->Robot_State = Trace_Ball;
+            //     }
+            // }
+            // else 
+            if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
             {
                 if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
                 {
@@ -825,7 +827,14 @@ void KidsizeStrategy::TraceballBody()
                 MoveHead(HeadMotorID::HorizontalID, 2048, 200);
                 tool->Delay(1000);
                 ROS_INFO("Waistdown");
-                ros_com->sendBodySector(BB_WaistDown);
+                if(BasketInfo->CatchBallModeFlag)
+                {
+                    ros_com->sendBodySector(BB_WaistDown1);
+                }
+                else
+                {
+                    ros_com->sendBodySector(BB_WaistDown2);
+                }
                 tool->Delay(5500);
                 BasketInfo->StoopFlag = false;
                 BasketInfo->MoveFlag = true;
@@ -842,13 +851,16 @@ void KidsizeStrategy::TraceballBody()
         ROS_INFO("BasketInfo->Ball.Y = %d", BasketInfo->Ball.Y);
         if(BasketInfo->Ball.Y > BasketInfo->CatchBallYLine)
         {
-            //BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
-            //BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
+            BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
+            BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
             ROS_INFO("IN");
-            //ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
-            //tool->Delay(1000);
-            //ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
-            //tool->Delay(1000);
+            if(BasketInfo->CatchBallModeFlag)
+            {
+                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
+                tool->Delay(1000);
+                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
+                tool->Delay(1000);
+            }
             BasketInfo->OutReturnFlag = true;
         }
         else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
@@ -867,11 +879,22 @@ void KidsizeStrategy::TraceballBody()
     }
     else if(BasketInfo->GetBallFlag)//夾球並回歸站立持球動作
     {
-        ros_com->sendBodySector(BB_WaistCatch);
+        if(BasketInfo->CatchBallModeFlag)
+        {
+            ros_com->sendBodySector(BB_WaistCatch1);
         tool->Delay(4000);
         ROS_INFO("Waist up");
-        ros_com->sendBodySector(BB_WaistUp);
+        ros_com->sendBodySector(BB_WaistUp1);
         tool->Delay(4000);
+        }
+        else
+        {
+            ros_com->sendBodySector(BB_WaistCatch2);
+            tool->Delay(4000);
+            ROS_INFO("Waist up");
+            ros_com->sendBodySector(BB_WaistUp2);
+            tool->Delay(4000);
+        }
         MoveHead(HeadMotorID::VerticalID, 2048, 200);
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         if(BasketInfo->OutReturnFlag)

@@ -221,6 +221,7 @@ public:
     //TraceballBody
     bool ContinuousFlag;
     bool StoopFlag;
+    bool CatchBallModeFlag;
     bool MoveFlag;
     bool OutReturnFlag;
     bool InReturnFlag;
