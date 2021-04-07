@@ -552,7 +552,6 @@ void KidsizeStrategy::FindballHead()//尋找場上的球
             case HeadTurnNear:
                 MoveHead(HeadMotorID::VerticalID, 1575, 200);       
                 break;
-            case HeadTurnClose:
                 MoveHead(HeadMotorID::VerticalID, 1100, 200);       
                 break;
         }
@@ -641,7 +640,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
                     while (timeuse <= 10000)
                     {
                         image();
-                        if((BasketInfo->HorizontalHeadPosition < (2048 + 120) && BasketInfo->HorizontalHeadPosition > (2048 - 120)) || !strategy_info->getStrategyStart())//(BasketInfo->Ball.X >= 160  && BasketInfo->Ball.X != 0)機器人視野對轉球的垂直中心線就開始前進去追球
+                        if((BasketInfo->HorizontalHeadPosition < (2048 + 60) && BasketInfo->HorizontalHeadPosition > (2048 - 60)) || !strategy_info->getStrategyStart())//(BasketInfo->Ball.X >= 160  && BasketInfo->Ball.X != 0)機器人視野對轉球的垂直中心線就開始前進去追球
                         {
                             break;
                         }
@@ -669,7 +668,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
                     while (timeuse <= 10000)
                     {
                         image();
-                        if((BasketInfo->HorizontalHeadPosition < (2048 + 120) && BasketInfo->HorizontalHeadPosition > (2048 - 120)) || !strategy_info->getStrategyStart()) //(BasketInfo->Ball.X <= 160  && BasketInfo->Ball.X != 0) 
+                        if((BasketInfo->HorizontalHeadPosition < (2048 + 60) && BasketInfo->HorizontalHeadPosition > (2048 - 60)) || !strategy_info->getStrategyStart()) //(BasketInfo->Ball.X <= 160  && BasketInfo->Ball.X != 0) 
                         {
                             break;
                         }
