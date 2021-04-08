@@ -64,7 +64,7 @@ public:
 		//Catch Ball
 		BB_WaistDown1			= 2118,
 		BB_WaistCatch1          = 2110,
-		BB_WaistUp1			    = 1111,
+		BB_WaistUp1			    = 2114,
 		BB_WaistDown2			= 118,
 		BB_WaistCatch2          = 1110,
 		BB_WaistUp2			    = 1114,

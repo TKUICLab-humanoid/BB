@@ -614,7 +614,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
                     BasketInfo->PreRotateFlag = true; 
                     BasketInfo->ContinuousFlag = false;
                     BasketInfo->StoopFlag = true;
-                    BasketInfo->CatchBallModeFlag = false;
+                    BasketInfo->CatchBallModeFlag = true;
                     BasketInfo->Robot_State = Goto_Ball;
                 }
                 BasketInfo->StraightCatchFlag = false;   
@@ -641,7 +641,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
                     while (timeuse <= 10000)
                     {
                         image();
-                        if((BasketInfo->HorizontalHeadPosition < (2048 + 200)) || !strategy_info->getStrategyStart())//(BasketInfo->Ball.X >= 160  && BasketInfo->Ball.X != 0)機器人視野對轉球的垂直中心線就開始前進去追球
+                        if((BasketInfo->HorizontalHeadPosition < (2048 + 80)) || !strategy_info->getStrategyStart())//(BasketInfo->Ball.X >= 160  && BasketInfo->Ball.X != 0)機器人視野對轉球的垂直中心線就開始前進去追球
                         {
                             break;
                         }
@@ -669,7 +669,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
                     while (timeuse <= 10000)
                     {
                         image();
-                        if((BasketInfo->HorizontalHeadPosition > (2048 - 200)) || !strategy_info->getStrategyStart()) //(BasketInfo->Ball.X <= 160  && BasketInfo->Ball.X != 0) 
+                        if((BasketInfo->HorizontalHeadPosition > (2048 - 80)) || !strategy_info->getStrategyStart()) //(BasketInfo->Ball.X <= 160  && BasketInfo->Ball.X != 0) 
                         {
                             break;
                         }
@@ -832,7 +832,7 @@ void KidsizeStrategy::TraceballBody()
     { 
         if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)//BasketInfo->HorizontalHeadPosition < (2048 - 300) || BasketInfo->HorizontalHeadPosition > (2048 + 300) ||        && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
                 {
-                    BasketInfo->CatchBallModeFlag = false;
+                    BasketInfo->CatchBallModeFlag = true;
                 }
         if(BasketInfo->Ball.size <= Ballfarsize)
         {
@@ -883,13 +883,13 @@ void KidsizeStrategy::TraceballBody()
             BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
             BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
             ROS_INFO("IN");
-            if(BasketInfo->CatchBallModeFlag)
-            {
-                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
-                tool->Delay(1300);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
-                tool->Delay(1300);
-            }
+            // if(BasketInfo->CatchBallModeFlag)
+            // {
+            //     ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
+            //     tool->Delay(1000);
+            //     ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
+            //     tool->Delay(1000);
+            // }
             BasketInfo->OutReturnFlag = true;
         }
         else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
@@ -897,10 +897,13 @@ void KidsizeStrategy::TraceballBody()
             BasketInfo->count = BasketInfo->CatchBallYLine - BasketInfo->Ball.Y;
             BasketInfo->HandMove = BasketInfo->count * 1.7; //1.7
             ROS_INFO("OUT");
-            ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
-            tool->Delay(1300);//200
-            ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
-            tool->Delay(1300);//500
+            if(!BasketInfo->CatchBallModeFlag)
+            {
+                ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
+                tool->Delay(1300);//200
+                ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
+                tool->Delay(1300);//500
+            }
             BasketInfo->InReturnFlag = true;
         }
         BasketInfo->MoveFlag = false;
