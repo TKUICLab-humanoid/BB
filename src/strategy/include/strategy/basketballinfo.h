@@ -216,10 +216,12 @@ public:
     double BasketMoveY;
     double ImgHorizontalAngle;
     double ImgVerticalAngle;
+    int backLine;
 
     //TraceballBody
     bool ContinuousFlag;
     bool StoopFlag;
+    bool CatchBallModeFlag;
     bool MoveFlag;
     bool OutReturnFlag;
     bool InReturnFlag;
@@ -230,7 +232,6 @@ public:
     int CatchBallYLine;
     int HandMove;
     double count;
-    int backLine;
 
 
     //TracebasketHead
@@ -277,7 +278,6 @@ public:
     int BallHorizontalError;
     int BallVerticalError;
     int CatchBallLine;
-    int CloseBallLine;
     int ContinuousSlowLine;
     int ContinuousSlowLine2;
     int RobotPosition;

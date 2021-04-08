@@ -68,6 +68,7 @@ void basketballinfo::Init()
     //TraceballBody
     BasketInfo->ContinuousFlag = true;
     BasketInfo->StoopFlag = false;
+    BasketInfo->CatchBallModeFlag = false;
     BasketInfo->MoveFlag = false;
     BasketInfo->OutReturnFlag = false;
     BasketInfo->InReturnFlag = false;
