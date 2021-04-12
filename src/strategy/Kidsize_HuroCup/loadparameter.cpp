@@ -93,7 +93,7 @@ void LoadParameter::LoadParameters()
     char temp[100];
     int packagecnt;
     vector<int> StandPackage;
-    strcpy(path_stand, STANDPATH);
+    strcpy(path_stand, tool->standPath);
     strcat(path_stand, path_stand2);
     strcat(path_stand, path_stand3);
     fin.open(path_stand, ios::in);
