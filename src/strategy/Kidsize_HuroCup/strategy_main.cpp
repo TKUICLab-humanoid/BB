@@ -156,25 +156,29 @@ void KidsizeStrategy::strategymain()
             std::printf("                ██       ██ \n");
             std::printf("-----------------------------------\n");
             std::printf("　  　      ▃▀▀▀▀▀▀▀▀▀▃n");
-            std::printf("　  　　◢◤　　　　　　     ▀▃\n");
-            std::printf("  　　◢◤　　　　　　　　 　  ◥◣ \n");
-            std::printf("  　　▌　　　 ●--------●      ▌ \n");
-            std::printf("  　  ▌　 　  　　 　　　  　 　 ▌ 　 \n");
-            std::printf("　  　◥◣ 　 　　  　　　   　◢◤ \n");
+            std::printf("　  　　◢◤　　　　　　    ▀▃\n");
+            std::printf("  　　◢◤　　　　　　　　 　 ◥◣ \n");
+            std::printf("  　　▌　　　 ●--------●    ▌ \n");
+            std::printf("  　  ▌　 　  　　 　　　  　 ▌ 　 \n");
+            std::printf("　  　◥◣ 　 　　  　　　   ◢◤ \n");
             std::printf("　　   ◢▀▅▃▂         ▂▃▅▀\n");
-            std::printf("　   ◢◤　　　             　◥◣ \n");
-            std::printf("   ◢  ▌  　　　　　　　  　　▐  ◣ \n");
-            std::printf("  ▌  ▌　　　　 　　 　　  　　▐   ◣\n");
-            std::printf(" ▌  ▌　　　　　　　　　　  　  ▐   ▌ \n");
-            std::printf(" ▌  ▌　　　　 　　 　　　   　 ▐   ▌ \n");
-            std::printf("  ◣ ▌　　　　　　　　　　　    ▐  ◤ \n");
-            std::printf("   ◣▌　　　　 　　 　　　 　  ▐◢◤ \n");
-            std::printf("　 ▀▅▃　　　　　 　 　　▂  ▅▀ \n");
+            std::printf("　   ◢◤　　　             ◥◣ \n");
+            std::printf("   ◢  ▌  　　　　　　　 　　▐  ◣ \n");
+            std::printf("  ▌  ▌　　　　 　　 　  　　▐   ◣\n");
+            std::printf(" ▌  ▌　　　　　　　　　  　  ▐   ▌ \n");
+            std::printf(" ▌  ▌　　　　 　　　　　   　 ▐   ▌ \n");
+            std::printf("  ◣ ▌　　　　　　　　　　    ▐  ◤ \n");
+            std::printf("   ◣▌　　　　　　 　　　 　  ▐◢◤ \n");
+            std::printf("　 ▀▅▃　　　　 　 　　▂  ▅▀ \n");
             std::printf("　　 　  ▀■▆▅▅▅▅▅▆■█▀ \n");
             std::printf("　　　   ◣     ▲     ◢ \n\n\n");
             std::printf("　　　    ◣▃▃◢   ◣▃▃◢ \n\n\n");
             BasketInfo->PrintFlag = true;
         }
+        MoveHead(HeadMotorID::HorizontalID, 2048, 500);
+        tool->Delay(1500);
+        MoveHead(HeadMotorID::VerticalID, 2048, 500);
+        tool->Delay(1500);
 	}
 }
 
@@ -928,10 +932,10 @@ void KidsizeStrategy::TraceballBody()
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         if(BasketInfo->OutReturnFlag)
         {
-            ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);//在夾球期間，手有往內or往外，所以在投球前要將其歸位
-            tool->Delay(1000);
-            ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
+            // ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);//在夾球期間，手有往內or往外，所以在投球前要將其歸位
+            // tool->Delay(1000);
+            // ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 100);
+            // tool->Delay(1000);
             BasketInfo->OutReturnFlag = false;
         }
         else if(BasketInfo->InReturnFlag)
