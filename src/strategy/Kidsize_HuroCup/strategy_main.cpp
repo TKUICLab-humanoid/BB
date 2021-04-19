@@ -174,6 +174,8 @@ void KidsizeStrategy::strategymain()
             std::printf("　　　   ◣     ▲     ◢ \n\n\n");
             std::printf("　　　    ◣▃▃◢   ◣▃▃◢ \n\n\n");
             BasketInfo->PrintFlag = true;
+            MoveHead(HeadMotorID::VerticalID, 2048, 200);//1623
+            MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         }
 	}
 }
@@ -395,8 +397,8 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
     else if ((BasketInfo->Distancenew >= BasketInfo->dis35_x) && (BasketInfo->Distancenew < BasketInfo->dis40_x))		
     {
         ROS_INFO("35 <= dist < 40");
-        BasketInfo->weight_35 = (BasketInfo->dis40_x - BasketInfo->Distancenew) / (BasketInfo->dis40_x - BasketInfo->dis35_x);
-        BasketInfo->weight_40 = (BasketInfo->Distancenew - BasketInfo->dis35_x) / (BasketInfo->dis40_x - BasketInfo->dis35_x);
+        BasketInfo->weight_35 = (BasketInfo->dis50_x - BasketInfo->Distancenew) / (BasketInfo->dis50_x - BasketInfo->dis40_x);
+        BasketInfo->weight_40 = (BasketInfo->Distancenew - BasketInfo->dis40_x) / (BasketInfo->dis50_x - BasketInfo->dis40_x);
         BasketInfo->weight_50 = 0.0;
         BasketInfo->weight_60 = 0.0;
         BasketInfo->weight_70 = 0.0;
@@ -439,8 +441,8 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
         BasketInfo->weight_35 = 0.0;
         BasketInfo->weight_40 = 0.0;
         BasketInfo->weight_50 = 0.0;
-        BasketInfo->weight_60 = 0.0;
-        BasketInfo->weight_61 = (BasketInfo->dis70_x -BasketInfo-> Distancenew) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
+        BasketInfo->weight_60 = (BasketInfo->dis70_x -BasketInfo-> Distancenew) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
+        BasketInfo->weight_61 = 0.0;
         BasketInfo->weight_70 = (BasketInfo->Distancenew - BasketInfo->dis60_x) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
         BasketInfo->weight_71 = 0.0;
         BasketInfo->weight_80 = 0.0;
@@ -489,8 +491,21 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
         BasketInfo->weight_81 = 0.0;
         BasketInfo->weight_90 = 1.0;
     }
-
-    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_61*BasketInfo->dis61speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed;
+    ROS_INFO("BasketInfo->weight_35 = %d",BasketInfo->weight_35);
+    ROS_INFO("BasketInfo->dis35speed = %d",BasketInfo->dis35speed);
+    ROS_INFO("BasketInfo->weight_40 = %d",BasketInfo->weight_40);
+    ROS_INFO("BasketInfo->dis40speed = %d",BasketInfo->dis40speed);
+    ROS_INFO("BasketInfo->weight_50 = %d",BasketInfo->weight_50);
+    ROS_INFO("BasketInfo->dis50speed = %d",BasketInfo->dis50speed);
+    ROS_INFO("BasketInfo->weight_60 = %d",BasketInfo->weight_60);
+    ROS_INFO("BasketInfo->dis60speed = %d",BasketInfo->dis60speed);
+    ROS_INFO("BasketInfo->weight_70 = %d",BasketInfo->weight_70);
+    ROS_INFO("BasketInfo->dis70speed = %d",BasketInfo->dis70speed);
+    ROS_INFO("BasketInfo->weight_80 = %d",BasketInfo->weight_80);
+    ROS_INFO("BasketInfo->dis80speed = %d",BasketInfo->dis80speed);
+    ROS_INFO("BasketInfo->weight_90 = %d",BasketInfo->weight_90);
+    ROS_INFO("BasketInfo->dis90speed = %d",BasketInfo->dis90speed);
+    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed;
     ROS_INFO("---\tfinish computing, the speed is %d\t---",BasketInfo->disspeed);
 }
 
@@ -889,10 +904,10 @@ void KidsizeStrategy::TraceballBody()
             ROS_INFO("IN");
             if(BasketInfo->CatchBallModeFlag)
             {
-                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
-                tool->Delay(1500);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
-                tool->Delay(1500);
+                // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
+                // tool->Delay(1500);
+                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
+                // tool->Delay(1500);
             }
             BasketInfo->OutReturnFlag = true;
         }
@@ -928,10 +943,10 @@ void KidsizeStrategy::TraceballBody()
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         if(BasketInfo->OutReturnFlag)
         {
-            ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);//在夾球期間，手有往內or往外，所以在投球前要將其歸位
-            tool->Delay(1000);
-            ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 100);
-            tool->Delay(1000);
+            // ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 100);//在夾球期間，手有往內or往外，所以在投球前要將其歸位
+            // tool->Delay(1000);
+            // ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 100);
+            // tool->Delay(1000);
             BasketInfo->OutReturnFlag = false;
         }
         else if(BasketInfo->InReturnFlag)
@@ -1169,7 +1184,7 @@ void KidsizeStrategy::TracebasketBody()
 		{
 			BasketInfo->Robot_State = Trace_Target;
 		}
-	}
+	}//+ BasketInfo->weight_61*BasketInfo->dis61speed 
 	else if (BasketInfo->WaistFlag)
 	{
 		/*
@@ -1235,13 +1250,13 @@ void KidsizeStrategy::TracebasketBody()
             BasketInfo->ReAimFlag = true;
         }
 
-        ros_com->sendHandSpeed(BB_ShootingBall, BasketInfo->disspeed);//根據ComputeSpeed()得到的速度輸入到投籃的磁區中
-        ROS_INFO("BasketInfo->disspeed %d", BasketInfo->disspeed);
+        // ros_com->sendHandSpeed(BB_ShootingBall, BasketInfo->disspeed);//根據ComputeSpeed()得到的速度輸入到投籃的磁區中
+        // ROS_INFO("BasketInfo->disspeed %d", BasketInfo->disspeed);
 
         BasketInfo->ComputeFlag = false;
         BasketInfo->RaiseFlag = true;
     }
-	else if (BasketInfo->RaiseFlag)
+    else if (BasketInfo->RaiseFlag)
 	{
         ROS_INFO("Ready to shoot!!");
 		ros_com->sendBodySector(BB_RaiseHand);//舉手
