@@ -288,6 +288,8 @@ void KidsizeStrategy::Triangulation()//三角測量測距
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
     ROS_INFO("DistanceError = %lf", BasketInfo->DistanceError);
+    ROS_INFO("robothigh = %d", BasketInfo->RobotHeight);
+    //ROS_INFO("Lcamara = %d", CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad));
     BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;
 }
 
@@ -1165,6 +1167,11 @@ void KidsizeStrategy::TracebasketBody()
                 tool->Delay(1500);
             }           
             MoveHead(HeadMotorID::VerticalID, 1990, 200);
+            //============================================
+            // ROS_INFO("Ready to shoot!!");
+		    // ros_com->sendBodySector(BB_RaiseHand);//舉手
+		    // tool->Delay(4500);
+            //============================================
             BasketInfo->DistanceError = strategy_info->getIMUValue().Yaw * BasketInfo->DistanceErrorCount;//為了修正籃框左右邊的高低誤差，用IMU的Yaw值進行補償(僅用於三角測量的測距)
             BasketInfo->RoateFlag = false;
             BasketInfo->WaistFlag = true;
