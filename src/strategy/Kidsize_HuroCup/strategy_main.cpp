@@ -174,11 +174,11 @@ void KidsizeStrategy::strategymain()
             std::printf("　　　   ◣     ▲     ◢ \n\n\n");
             std::printf("　　　    ◣▃▃◢   ◣▃▃◢ \n\n\n");
             BasketInfo->PrintFlag = true;
+            MoveHead(HeadMotorID::HorizontalID, 2048, 500);
+            tool->Delay(1500);
+            MoveHead(HeadMotorID::VerticalID, 2048, 500);
+            tool->Delay(1500);
         }
-        MoveHead(HeadMotorID::HorizontalID, 2048, 500);
-        tool->Delay(1500);
-        MoveHead(HeadMotorID::VerticalID, 2048, 500);
-        tool->Delay(1500);
 	}
 }
 
@@ -290,7 +290,7 @@ void KidsizeStrategy::Triangulation()//三角測量測距
     ROS_INFO("DistanceError = %lf", BasketInfo->DistanceError);
     ROS_INFO("robothigh = %d", BasketInfo->RobotHeight);
     //ROS_INFO("Lcamara = %d", CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad));
-    BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;
+    BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError + 15 ;
 }
 
 void KidsizeStrategy::image()//影像辨識，用於辨識球模or籃框模
@@ -895,10 +895,10 @@ void KidsizeStrategy::TraceballBody()
             ROS_INFO("IN");
             if(BasketInfo->CatchBallModeFlag)
             {
-                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
-                tool->Delay(1500);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
-                tool->Delay(1500);
+                // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
+                // tool->Delay(1500);
+                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
+                // tool->Delay(1500);
             }
             BasketInfo->OutReturnFlag = true;
         }
@@ -1112,7 +1112,6 @@ void KidsizeStrategy::TracebasketHead()
         BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        
         if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[1]+BasketInfo->SizeOfDist[0])/2)
         {
             BasketInfo->Robot_State = Goto_Target;
@@ -1158,7 +1157,7 @@ void KidsizeStrategy::TracebasketBody()
 	{
         ROS_INFO("Adjust direction 2");
         ROS_INFO("HorizontalHeadPosition = %d", BasketInfo->HorizontalHeadPosition);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10))
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 100) && BasketInfo->HorizontalHeadPosition <= (2048 + 100))
 		{
             ROS_INFO("Body aimed basket");
             if(walk_con->isStartContinuous())//當要到投籃狀態時，關閉連續步態
@@ -1234,12 +1233,12 @@ void KidsizeStrategy::TracebasketBody()
                 if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) > 0)
                 {
                     ROS_INFO("RIGHT");
-                    ros_com->sendSingleMotor(9, (-1)*7, 100);
+                    ros_com->sendSingleMotor(9, (-1)*7, 75);
                 }
                 else if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) < 0)
                 {
                     ROS_INFO("LEFT");
-                    ros_com->sendSingleMotor(9, 5, 100);
+                    ros_com->sendSingleMotor(9, 5, 75);
                 }
                 image();      
             }
