@@ -71,7 +71,7 @@ public:
 		BB_WaistUpFeedBack      = 1112,
 		//Shooting
 		BB_RaiseHand			= 1115,
-		BB_ShootingBall		    = 1116,
+		BB_ShootingBall		    = 1125,
 		BB_KeepBall			    = 1117,
 		//LayUp
 		BB_UpHand               = 1140,
