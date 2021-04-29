@@ -128,6 +128,7 @@ public:
     int M18;
     int M19;
     int M20;
+    double NowRobotHeight;
     double RobotHeight;
     double RobotHeight1;
     double RobotHeight2;
@@ -236,6 +237,7 @@ public:
 
     //TracebasketHead
     bool LayUpFlag;
+    bool FindBasketFlag;
 
     //Tracebasketbody
     bool RoateFlag;

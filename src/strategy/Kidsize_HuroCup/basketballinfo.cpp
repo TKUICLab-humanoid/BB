@@ -80,6 +80,7 @@ void basketballinfo::Init()
 
     //TracebasketHead
     BasketInfo->LayUpFlag = false;
+    BasketInfo->FindBasketFlag = false;
 
     //Tracebasketbody
     BasketInfo->RoateFlag = true;
