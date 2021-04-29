@@ -286,7 +286,11 @@ void KidsizeStrategy::Triangulation()//三角測量測距
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
     ROS_INFO("DistanceError = %lf", BasketInfo->DistanceError);
-    BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;
+    ROS_INFO("BasketInfo->RobotHeight = %lf", BasketInfo->RobotHeight);
+    ROS_INFO("CameraHeight = %lf", CameraHeight);
+    ROS_INFO("sin(BasketInfo->HeadVerticalAngle * Deg2Rad) = %lf", sin(BasketInfo->HeadVerticalAngle * Deg2Rad));
+    ROS_INFO("tan(BasketInfo->HeadVerticalAngle * Deg2Rad) = %lf", tan(BasketInfo->HeadVerticalAngle * Deg2Rad));
+    BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;//BasketInfo->RobotHeight + 
 }
 
 void KidsizeStrategy::image()//影像辨識，用於辨識球模or籃框模
@@ -1204,13 +1208,13 @@ void KidsizeStrategy::TracebasketBody()
         if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) > 0)//轉腰調整Basket.X與BasketVerticalBaseLine的誤差
 		{
             ROS_INFO("RIGHT");
-			ros_com->sendSingleMotor(9, (-1)*(BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine), 100);
+			ros_com->sendSingleMotor(9, (-1)*(BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine), 50);
 
 		}
 		else if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) < 0)
 		{
             ROS_INFO("LEFT");
-			ros_com->sendSingleMotor(9, BasketInfo->BasketVerticalBaseLine - BasketInfo->Basket.X, 100);
+			ros_com->sendSingleMotor(9, BasketInfo->BasketVerticalBaseLine - BasketInfo->Basket.X, 50);
 		}  
         tool->Delay(1000);
         
@@ -1238,12 +1242,12 @@ void KidsizeStrategy::TracebasketBody()
                 if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) > 0)
                 {
                     ROS_INFO("RIGHT");
-                    ros_com->sendSingleMotor(9, (-1)*7, 100);
+                    ros_com->sendSingleMotor(9, (-1)*7, 50);
                 }
                 else if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) < 0)
                 {
                     ROS_INFO("LEFT");
-                    ros_com->sendSingleMotor(9, 5, 100);
+                    ros_com->sendSingleMotor(9, 5, 50);
                 }
                 image();      
             }
@@ -1260,7 +1264,7 @@ void KidsizeStrategy::TracebasketBody()
 	{
         ROS_INFO("Ready to shoot!!");
 		ros_com->sendBodySector(BB_RaiseHand);//舉手
-		tool->Delay(4500);
+		tool->Delay(5000);
 		BasketInfo->RaiseFlag = false;
 		BasketInfo->ThrowBallFlag = true;
 	}
