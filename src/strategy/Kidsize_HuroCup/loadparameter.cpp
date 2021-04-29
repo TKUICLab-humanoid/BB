@@ -145,6 +145,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->ScreenButtom = this->readvalue(fin,"ScreenButtom", 1);
         BasketInfo->Error = this->readvalue(fin,"Error", 1);
         fin.getline(temp, sizeof(temp));
+        BasketInfo->NowRobotHeight = this->readvalue(fin,"NowRobotHeight", 0);
         BasketInfo->FeedBackError = this->readvalue(fin,"FeedBackError", 1);
         BasketInfo->DistanceErrorCount = this->readvalue(fin,"DistanceErrorCount", 1);
         fin.getline(temp, sizeof(temp));
@@ -159,7 +160,6 @@ void LoadParameter::LoadParameters()
         BasketInfo->BasketHorizontalMaxAngle = this->readvalue(fin,"BasketHorizontalMaxAngle", 0);
         BasketInfo->BasketHorizontalMinAngle = this->readvalue(fin,"BasketHorizontalMinAngle", 0);
         BasketInfo->BasketHorizontalBaseLine = this->readvalue(fin,"BasketHorizontalBaseLine", 0);
-        BasketInfo->NowRobotHeight = this->readvalue(fin,"NowRobotHeight", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->BasketVerticalBaseLine = this->readvalue(fin,"BasketVerticalBaseLine", 0);
         BasketInfo->BasketVerticalBaseLine90 = this->readvalue(fin,"BasketVerticalBaseLine90", 0);

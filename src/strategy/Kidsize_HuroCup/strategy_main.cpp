@@ -286,7 +286,7 @@ void KidsizeStrategy::Triangulation()//三角測量測距
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
     ROS_INFO("DistanceError = %lf", BasketInfo->DistanceError);
-    BasketInfo->Distancenew = (BasketInfo->NowRobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;
+    BasketInfo->Distancenew = (BasketInfo->RobotHeight + CameraHeight * sin(BasketInfo->HeadVerticalAngle * Deg2Rad)) * tan(BasketInfo->HeadVerticalAngle * Deg2Rad) + CameraHeight * cos(BasketInfo->HeadVerticalAngle * Deg2Rad) + BasketInfo->DistanceError;
 }
 
 void KidsizeStrategy::image()//影像辨識，用於辨識球模or籃框模
@@ -1134,9 +1134,23 @@ void KidsizeStrategy::TracebasketHead()
         }
         else
         {
-            ROS_INFO("Stop");
-            walk_con->stopContinuous();
-            tool->Delay(1500);
+            if(walk_con->isStartContinuous())//當要到投籃狀態時，關閉連續步態
+            {
+                walk_con->stopContinuous();
+                tool->Delay(1500);
+            } 
+            if((BasketInfo->Basket.X - BasketInfo->BasketHorizontalBaseLine) > 0)//轉腰調整Basket.X與BasketHorizontalBaseLine的誤差
+            {
+                ROS_INFO("RIGHT");
+                ros_com->sendSingleMotor(9, (-1)*(BasketInfo->Basket.X - BasketInfo->BasketHorizontalBaseLine), 100);
+
+            }
+            else if((BasketInfo->Basket.X - BasketInfo->BasketHorizontalBaseLine) < 0)
+            {
+                ROS_INFO("LEFT");
+                ros_com->sendSingleMotor(9, BasketInfo->BasketHorizontalBaseLine - BasketInfo->Basket.X, 100);
+            }  
+            tool->Delay(1000);
             BasketInfo->Robot_State = Goto_Target;
         }
         //----------------------------------------------
@@ -1189,7 +1203,7 @@ void KidsizeStrategy::TracebasketBody()
 	{
         ROS_INFO("Adjust direction 2");
         ROS_INFO("HorizontalHeadPosition = %d", BasketInfo->HorizontalHeadPosition);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10))
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 50) && BasketInfo->HorizontalHeadPosition <= (2048 + 50))
 		{
             ROS_INFO("Body aimed basket");
             if(walk_con->isStartContinuous())//當要到投籃狀態時，關閉連續步態
@@ -1260,12 +1274,12 @@ void KidsizeStrategy::TracebasketBody()
                 if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) > 0)
                 {
                     ROS_INFO("RIGHT");
-                    ros_com->sendSingleMotor(9, (-1)*7, 100);
+                    ros_com->sendSingleMotor(9, (-1)*7, 50);
                 }
                 else if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) < 0)
                 {
                     ROS_INFO("LEFT");
-                    ros_com->sendSingleMotor(9, 5, 100);
+                    ros_com->sendSingleMotor(9, 5, 50);
                 }
                 image();      
             }
