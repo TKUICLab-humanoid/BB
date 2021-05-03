@@ -1210,13 +1210,13 @@ void KidsizeStrategy::TracebasketBody()
         if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) > 0)//轉腰調整Basket.X與BasketVerticalBaseLine的誤差
 		{
             ROS_INFO("RIGHT");
-			ros_com->sendSingleMotor(9, (-1)*(BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine), 100);
+			ros_com->sendSingleMotor(9, (-1)*(BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine), 75);
 
 		}
 		else if((BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine) < 0)
 		{
             ROS_INFO("LEFT");
-			ros_com->sendSingleMotor(9, BasketInfo->BasketVerticalBaseLine - BasketInfo->Basket.X, 100);
+			ros_com->sendSingleMotor(9, BasketInfo->BasketVerticalBaseLine - BasketInfo->Basket.X, 75);
 		}  
         tool->Delay(1000);
         

@@ -19,7 +19,7 @@
 #define ContinuousMode 19
 //Triangulation
 #define Scale2Deg 0.087890625 // 360/4096
-#define CameraHeight 3.925
+#define CameraHeight 4.5
 //Object Color Models
 #define Ballfarsize 500
 #define Basketfarsize 1200
