@@ -86,7 +86,7 @@ void basketballinfo::Init()
     BasketInfo->WaistFlag = false;
     BasketInfo->ComputeFlag = false;
     BasketInfo->ReAimFlag = false;
-    BasketInfo->RaiseFlag = false;
+    BasketInfo->RaiseFlag = true;
     BasketInfo->ThrowBallFlag = false;
 
     //UPbasket
