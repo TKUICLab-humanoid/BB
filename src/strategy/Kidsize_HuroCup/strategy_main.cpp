@@ -100,6 +100,7 @@ void KidsizeStrategy::strategymain()
         {            
             image();
             Draw();
+            Triangulation();
 	        ROS_INFO("----------------------------------------");
             ROS_INFO("BasketInfo->Basket.size = %d", BasketInfo->Basket.size);
             ROS_INFO("BasketInfo->Basket.YMax = %d", BasketInfo->Basket.YMax);
@@ -265,7 +266,7 @@ void KidsizeStrategy::Triangulation()//三角測量測距
 {
     MoveHead(HeadMotorID::HorizontalID,2048, 200);
     image();
-    while(abs(BasketInfo->Basket.Y - 120) > 0)//頭部上下轉動直到對準籃框的水平中心線
+    while(abs(BasketInfo->Basket.Y - 120) > 3)//頭部上下轉動直到對準籃框的水平中心線
     {
         if(BasketInfo->Basket.Y == 0)
         {
@@ -280,9 +281,9 @@ void KidsizeStrategy::Triangulation()//三角測量測距
             MoveHead(HeadMotorID::VerticalID,BasketInfo->VerticalHeadPosition + 1, 200);
         }
         image();
-        ROS_INFO("Basket Y = %d", BasketInfo->Basket.Y);
     }
     BasketInfo->HeadVerticalAngle = (double)(BasketInfo->VerticalHeadPosition - 1024) * Scale2Deg + BasketInfo->RobotStandFeedBack + BasketInfo->FeedBackError;
+    ROS_INFO("Basket Y = %d", BasketInfo->Basket.Y);
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
     ROS_INFO("DistanceError = %lf", BasketInfo->DistanceError);
@@ -1126,7 +1127,7 @@ void KidsizeStrategy::TracebasketHead()
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[1]+BasketInfo->SizeOfDist[0])/2)
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10)  && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[2] && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[1]+BasketInfo->SizeOfDist[0])/2)  //
         {
             BasketInfo->Robot_State = Goto_Target;
         }
@@ -1139,7 +1140,7 @@ void KidsizeStrategy::TracebasketHead()
         {
             ROS_INFO("Adjust direction 1");
             ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
-            if(BasketInfo->Basket.size < BasketInfo->SizeOfDist[1])//籃框面積小於距離60時的籃框面積大小時，執行前進
+            if(BasketInfo->Basket.size < BasketInfo->SizeOfDist[2])//籃框面積小於距離60時的籃框面積大小時，執行前進
             {
                 ROS_INFO("Forward");
                 MoveContinuous(ContinuousSmallForward);

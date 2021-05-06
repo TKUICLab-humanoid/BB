@@ -6,12 +6,12 @@
 //loadparameter.cpp
 //29.ini calculate RobotHeight
 #define Deg2Rad 0.017453292 // pi/180
-#define L_Calf 10.4255
-#define L_Thigh 10.22566
-#define L_BodyError 6.104489964
-#define L_Body 23.273966890
-#define L_Foot 2.256
-#define L_Shoes 0.2
+#define L_Calf 10
+#define L_Thigh 10
+#define L_BodyError 0 //6.104489964
+#define L_Body 25
+#define L_Foot 3
+#define L_Shoes 0.3
 #define HalfBasketHeight 35.3
 
 //strategy_main.cpp
@@ -19,7 +19,7 @@
 #define ContinuousMode 19
 //Triangulation
 #define Scale2Deg 0.087890625 // 360/4096
-#define CameraHeight 6.0
+#define CameraHeight 4.3
 //Object Color Models
 #define Ballfarsize 500
 #define Basketfarsize 1200
