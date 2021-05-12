@@ -69,6 +69,7 @@ public:
 		BB_WaistCatch2          = 1110,
 		BB_WaistUp2			    = 1114,
 		BB_WaistUpFeedBack      = 1112,
+		BB_WaistUpFeedBack2     = 2112,
 		//Shooting
 		BB_RaiseHand			= 1115,
 		BB_ShootingBall		    = 1125,
