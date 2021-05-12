@@ -934,7 +934,7 @@ void KidsizeStrategy::TraceballBody()
     {
         MoveHead(HeadMotorID::VerticalID, 2048, 200);
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
-        if(BasketInfo->CatchBallModeFlag)
+        if(BasketInfo->CatchBallModeFlag == true)
         {
             ROS_INFO("Waist up");
             ros_com->sendBodySector(BB_WaistUp1);
@@ -951,7 +951,7 @@ void KidsizeStrategy::TraceballBody()
             ros_com->sendBodySector(BB_WaistUpFeedBack);
             tool->Delay(7500);
         }
-        else if
+        else if(BasketInfo->CatchBallModeFlag == false)
         {
             ROS_INFO("Waist up");
             ros_com->sendBodySector(BB_WaistUp2);
