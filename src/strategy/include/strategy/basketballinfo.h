@@ -253,6 +253,7 @@ public:
 
     //SlamDunk
     bool HandUpFlag;
+    bool UpBasketWaistFlag;
     bool SlamDunkFlag;
     int SlamDunkHorizontalAngle;
 

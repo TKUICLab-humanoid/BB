@@ -94,6 +94,7 @@ void basketballinfo::Init()
 
     //SlamDunk
     BasketInfo->HandUpFlag = true;
+    BasketInfo->UpBasketWaistFlag = false;
     BasketInfo->SlamDunkFlag = false;
 
 
