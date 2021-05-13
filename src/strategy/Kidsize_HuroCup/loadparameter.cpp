@@ -448,8 +448,8 @@ void LoadParameter::TestParameters()
     ROS_INFO("VerticalMinAngle = %d",BasketInfo->VerticalMinAngle);
     ROS_INFO("HorizontalMaxAngle = %d",BasketInfo->HorizontalMaxAngle);
     ROS_INFO("HorizontalMinAngle = %d",BasketInfo->HorizontalMinAngle);
-    ROS_INFO("BasketHorizontalMinAngle = %d",BasketInfo->BasketHorizontalMinAngle);
     ROS_INFO("BasketHorizontalMaxAngle = %d",BasketInfo->BasketHorizontalMaxAngle);
+    ROS_INFO("BasketHorizontalMinAngle = %d",BasketInfo->BasketHorizontalMinAngle);
     ROS_INFO("BasketHorizontalBaseLine = %d",BasketInfo->BasketHorizontalBaseLine);
     ROS_INFO("BasketVerticalBaseLine = %d",BasketInfo->BasketVerticalBaseLine);
     ROS_INFO("BasketVerticalBaseLine90 = %d",BasketInfo->BasketVerticalBaseLine90);
