@@ -1152,7 +1152,7 @@ void KidsizeStrategy::TracebasketHead()
         BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2) // && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] 
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2 && BasketInfo->Basket.size > BasketInfo->SizeOfDist[4])// && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] 
         {
             BasketInfo->Robot_State = Goto_Target;
         }
@@ -1316,10 +1316,11 @@ void KidsizeStrategy::TracebasketBody()
             if (BasketInfo->Distancenew < BasketInfo->dis80_x)								
             {
                 ComputeSpeed();
+                BasketInfo->disspeed = BasketInfo->disspeed - BasketInfo->SpeedError;
             }
             else
             {
-                BasketInfo->disspeed = BasketInfo->dis80speed + (BasketInfo->Distancenew - BasketInfo->dis80_x)*1;
+                BasketInfo->disspeed = BasketInfo->dis80speed + (BasketInfo->Distancenew - BasketInfo->dis80_x)*5;
             }
         }
         else if(!BasketInfo->LayUpFlag)
