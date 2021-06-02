@@ -236,6 +236,7 @@ public:
 
     //TracebasketHead
     bool LayUpFlag;
+    bool FivePointFlag;
 
     //Tracebasketbody
     bool RoateFlag;
@@ -282,7 +283,7 @@ public:
     int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
-    int SizeOfDist[4];
+    int SizeOfDist[5];
     double Distancenew;
     double timeuse;
 };

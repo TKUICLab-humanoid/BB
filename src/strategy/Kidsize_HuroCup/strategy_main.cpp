@@ -42,6 +42,10 @@ void KidsizeStrategy::strategymain()
                 {
                     BasketInfo->LayUpFlag = true;
                 }
+                else if(strategy_info->DIOValue.Switch.D2)
+                {
+                    BasketInfo->FivePointFlag = true;
+                }
 		        MoveContinuous(ContinuousStand);//設定步態初始化參數
 		    	tool->Delay(1000);
                 ros_com->sendBodySector(BB_StandFix);
@@ -1135,6 +1139,54 @@ void KidsizeStrategy::TracebasketHead()
             BasketInfo->Robot_State = UP_Basket;
         }
 	}
+    else if(BasketInfo->FivePointFlag) //5 point 投籃策略
+    {
+        if(!walk_con->isStartContinuous())//開啟連續步態
+        {
+            walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);//開始連續步態  
+        }
+        
+        BasketInfo->BasketMoveX = (BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine);//跟上籃的追蹤籃框為同一方法
+        BasketInfo->BasketMoveY = (BasketInfo->Basket.Y - BasketInfo->BasketHorizontalBaseLine);
+        BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX/(double)RobotVisionWidth;
+        BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
+        MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+        MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2) // && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] 
+        {
+            BasketInfo->Robot_State = Goto_Target;
+        }
+        else if(BasketInfo->Basket.size <= Basketfarsize)
+        {
+            ROS_INFO("Miss Basket");
+            BasketInfo->Robot_State = Find_Target;
+        }
+        else
+        {
+            ROS_INFO("Adjust direction 1");
+            ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
+            if(BasketInfo->Basket.size < BasketInfo->SizeOfDist[4] )//籃框面積小於距離90時的籃框面積大小時，執行前進
+            {
+                ROS_INFO("Forward");
+                MoveContinuous(ContinuousSmallForward);
+            }
+            else if(BasketInfo->Basket.size > (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2)//籃框面積大於距離85時的籃框面積大小時，執行後退
+            {
+                ROS_INFO("Back");
+                MoveContinuous(ContinuousBackward);
+            }
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 10))//在此區間執行小左旋修正
+            {
+                ROS_INFO("Turn Left");
+                MoveContinuous(ContinuousSmallTurnLeft);
+            }
+            else if(BasketInfo->HorizontalHeadPosition < (2048 - 10))//在此區間執行小右旋修正
+            {
+                ROS_INFO("Turn Right");
+                MoveContinuous(ContinuousSmallTurnRight);
+            }
+        }
+    }
     else//投籃策略，這邊trace的概念跟traceball的概念一樣
     {
         if(!walk_con->isStartContinuous())//開啟連續步態
@@ -1259,7 +1311,22 @@ void KidsizeStrategy::TracebasketBody()
     {
 		ROS_INFO("CompteSpeed");
         Triangulation();
-		ComputeSpeed();//用權重計算投籃力道
+        if(BasketInfo->FivePointFlag)
+        {
+            if (BasketInfo->Distancenew < BasketInfo->dis80_x)								
+            {
+                ComputeSpeed();
+            }
+            else
+            {
+                BasketInfo->disspeed = BasketInfo->dis80speed + (BasketInfo->Distancenew - BasketInfo->dis80_x)*1;
+            }
+        }
+        else if(!BasketInfo->LayUpFlag)
+        {
+            ComputeSpeed();//3 point 用權重計算投籃力道
+        }
+		
         if(BasketInfo->ReAimFlag)
         {
             SelectBaseLine();
@@ -1298,7 +1365,7 @@ void KidsizeStrategy::TracebasketBody()
 	else if (BasketInfo->ThrowBallFlag)
 	{
         ROS_INFO("Shoot!!");
-		ros_com->sendHandSpeed(BB_ShootingBall, BasketInfo->disspeed);//射出去
+        ros_com->sendHandSpeed(BB_ShootingBall, BasketInfo->disspeed);//射出去
         ros_com->sendBodySector(BB_ShootingBall);
 		tool->Delay(2000);
         
