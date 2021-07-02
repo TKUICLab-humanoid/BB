@@ -964,7 +964,7 @@ void KidsizeStrategy::TraceballBody()
             {
                 ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
                 tool->Delay(1000);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10
+                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
                 ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
                 tool->Delay(1000);
                 BasketInfo->InReturnFlag = false;
