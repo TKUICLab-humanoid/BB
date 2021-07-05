@@ -514,7 +514,7 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
     ROS_INFO("BasketInfo->dis80speed = %d",BasketInfo->dis80speed);
     ROS_INFO("BasketInfo->weight_90 = %d",BasketInfo->weight_90);
     ROS_INFO("BasketInfo->dis90speed = %d",BasketInfo->dis90speed);
-    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed;
+    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed - 20;
     ROS_INFO("---\tfinish computing, the speed is %d\t---",BasketInfo->disspeed);
 }
 
