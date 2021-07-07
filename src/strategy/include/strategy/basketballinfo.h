@@ -6,11 +6,11 @@
 //loadparameter.cpp
 //29.ini calculate RobotHeight
 #define Deg2Rad 0.017453292 // pi/180
-#define L_Calf 10.4255
-#define L_Thigh 10.22566
-#define L_BodyError 6.104489964
-#define L_Body 23.273966890
-#define L_Foot 2.256
+#define L_Calf 10
+#define L_Thigh 10
+#define L_BodyError 0
+#define L_Body 24.65
+#define L_Foot 3.21
 #define L_Shoes 0.2
 #define HalfBasketHeight 35.3
 
@@ -19,7 +19,7 @@
 #define ContinuousMode 19
 //Triangulation
 #define Scale2Deg 0.087890625 // 360/4096
-#define CameraHeight 3.925
+#define CameraHeight 3.84
 //Object Color Models
 #define Ballfarsize 500
 #define Basketfarsize 1200
@@ -216,10 +216,12 @@ public:
     double BasketMoveY;
     double ImgHorizontalAngle;
     double ImgVerticalAngle;
+    int backLine;
 
     //TraceballBody
     bool ContinuousFlag;
     bool StoopFlag;
+    bool CatchBallModeFlag;
     bool MoveFlag;
     bool OutReturnFlag;
     bool InReturnFlag;
@@ -231,8 +233,10 @@ public:
     int HandMove;
     double count;
 
+
     //TracebasketHead
     bool LayUpFlag;
+    bool FivePointFlag;
 
     //Tracebasketbody
     bool RoateFlag;
@@ -242,8 +246,10 @@ public:
     bool RaiseFlag;
     bool ThrowBallFlag;
     int WaistError;
+    int SpeedError;
 
     //UPbasket
+    bool BackFlag;
     bool LeftHandUpFlag;
     int UpBasketStopLine;
 
@@ -275,9 +281,10 @@ public:
     int BallVerticalError;
     int CatchBallLine;
     int ContinuousSlowLine;
+    int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
-    int SizeOfDist[4];
+    int SizeOfDist[5];
     double Distancenew;
     double timeuse;
 };
