@@ -41,6 +41,7 @@ public:
 	void strategymain();
 	void InversePerspective();
 	void Triangulation();
+	void AreaSizeDistance();
 	void image();
 	void MoveHead(HeadMotorID , int , int );
 	void ComputeSpeed();

@@ -53,6 +53,7 @@ void basketballinfo::Init()
     BasketInfo->weight_80 = 0.0;
     BasketInfo->weight_81 = 0.0;
     BasketInfo->weight_90 = 0.0;
+    BasketInfo->Disspeedfix=0.0;
 
     //TraceballHead
     BasketInfo->PreRotateFlag = false;
@@ -108,6 +109,8 @@ void basketballinfo::Init()
  	//Common
  	BasketInfo->RobotPosition = BigGOAhead;
  	BasketInfo->Robot_State = Initialization;
+    BasketInfo->Distance_50 = 0.0;
+    BasketInfo->Distance_80 = 0.0;
     BasketInfo->Distancenew = 0.0;
     BasketInfo->timeuse = 0;
 }

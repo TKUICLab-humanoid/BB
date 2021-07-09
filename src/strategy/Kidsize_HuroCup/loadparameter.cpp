@@ -148,6 +148,8 @@ void LoadParameter::LoadParameters()
         BasketInfo->FeedBackError = this->readvalue(fin,"FeedBackError", 1);
         BasketInfo->DistanceErrorCount = this->readvalue(fin,"DistanceErrorCount", 1);
         fin.getline(temp, sizeof(temp));
+        BasketInfo->Disspeedfix = this->readvalue(fin,"Disspeedfix", 0);
+        fin.getline(temp, sizeof(temp));
         BasketInfo->HeadVerticalState = this->readvalue(fin,"HeadVerticalState", 0);
         BasketInfo->HeadHorizontalState = this->readvalue(fin,"HeadHorizontalState", 0);
         BasketInfo->BallVerticalBaseLine = this->readvalue(fin,"BallVerticalBaseLine", 0);
@@ -223,7 +225,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->dis80speed = this->readvalue(fin, "dis80speed", 0);
         BasketInfo->dis81speed = this->readvalue(fin, "dis81speed", 0);
         BasketInfo->dis90speed = this->readvalue(fin, "dis90speed", 0);
-       
+
         fin.close();
         ROS_INFO("fileclose Speed.ini");
     }
@@ -487,7 +489,7 @@ void LoadParameter::TestParameters()
     ROS_INFO("dis80speed = %d",BasketInfo->dis80speed);
     ROS_INFO("dis81speed = %d",BasketInfo->dis81speed);
     ROS_INFO("dis90speed = %d",BasketInfo->dis90speed);
-    
+    ROS_INFO("Dispeedfix = %d",BasketInfo->Disspeedfix);
     ROS_INFO("----------  Continuous Step -------------");
     ROS_INFO("AddPeriod = %f",BasketInfo->AddPeriod);
     ROS_INFO("ContinuousInit");

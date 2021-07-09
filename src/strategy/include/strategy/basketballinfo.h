@@ -197,6 +197,7 @@ public:
     double weight_80;
     double weight_81;
     double weight_90;
+    double Disspeedfix;
 
     //SelectBaseLine
     int BasketVerticalBaseLine;
@@ -285,6 +286,8 @@ public:
     int RobotPosition;
     int Robot_State;
     int SizeOfDist[5];
+    double Distance_50;
+    double Distance_80;
     double Distancenew;
     double timeuse;
 };
