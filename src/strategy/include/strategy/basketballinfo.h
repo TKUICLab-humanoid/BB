@@ -238,6 +238,8 @@ public:
     //TracebasketHead
     bool LayUpFlag;
     bool FivePointFlag;
+    bool FindBasketFlag;
+    bool TurnWaistFlag;
 
     //Tracebasketbody
     bool RoateFlag;

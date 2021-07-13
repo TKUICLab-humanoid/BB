@@ -104,7 +104,8 @@ void KidsizeStrategy::strategymain()
         {            
             image();
             Draw();
-            Triangulation();
+            // Triangulation();
+            AreaSizeDistance();
 	        ROS_INFO("----------------------------------------");
             ROS_INFO("BasketInfo->Basket.size = %d", BasketInfo->Basket.size);
             ROS_INFO("BasketInfo->Basket.YMax = %d", BasketInfo->Basket.YMax);
@@ -323,7 +324,7 @@ void KidsizeStrategy::AreaSizeDistance()//面積測量測距_2
     BasketInfo->HeadVerticalAngle = (double)(BasketInfo->VerticalHeadPosition - 1024) * Scale2Deg + BasketInfo->RobotStandFeedBack + BasketInfo->FeedBackError;
     BasketInfo->Distance_50 = sqrt( abs( ( BasketInfo->dis50_x * BasketInfo->dis50_x * BasketInfo->SizeOfDist[0]) / BasketInfo->Basket.size ) );
     BasketInfo->Distance_80 = sqrt( abs( ( BasketInfo->dis80_x * BasketInfo->dis80_x * BasketInfo->SizeOfDist[3]) / BasketInfo->Basket.size ) );
-    BasketInfo->Distancenew = ( BasketInfo->Distance_50 + BasketInfo->Distance_80 ) / 2 ;
+    BasketInfo->Distancenew = ( BasketInfo->Distance_50 + BasketInfo->Distance_80 ) / 2 - 3 ;
 
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
@@ -1037,69 +1038,93 @@ void KidsizeStrategy::TraceballBody()
         // }
         //==========================================change===============================================
 
-        if(!walk_con->isStartContinuous())
-        {
-            walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
-        }
+        
         BasketInfo->GetBallFlag = false;
         BasketInfo->TurnFlag = true;
 	}
     else if(BasketInfo->TurnFlag)//轉向籃框
     {
-		if(abs(BasketInfo->Basket.X - 160) <= 90 && strategy_info->getIMUValue().Yaw < 60 && strategy_info->getIMUValue().Yaw > -60)//籃框位於視野中央時進到Find_Target
-		{
+        if(BasketInfo->LayUpFlag || BasketInfo->FivePointFlag)//上籃 or 5point 策略
+        {
+            if(!walk_con->isStartContinuous())
+            {
+                walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+            }
+
+            if(abs(BasketInfo->Basket.X - 160) <= 90 && strategy_info->getIMUValue().Yaw < 60 && strategy_info->getIMUValue().Yaw > -60)//籃框位於視野中央時進到Find_Target
+            {
+                ROS_INFO("Start Finding Basket");
+                tool->Delay(500);
+                BasketInfo->Robot_State = Find_Target;
+            }
+            if(BasketInfo->RobotPosition == TurnLeft)//根據機器人的RobotPositoin來判別現在該轉哪邊，因為是TurnLeft因此向右轉
+            {
+                ROS_INFO("IMU Value = %f", strategy_info->getIMUValue().Yaw);
+                if(!BasketInfo->FaceBasketFlag)
+                {
+                    if(strategy_info->getIMUValue().Yaw < -30)//當RobotPosition與IMU的Yaw值矛盾時，依據IMU值去做旋轉(藉由更改RobotPosition)
+                    {
+                        ROS_INFO("Turn Left IMU");
+                        BasketInfo->RobotPosition = TurnRight;
+                    }
+                    BasketInfo->FaceBasketFlag = true;
+                }
+                else
+                { 
+                    ROS_INFO("Turn Right to Find Basket");
+                    MoveContinuous(ContinuousTurnRight);
+                }
+            }
+            else if(BasketInfo->RobotPosition == TurnRight)//根據機器人的RobotPositoin來判別現在該轉哪邊，因為是TurnRight因此向左轉
+            {
+                ROS_INFO("IMU Value = %f", strategy_info->getIMUValue().Yaw);
+                if(!BasketInfo->FaceBasketFlag)
+                {
+                    if(strategy_info->getIMUValue().Yaw > 30)
+                    {
+                        ROS_INFO("Turn Right IMU");
+                        BasketInfo->RobotPosition = TurnLeft;
+                    }
+                    BasketInfo->FaceBasketFlag = true;
+                }
+                else
+                { 
+                    ROS_INFO("Turn Left to Find Basket ");
+                    MoveContinuous(ContinuousTurnLeft);
+                }
+            }
+            else if(BasketInfo->RobotPosition == BigGOAhead)
+            {
+                if(strategy_info->getIMUValue().Yaw > 0)//根據IMU的Yaw值執行原地右旋
+                {
+                    ROS_INFO("Forward Turn Right");
+                    MoveContinuous(ContinuousTurnRight);
+                }
+                else if(strategy_info->getIMUValue().Yaw <= 0)//根據IMU的Yaw值執行原地左旋
+                {
+                    ROS_INFO("Forward Turn left");
+                    MoveContinuous(ContinuousTurnLeft);
+                }
+            }
+        }
+        else
+        {
+            if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
+            {
+                walk_con->stopContinuous();
+                tool->Delay(1500);
+            }
+
+            if (BasketInfo->RaiseFlag)
+            {
+                ROS_INFO("Ready to shoot!!");
+                ros_com->sendBodySector(BB_RaiseHand);//舉手
+                tool->Delay(5000);
+                BasketInfo->RaiseFlag = false;
+            }
             ROS_INFO("Start Finding Basket");
             tool->Delay(500);
             BasketInfo->Robot_State = Find_Target;
-		}
-        if(BasketInfo->RobotPosition == TurnLeft)//根據機器人的RobotPositoin來判別現在該轉哪邊，因為是TurnLeft因此向右轉
-        {
-            ROS_INFO("IMU Value = %f", strategy_info->getIMUValue().Yaw);
-            if(!BasketInfo->FaceBasketFlag)
-            {
-                if(strategy_info->getIMUValue().Yaw < -30)//當RobotPosition與IMU的Yaw值矛盾時，依據IMU值去做旋轉(藉由更改RobotPosition)
-                {
-                    ROS_INFO("Turn Left IMU");
-                     BasketInfo->RobotPosition = TurnRight;
-                }
-                BasketInfo->FaceBasketFlag = true;
-            }
-            else
-            { 
-                ROS_INFO("Turn Right to Find Basket");
-                MoveContinuous(ContinuousTurnRight);
-            }
-        }
-        else if(BasketInfo->RobotPosition == TurnRight)//根據機器人的RobotPositoin來判別現在該轉哪邊，因為是TurnRight因此向左轉
-        {
-            ROS_INFO("IMU Value = %f", strategy_info->getIMUValue().Yaw);
-            if(!BasketInfo->FaceBasketFlag)
-            {
-                if(strategy_info->getIMUValue().Yaw > 30)
-                {
-                    ROS_INFO("Turn Right IMU");
-                    BasketInfo->RobotPosition = TurnLeft;
-                }
-                BasketInfo->FaceBasketFlag = true;
-            }
-            else
-            { 
-                ROS_INFO("Turn Left to Find Basket ");
-                MoveContinuous(ContinuousTurnLeft);
-            }
-        }
-        else if(BasketInfo->RobotPosition == BigGOAhead)
-        {
-            if(strategy_info->getIMUValue().Yaw > 0)//根據IMU的Yaw值執行原地右旋
-            {
-                ROS_INFO("Forward Turn Right");
-                MoveContinuous(ContinuousTurnRight);
-            }
-            else if(strategy_info->getIMUValue().Yaw <= 0)//根據IMU的Yaw值執行原地左旋
-            {
-                ROS_INFO("Forward Turn left");
-                MoveContinuous(ContinuousTurnLeft);
-            }
         }
     }
 }
@@ -1188,7 +1213,7 @@ void KidsizeStrategy::TracebasketHead()
         BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2 && BasketInfo->Basket.size > BasketInfo->SizeOfDist[4])// && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] 
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 50) && BasketInfo->HorizontalHeadPosition <= (2048 + 50) && BasketInfo->Basket.size <= (BasketInfo->SizeOfDist[3]+BasketInfo->SizeOfDist[4])/2 && BasketInfo->Basket.size > BasketInfo->SizeOfDist[4])// && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] 
         {
             BasketInfo->Robot_State = Goto_Target;
         }
@@ -1225,56 +1250,116 @@ void KidsizeStrategy::TracebasketHead()
     }
     else//投籃策略，這邊trace的概念跟traceball的概念一樣
     {
-        if(!walk_con->isStartContinuous())//開啟連續步態
+        
+        // if (BasketInfo->RaiseFlag)
+        // {
+        //     MoveHead(HeadMotorID::HorizontalID,2048, 200);
+        //     ROS_INFO("Ready to shoot!!");
+        //     ros_com->sendBodySector(BB_RaiseHand);//舉手
+        //     tool->Delay(5000);
+        //     BasketInfo->RaiseFlag = false;
+        // }
+        if(BasketInfo->FindBasketFlag)
         {
-            walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);//開始連續步態  
+            BasketInfo->BasketMoveX = (BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine);//跟上籃的追蹤籃框為同一方法
+            BasketInfo->BasketMoveY = (BasketInfo->Basket.Y - BasketInfo->BasketHorizontalBaseLine);
+            BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX/(double)RobotVisionWidth;
+            BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
+            MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+            MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+            if( abs( BasketInfo->HorizontalHeadPosition - 2048) <= 50 )
+            {
+                BasketInfo->FindBasketFlag = false;
+                BasketInfo->TurnWaistFlag = true;
+            }
+            else if(BasketInfo->HorizontalHeadPosition > (2048))//在這區間執行原地小左旋修正
+            {
+                ROS_INFO("Left");
+                ros_com->sendSingleMotor(9, 1*7, 75);
+            }
+            else if(BasketInfo->HorizontalHeadPosition < (2048))//在這區間執行原地小右旋修正
+            {
+                ROS_INFO("Right");
+                ros_com->sendSingleMotor(9, (-1)*7, 75);
+            } 
+        }
+        if(BasketInfo->TurnWaistFlag)
+        {
+            MoveHead(HeadMotorID::HorizontalID,2048, 200);
+
+            if(abs(BasketInfo->Basket.X - 200) <= 30 )
+            {
+                BasketInfo->Robot_State = Goto_Target;
+                BasketInfo->TurnWaistFlag = false;
+            }
+            else if( BasketInfo->Basket.X  <= 200)
+            {
+                ROS_INFO("LEFT");
+                ros_com->sendSingleMotor(9, 1*7, 50);
+            }
+            else if( BasketInfo->Basket.X  >= 200)
+            {
+                ROS_INFO("RIGHT");
+                ros_com->sendSingleMotor(9, (-1)*7, 50);
+            }
         }
         
-        BasketInfo->BasketMoveX = (BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine);//跟上籃的追蹤籃框為同一方法
-        BasketInfo->BasketMoveY = (BasketInfo->Basket.Y - BasketInfo->BasketHorizontalBaseLine);
-        BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX/(double)RobotVisionWidth;
-        BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
-        MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 10) && BasketInfo->HorizontalHeadPosition <= (2048 + 10) &&  BasketInfo->Basket.size > (BasketInfo->SizeOfDist[1]+BasketInfo->SizeOfDist[2])/2 ) // && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] && BasketInfo->Basket.size <= BasketInfo->SizeOfDist[1]
-        {
-            BasketInfo->Robot_State = Goto_Target;
-        }
-        else if(BasketInfo->Basket.size <= Basketfarsize)
-        {
-            ROS_INFO("Miss Basket");
-            BasketInfo->Robot_State = Find_Target;
-        }
-        else
-        {
-            ROS_INFO("Adjust direction 1");
-            ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
-            if(BasketInfo->Basket.size < (BasketInfo->SizeOfDist[2]+BasketInfo->SizeOfDist[1])/2)//籃框面積小於距離65時的籃框面積大小時，執行前進
-            {
-                ROS_INFO("Forward");
-                MoveContinuous(ContinuousSmallForward);
-            }
-            else if(BasketInfo->Basket.size > BasketInfo->SizeOfDist[1])//籃框面積大於距離55時的籃框面積大小時，執行後退
-            {
-                ROS_INFO("Back");
-                MoveContinuous(ContinuousBackward);
-            }
-            else if(BasketInfo->HorizontalHeadPosition > (2048 + 10))//在此區間執行小左旋修正
-            {
-                ROS_INFO("Turn Left");
-                MoveContinuous(ContinuousSmallTurnLeft);
-            }
-            else if(BasketInfo->HorizontalHeadPosition < (2048 - 10))//在此區間執行小右旋修正
-            {
-                ROS_INFO("Turn Right");
-                MoveContinuous(ContinuousSmallTurnRight);
-            }
-        }
+        // if(BasketInfo->HorizontalHeadPosition >= (2048 - 30) && BasketInfo->HorizontalHeadPosition <= (2048 + 30) &&  BasketInfo->Basket.size > BasketInfo->SizeOfDist[1] ) // && BasketInfo->Basket.size >= BasketInfo->SizeOfDist[1] && BasketInfo->Basket.size <= BasketInfo->SizeOfDist[1]
+        // {
+        //     BasketInfo->Robot_State = Goto_Target;
+        // }
+        // else if(BasketInfo->Basket.size <= Basketfarsize)
+        // {
+        //     ROS_INFO("Miss Basket");
+        //     BasketInfo->Robot_State = Find_Target;
+        // }
+        // else
+        // {
+        //     ROS_INFO("Adjust direction 1");
+        //     ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
+        //     if(BasketInfo->Basket.size < BasketInfo->SizeOfDist[3] )//籃框面積小於距離65時的籃框面積大小時，執行前進
+        //     {
+        //         ROS_INFO("Forward");
+        //         MoveContinuous(ContinuousSmallForward);
+        //     }
+        //     else if(BasketInfo->Basket.size > BasketInfo->SizeOfDist[1])//籃框面積大於距離50時的籃框面積大小時，執行後退
+        //     {
+        //         ROS_INFO("Back");
+        //         MoveContinuous(ContinuousBackward);
+        //     }
+        //     else if(BasketInfo->HorizontalHeadPosition > (2048 + 10))//在此區間執行小左旋修正
+        //     {
+        //         ROS_INFO("Turn Left");
+        //         MoveContinuous(ContinuousSmallTurnLeft);
+        //     }
+        //     else if(BasketInfo->HorizontalHeadPosition < (2048 - 10))//在此區間執行小右旋修正
+        //     {
+        //         ROS_INFO("Turn Right");
+        //         MoveContinuous(ContinuousSmallTurnRight);
+        //     }
+        // }
     }
 }
 
 void KidsizeStrategy::TracebasketBody()
 {
+
+    // MoveHead(HeadMotorID::HorizontalID,2048, 200);
+
+    // if(abs(BasketInfo->Basket.X - 200) <= 30 )
+    // {
+    //     BasketInfo->Robot_State = Goto_Target;
+    // }
+    // else if( BasketInfo->Basket.X  <= 200)
+    // {
+    //     ROS_INFO("LEFT");
+    //     ros_com->sendSingleMotor(9, 1*7, 75);
+    // }
+    // else if( BasketInfo->Basket.X  >= 200)
+    // {
+    //     ROS_INFO("RIGHT");
+    //     ros_com->sendSingleMotor(9, (-1)*7, 75);
+    // }
     tool->Delay(1000);
     SelectBaseLine();
 	if(BasketInfo->RoateFlag)
@@ -1316,7 +1401,8 @@ void KidsizeStrategy::TracebasketBody()
             BasketInfo->Distancenew = AreaSizeMeasure();// + (160 - BasketInfo->Basket.X)/48;
         }
 		*/
-		Triangulation();//三角測量
+		// Triangulation();//三角測量
+        AreaSizeDistance();
         SelectBaseLine();//根據測距得到的值來選擇要哪條baseline
         ROS_INFO("1.Distancenew : %f, BaseLine = %d", BasketInfo->Distancenew, BasketInfo->BasketVerticalBaseLine);
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
@@ -1346,7 +1432,8 @@ void KidsizeStrategy::TracebasketBody()
     else if(BasketInfo->ComputeFlag)
     {
 		ROS_INFO("CompteSpeed");
-        Triangulation();
+        // Triangulation();
+        AreaSizeDistance();
         if(BasketInfo->FivePointFlag)
         {
             if (BasketInfo->Distancenew < BasketInfo->dis80_x)								
@@ -1389,16 +1476,17 @@ void KidsizeStrategy::TracebasketBody()
         // ROS_INFO("BasketInfo->disspeed %d", BasketInfo->disspeed);
 
         BasketInfo->ComputeFlag = false;
-        BasketInfo->RaiseFlag = true;
+        BasketInfo->ThrowBallFlag = true;
+        // BasketInfo->RaiseFlag = true;
     }
-    else if (BasketInfo->RaiseFlag)
-	{
-        ROS_INFO("Ready to shoot!!");
-		ros_com->sendBodySector(BB_RaiseHand);//舉手
-		tool->Delay(5000);
-		BasketInfo->RaiseFlag = false;
-		BasketInfo->ThrowBallFlag = true;
-	}
+    // else if (BasketInfo->RaiseFlag)
+	// {
+    //     ROS_INFO("Ready to shoot!!");
+	// 	ros_com->sendBodySector(BB_RaiseHand);//舉手
+	// 	tool->Delay(5000);
+	// 	BasketInfo->RaiseFlag = false;
+	// 	BasketInfo->ThrowBallFlag = true;
+	// }
 	else if (BasketInfo->ThrowBallFlag)
 	{
         ROS_INFO("Shoot!!");
