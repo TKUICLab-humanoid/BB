@@ -324,7 +324,7 @@ void KidsizeStrategy::AreaSizeDistance()//面積測量測距_2
     BasketInfo->HeadVerticalAngle = (double)(BasketInfo->VerticalHeadPosition - 1024) * Scale2Deg + BasketInfo->RobotStandFeedBack + BasketInfo->FeedBackError;
     BasketInfo->Distance_50 = sqrt( abs( ( BasketInfo->dis50_x * BasketInfo->dis50_x * BasketInfo->SizeOfDist[0]) / BasketInfo->Basket.size ) );
     BasketInfo->Distance_80 = sqrt( abs( ( BasketInfo->dis80_x * BasketInfo->dis80_x * BasketInfo->SizeOfDist[3]) / BasketInfo->Basket.size ) );
-    BasketInfo->Distancenew = ( BasketInfo->Distance_50 + BasketInfo->Distance_80 ) / 2 - 3 ;
+    BasketInfo->Distancenew = ( BasketInfo->Distance_50 + BasketInfo->Distance_80 ) / 2 + BasketInfo->AreaDisError ;
 
     ROS_INFO("VerticalHeadPosition = %d", BasketInfo->VerticalHeadPosition);
     ROS_INFO("HeadVerticalAngle = %lf", BasketInfo->HeadVerticalAngle);
@@ -587,7 +587,7 @@ void KidsizeStrategy::SelectBaseLine()//以測距後的值來判斷BasketVertica
     }
     else if(BasketInfo->RobotPosition == TurnRight)//同上
     {
-        BasketInfo->BasketVerticalBaseLine += 0;
+        BasketInfo->BasketVerticalBaseLine += 3;
     }
 
 }
@@ -1122,6 +1122,15 @@ void KidsizeStrategy::TraceballBody()
                 tool->Delay(5000);
                 BasketInfo->RaiseFlag = false;
             }
+
+            if(BasketInfo->RobotPosition == TurnLeft)
+            {
+                BasketInfo->HeadHorizontalState = HeadTurnRight;
+            }
+            else
+            {
+                BasketInfo->HeadHorizontalState = HeadTurnLeft;
+            }
             ROS_INFO("Start Finding Basket");
             tool->Delay(500);
             BasketInfo->Robot_State = Find_Target;
@@ -1373,6 +1382,15 @@ void KidsizeStrategy::TracebasketBody()
             {
                 walk_con->stopContinuous();
                 tool->Delay(1500);
+
+                if (BasketInfo->RaiseFlag)
+                {
+                    ROS_INFO("Ready to shoot!!");
+                    ros_com->sendBodySector(BB_RaiseHand);//舉手
+                    tool->Delay(5000);
+                    BasketInfo->RaiseFlag = false;
+                }
+
             }           
             MoveHead(HeadMotorID::VerticalID, 1990, 200);
             //============================================
@@ -1434,22 +1452,24 @@ void KidsizeStrategy::TracebasketBody()
 		ROS_INFO("CompteSpeed");
         // Triangulation();
         AreaSizeDistance();
-        if(BasketInfo->FivePointFlag)
-        {
-            if (BasketInfo->Distancenew < BasketInfo->dis80_x)								
-            {
-                ComputeSpeed();
-                BasketInfo->disspeed = BasketInfo->disspeed - BasketInfo->SpeedError;
-            }
-            else
-            {
-                BasketInfo->disspeed = BasketInfo->dis80speed + (BasketInfo->Distancenew - BasketInfo->dis80_x)*5;
-            }
-        }
-        else if(!BasketInfo->LayUpFlag)
-        {
-            ComputeSpeed();//3 point 用權重計算投籃力道
-        }
+        ComputeSpeed();// 用權重計算投籃力道
+
+        // if(BasketInfo->FivePointFlag)
+        // {
+        //     if (BasketInfo->Distancenew < BasketInfo->dis80_x)								
+        //     {
+        //         ComputeSpeed();
+        //         BasketInfo->disspeed = BasketInfo->disspeed - BasketInfo->SpeedError;
+        //     }
+        //     else
+        //     {
+        //         BasketInfo->disspeed = BasketInfo->dis80speed + (BasketInfo->Distancenew - BasketInfo->dis80_x)*5;
+        //     }
+        // }
+        // else if(!BasketInfo->LayUpFlag)
+        // {
+        //     ComputeSpeed();//3 point 用權重計算投籃力道
+        // }
 		
         if(BasketInfo->ReAimFlag)
         {
@@ -1491,6 +1511,7 @@ void KidsizeStrategy::TracebasketBody()
 	{
         ROS_INFO("Shoot!!");
         ros_com->sendHandSpeed(BB_ShootingBall, BasketInfo->disspeed);//射出去
+        tool->Delay(2000);
         ros_com->sendBodySector(BB_ShootingBall);
 		tool->Delay(2000);
         

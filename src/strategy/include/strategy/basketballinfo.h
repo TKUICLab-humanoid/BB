@@ -158,6 +158,7 @@ public:
     double DistanceErrorCount;
     double FeedBackError;
     double HeadVerticalAngle;
+    double AreaDisError;
 
     //image
     int Ballcolor;

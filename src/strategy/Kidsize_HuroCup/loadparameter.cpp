@@ -147,6 +147,7 @@ void LoadParameter::LoadParameters()
         fin.getline(temp, sizeof(temp));
         BasketInfo->FeedBackError = this->readvalue(fin,"FeedBackError", 1);
         BasketInfo->DistanceErrorCount = this->readvalue(fin,"DistanceErrorCount", 1);
+        BasketInfo->AreaDisError = this->readvalue(fin,"AreaDisError", 1);
         fin.getline(temp, sizeof(temp));
         BasketInfo->Disspeedfix = this->readvalue(fin,"Disspeedfix", 0);
         fin.getline(temp, sizeof(temp));
