@@ -115,6 +115,12 @@ void KidsizeStrategy::strategymain()
             ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
 	        ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
 	        ROS_INFO("----------------------------------------");
+            // image();
+            // Draw();
+            // std::printf("ball---size= %4d ,XMin= %3d ,XMax= %3d ,YMin= %3d ,YMax= %3d\n",
+            // BasketInfo->Ball.size, BasketInfo->Ball.XMin, BasketInfo->Ball.XMax, BasketInfo->Ball.YMin, BasketInfo->Ball.YMax);
+            // std::printf("Basket-size= %4d ,XMin= %3d ,XMax= %3d ,YMin= %3d ,YMax= %3d\n",
+            // BasketInfo->Basket.size, BasketInfo->Basket.XMin, BasketInfo->Basket.XMax, BasketInfo->Basket.YMin, BasketInfo->Basket.YMax);
         }
         if(!BasketInfo->PrintFlag)
         {      
@@ -183,6 +189,12 @@ void KidsizeStrategy::strategymain()
             MoveHead(HeadMotorID::VerticalID, 2048, 200);//1623
             MoveHead(HeadMotorID::HorizontalID, 2048, 200);
         }
+        // image();
+        // Draw();
+        // std::printf("ball---size= %4d ,XMin= %3d ,XMax= %3d ,YMin= %3d ,YMax= %3d\n",
+        // BasketInfo->Ball.size, BasketInfo->Ball.XMin, BasketInfo->Ball.XMax, BasketInfo->Ball.YMin, BasketInfo->Ball.YMax);
+        // std::printf("Basket-size= %4d ,XMin= %3d ,XMax= %3d ,YMin= %3d ,YMax= %3d\n",
+        // BasketInfo->Basket.size, BasketInfo->Basket.XMin, BasketInfo->Basket.XMax, BasketInfo->Basket.YMin, BasketInfo->Basket.YMax);
 	}
 }
 
