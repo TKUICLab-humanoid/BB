@@ -41,6 +41,7 @@ public:
 	void strategymain();
 	void InversePerspective();
 	void Triangulation();
+	void AreaSizeDistance();
 	void image();
 	void MoveHead(HeadMotorID , int , int );
 	void ComputeSpeed();
@@ -69,9 +70,10 @@ public:
 		BB_WaistCatch2          = 1110,
 		BB_WaistUp2			    = 1114,
 		BB_WaistUpFeedBack      = 1112,
+		BB_WaistUpFeedBack2     = 2112,
 		//Shooting
 		BB_RaiseHand			= 1115,
-		BB_ShootingBall		    = 1116,
+		BB_ShootingBall		    = 1125,
 		BB_KeepBall			    = 1117,
 		//LayUp
 		BB_UpHand               = 1140,
