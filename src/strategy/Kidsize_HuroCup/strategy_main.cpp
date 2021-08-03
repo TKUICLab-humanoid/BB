@@ -1659,6 +1659,7 @@ void KidsizeStrategy::SlamDunk()//灌籃
         //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
         //     tool->Delay(2000);
         // }
+
     }
     else if(BasketInfo->SlamDunkFlag)
     {
