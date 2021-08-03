@@ -93,7 +93,7 @@ void LoadParameter::LoadParameters()
     char temp[100];
     int packagecnt;
     vector<int> StandPackage;
-    strcpy(path_stand, STANDPATH);
+    strcpy(path_stand, tool->standPath);
     strcat(path_stand, path_stand2);
     strcat(path_stand, path_stand3);
     fin.open(path_stand, ios::in);
@@ -147,6 +147,9 @@ void LoadParameter::LoadParameters()
         fin.getline(temp, sizeof(temp));
         BasketInfo->FeedBackError = this->readvalue(fin,"FeedBackError", 1);
         BasketInfo->DistanceErrorCount = this->readvalue(fin,"DistanceErrorCount", 1);
+        BasketInfo->AreaDisError = this->readvalue(fin,"AreaDisError", 1);
+        fin.getline(temp, sizeof(temp));
+        BasketInfo->Disspeedfix = this->readvalue(fin,"Disspeedfix", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->HeadVerticalState = this->readvalue(fin,"HeadVerticalState", 0);
         BasketInfo->HeadHorizontalState = this->readvalue(fin,"HeadHorizontalState", 0);
@@ -171,6 +174,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->SizeOfDist[1] = this->readvalue(fin,"Size60", 0);
         BasketInfo->SizeOfDist[2] = this->readvalue(fin,"Size70", 0);
         BasketInfo->SizeOfDist[3] = this->readvalue(fin,"Size80", 0);
+        BasketInfo->SizeOfDist[4] = this->readvalue(fin,"Size90", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->BallVerticalError = this->readvalue(fin,"BallVerticalError", 0);
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);
@@ -182,6 +186,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->backLine = this->readvalue(fin,"backLine", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->WaistError = this->readvalue(fin,"WaistError", 0);
+        BasketInfo->SpeedError = this->readvalue(fin,"SpeedError", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->UpBasketStopLine = this->readvalue(fin,"UpBasketStopLine", 0);
         BasketInfo->ContinuousSlowLine2 = this->readvalue(fin,"ContinuousSlowLine2", 0);
@@ -221,7 +226,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->dis80speed = this->readvalue(fin, "dis80speed", 0);
         BasketInfo->dis81speed = this->readvalue(fin, "dis81speed", 0);
         BasketInfo->dis90speed = this->readvalue(fin, "dis90speed", 0);
-       
+
         fin.close();
         ROS_INFO("fileclose Speed.ini");
     }
@@ -448,8 +453,8 @@ void LoadParameter::TestParameters()
     ROS_INFO("VerticalMinAngle = %d",BasketInfo->VerticalMinAngle);
     ROS_INFO("HorizontalMaxAngle = %d",BasketInfo->HorizontalMaxAngle);
     ROS_INFO("HorizontalMinAngle = %d",BasketInfo->HorizontalMinAngle);
-    ROS_INFO("BasketHorizontalMinAngle = %d",BasketInfo->BasketHorizontalMinAngle);
     ROS_INFO("BasketHorizontalMaxAngle = %d",BasketInfo->BasketHorizontalMaxAngle);
+    ROS_INFO("BasketHorizontalMinAngle = %d",BasketInfo->BasketHorizontalMinAngle);
     ROS_INFO("BasketHorizontalBaseLine = %d",BasketInfo->BasketHorizontalBaseLine);
     ROS_INFO("BasketVerticalBaseLine = %d",BasketInfo->BasketVerticalBaseLine);
     ROS_INFO("BasketVerticalBaseLine90 = %d",BasketInfo->BasketVerticalBaseLine90);
@@ -458,6 +463,7 @@ void LoadParameter::TestParameters()
     ROS_INFO("BasketVerticalBaseLine60 = %d",BasketInfo->BasketVerticalBaseLine60);
     ROS_INFO("BasketVerticalBaseLine50 = %d",BasketInfo->BasketVerticalBaseLine50);
     ROS_INFO("WaistError = %d",BasketInfo->WaistError);
+    ROS_INFO("SpeedError = %d",BasketInfo->SpeedError);
     ROS_INFO("BallVerticalError = %d",BasketInfo->BallVerticalError);
     ROS_INFO("BallHorizontalError = %d",BasketInfo->BallHorizontalError);
     ROS_INFO("ContinuousSlowLine = %d",BasketInfo->ContinuousSlowLine);
@@ -484,7 +490,7 @@ void LoadParameter::TestParameters()
     ROS_INFO("dis80speed = %d",BasketInfo->dis80speed);
     ROS_INFO("dis81speed = %d",BasketInfo->dis81speed);
     ROS_INFO("dis90speed = %d",BasketInfo->dis90speed);
-    
+    ROS_INFO("Dispeedfix = %d",BasketInfo->Disspeedfix);
     ROS_INFO("----------  Continuous Step -------------");
     ROS_INFO("AddPeriod = %f",BasketInfo->AddPeriod);
     ROS_INFO("ContinuousInit");
