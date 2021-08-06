@@ -973,10 +973,10 @@ void KidsizeStrategy::TraceballBody()
             BasketInfo->count = BasketInfo->CatchBallYLine - BasketInfo->Ball.Y;
             BasketInfo->HandMove = BasketInfo->count * 1.7; //1.7
             ROS_INFO("OUT");
-            ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
-            tool->Delay(1500);//200
-            ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
-            tool->Delay(1500);//500
+            // ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
+            // tool->Delay(1500);//200
+            // ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
+            // tool->Delay(1500);//500
             BasketInfo->InReturnFlag = true;
         }
         BasketInfo->MoveFlag = false;
@@ -993,10 +993,10 @@ void KidsizeStrategy::TraceballBody()
             tool->Delay(5000);///////////////////fix////////////////////////////////////////////
             if(BasketInfo->InReturnFlag)
             {
-                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
-                tool->Delay(1000);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
-                tool->Delay(1000);
+                // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
+                // tool->Delay(1000);
+                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
+                // tool->Delay(1000);
                 BasketInfo->InReturnFlag = false;
             }
             tool->Delay(500);
@@ -1010,11 +1010,11 @@ void KidsizeStrategy::TraceballBody()
             tool->Delay(5000);//////////////////fix/////////////////////////////////////////////
             if(BasketInfo->InReturnFlag)
             {
-                ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
-                tool->Delay(1000);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
-                ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
-                tool->Delay(1000);
+                // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
+                // tool->Delay(1000);
+                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
+                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 100);
+                // tool->Delay(1000);
                 BasketInfo->InReturnFlag = false;
             }
             tool->Delay(500);
@@ -1526,7 +1526,56 @@ void KidsizeStrategy::TracebasketBody()
         tool->Delay(2000);
         ros_com->sendBodySector(BB_ShootingBall);
 		tool->Delay(2000);
-        
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // if (BasketInfo->Distancenew <= 60)								
+        // {
+        //     ROS_INFO("dist <= 60");
+        //     ros_com->sendBodySector(60);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 60) && (BasketInfo->Distancenew < 65))		
+        // {
+        //     ROS_INFO("60 <= dist < 65");
+        //     ros_com->sendBodySector(60);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 65) && (BasketInfo->Distancenew < 70))		
+        // {
+        //     ROS_INFO("65 <= dist < 70");
+        //     ros_com->sendBodySector(65);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 70) && (BasketInfo->Distancenew < 75))	
+        // {
+        //     ROS_INFO("70 <= dist < 75");
+        //     ros_com->sendBodySector(70);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 75) && (BasketInfo->Distancenew < 80))		
+        // {
+        //     ROS_INFO("75 <= dist < 80");
+        //     ros_com->sendBodySector(75);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 80) && (BasketInfo->Distancenew < 85))		
+        // {
+        //     ROS_INFO("80 <= dist < 85");
+        //     ros_com->sendBodySector(80);
+        //     tool->Delay(2000);
+        // }
+        // else if ((BasketInfo->Distancenew >= 85) && (BasketInfo->Distancenew < 90))		
+        // {
+        //     ROS_INFO("85 <= dist < 90");
+        //     ros_com->sendBodySector(85);
+        //     tool->Delay(2000);
+        // }
+        // else if (BasketInfo->Distancenew >= 90)						
+        // {
+        //     ROS_INFO("dist >= 90");
+        //     ros_com->sendBodySector(90);
+        //     tool->Delay(2000);
+        // }
+        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		BasketInfo->ThrowBallFlag = false;         
 		BasketInfo->Robot_State = End;
 
@@ -1607,7 +1656,7 @@ void KidsizeStrategy::SlamDunk()//灌籃
 {   
     if(BasketInfo->HandUpFlag)
     {
-        tool->Delay(1500);
+        tool->Delay(2500);
         image();
         BasketInfo->BasketMoveX = BasketInfo->Basket.X - 160;//可以當作與籃框baseline的差
         BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX / (double)RobotVisionWidth;//馬達轉攝影機320pixel時轉的角度*與球baseline的差/320pixel,算出會得到角度
@@ -1616,7 +1665,7 @@ void KidsizeStrategy::SlamDunk()//灌籃
         ROS_INFO("Hand_UP");
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
         ros_com->sendBodySector(BB_UpHand);
-        tool->Delay(4500);
+        tool->Delay(5000);
         BasketInfo->HandUpFlag = false;
         BasketInfo->SlamDunkFlag = true;
 
