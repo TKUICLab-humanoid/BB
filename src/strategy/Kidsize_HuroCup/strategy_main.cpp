@@ -105,12 +105,13 @@ void KidsizeStrategy::strategymain()
             image();
             Draw();
             // Triangulation();
-            AreaSizeDistance();
+            // AreaSizeDistance();
 	        ROS_INFO("----------------------------------------");
             ROS_INFO("BasketInfo->Basket.size = %d", BasketInfo->Basket.size);
             ROS_INFO("BasketInfo->Basket.YMax = %d", BasketInfo->Basket.YMax);
             ROS_INFO("BasketInfo->Distancenew = %f", BasketInfo->Distancenew);
             ROS_INFO("BasketInfo->Ball.Y = %d", BasketInfo->Ball.Y);
+            ROS_INFO("BasketInfo->Ball.X = %d", BasketInfo->Ball.X);
             ROS_INFO("IMU = %f", strategy_info->getIMUValue().Yaw);
             ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
 	        ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
@@ -622,7 +623,7 @@ void KidsizeStrategy::FindballHead()//尋找場上的球
         switch (BasketInfo->HeadVerticalState)//頭垂直狀態，抬頭&&低頭
         {
             case HeadTurnNear:
-                MoveHead(HeadMotorID::VerticalID, 1575, 200);       
+                MoveHead(HeadMotorID::VerticalID, 1975, 200);       
                 break;
             case HeadTurnClose:
                 MoveHead(HeadMotorID::VerticalID, 1100, 200);       
@@ -935,10 +936,10 @@ void KidsizeStrategy::TraceballBody()
                 }
                 else
                 {
-                    ros_com->sendBodySector(BB_WaistDown2);
-                    tool->Delay(5000);
-                    ros_com->sendBodySector(BB_WaistCatch2);
-                    tool->Delay(1000);
+                    ros_com->sendBodySector(100);
+                    tool->Delay(7000);
+                    // ros_com->sendBodySector(BB_WaistCatch2);
+                    // tool->Delay(1000);
                 }
                 tool->Delay(1500);
                 BasketInfo->StoopFlag = false;
@@ -954,33 +955,47 @@ void KidsizeStrategy::TraceballBody()
     {
         ROS_INFO("Push ball");
         ROS_INFO("BasketInfo->Ball.Y = %d", BasketInfo->Ball.Y);
-        if(BasketInfo->Ball.Y > BasketInfo->CatchBallYLine)
+        ROS_INFO("BasketInfo->Ball.X = %d", BasketInfo->Ball.X);
+        // if(BasketInfo->Ball.Y > BasketInfo->CatchBallYLine)
+        // {
+        //     BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
+        //     BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
+        //     ROS_INFO("IN");
+        //     if(BasketInfo->CatchBallModeFlag)
+        //     {
+        //         // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
+        //         // tool->Delay(1500);
+        //         // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
+        //         // tool->Delay(1500);
+        //     }
+        //     BasketInfo->OutReturnFlag = true;
+        // }
+        // else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
+        // {
+        //     BasketInfo->count = BasketInfo->CatchBallYLine - BasketInfo->Ball.Y;
+        //     BasketInfo->HandMove = BasketInfo->count * 1.7; //1.7
+        //     ROS_INFO("OUT");
+        //     // ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
+        //     // tool->Delay(1500);//200
+        //     // ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
+        //     // tool->Delay(1500);//500
+        //     BasketInfo->InReturnFlag = true;
+        // }
+        if(BasketInfo->Ball.X > 157 && BasketInfo->Ball.X < 163)
         {
-            BasketInfo->count = BasketInfo->Ball.Y - BasketInfo->CatchBallYLine;
-            BasketInfo->HandMove = BasketInfo->count * 2;//2為Pixel值換成刻度的數值，可藉由球在影像中pixel的改變量，去調整雙手轉動的刻度量(可更改)
-            ROS_INFO("IN");
-            if(BasketInfo->CatchBallModeFlag)
-            {
-                // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 10);
-                // tool->Delay(1500);
-                // ros_com->sendSingleMotor(1, (1)*BasketInfo->HandMove, 10);
-                // tool->Delay(1500);
-            }
-            BasketInfo->OutReturnFlag = true;
+            ros_com->sendBodySector(101);
+            tool->Delay(7000);
+            ros_com->sendBodySector(102);
+            tool->Delay(5000);
+            BasketInfo->MoveFlag = false;
+            // BasketInfo->GetBallFlag = true;
         }
-        else if(BasketInfo->Ball.Y <= BasketInfo->CatchBallYLine)
+        else if(BasketInfo->Ball.X != 0)
         {
-            BasketInfo->count = BasketInfo->CatchBallYLine - BasketInfo->Ball.Y;
-            BasketInfo->HandMove = BasketInfo->count * 1.7; //1.7
-            ROS_INFO("OUT");
-            // ros_com->sendSingleMotor(5, (1)*BasketInfo->HandMove, 10);
-            // tool->Delay(1500);//200
-            // ros_com->sendSingleMotor(1, (-1)*BasketInfo->HandMove, 10);
-            // tool->Delay(1500);//500
-            BasketInfo->InReturnFlag = true;
+            ros_com->sendSingleMotor(9, -(BasketInfo->Ball.X - 160), 20);
+            tool->Delay(1000);
         }
-        BasketInfo->MoveFlag = false;
-        BasketInfo->GetBallFlag = true;
+        
     }
     else if(BasketInfo->GetBallFlag)//夾球並回歸站立持球動作
     {
