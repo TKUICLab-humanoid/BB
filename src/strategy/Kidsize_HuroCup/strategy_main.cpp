@@ -995,6 +995,8 @@ void KidsizeStrategy::TraceballBody()
         else if(BasketInfo->Ball.X != 0)
         {
             ros_com->sendSingleMotor(9, -(BasketInfo->Ball.X - 160), 20);
+            BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Ball.X - 160);
+            ROS_INFO("waist = %d", BasketInfo->Turnwaistdegree);
             tool->Delay(1000);
         }
         
@@ -1054,8 +1056,10 @@ void KidsizeStrategy::TraceballBody()
             // tool->Delay(1000);
             BasketInfo->InReturnFlag = false;
         }
-        ROS_INFO("Hands Back");
-        tool->Delay(1500);
+        ROS_INFO("waist Back");
+        ROS_INFO("BasketInfo->Turnwaistdegree = %d", BasketInfo->Turnwaistdegree);
+        ros_com->sendSingleMotor(9, BasketInfo->Turnwaistdegree, 20);
+        tool->Delay(7000);
         // ros_com->sendBodySector(BB_WaistUpFeedBack);
         // tool->Delay(2000);
         //==========================================change===============================================
@@ -1148,7 +1152,7 @@ void KidsizeStrategy::TraceballBody()
             {
                 ROS_INFO("Ready to shoot!!");
                 ros_com->sendBodySector(BB_RaiseHand);//舉手
-                tool->Delay(5000);
+                tool->Delay(6500);
                 BasketInfo->RaiseFlag = false;
             }
 
@@ -1197,7 +1201,7 @@ void KidsizeStrategy::FindbasketHead()//跟FindballHead()相同概念
             case HeadTurnRight:
                 if ((BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed) > BasketInfo->BasketHorizontalMinAngle)
                 {
-                    MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed, 200);
+                    MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed, 100);
                 }
                 else if ((BasketInfo->HorizontalHeadPosition - BasketInfo->HeadTurnSpeed) <= BasketInfo->BasketHorizontalMinAngle)
                 {
@@ -1207,7 +1211,7 @@ void KidsizeStrategy::FindbasketHead()//跟FindballHead()相同概念
             case HeadTurnLeft:
                 if ((BasketInfo->HorizontalHeadPosition + BasketInfo->HeadTurnSpeed) < BasketInfo->BasketHorizontalMaxAngle)
                 {
-                    MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition + BasketInfo->HeadTurnSpeed, 200);
+                    MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition + BasketInfo->HeadTurnSpeed, 100);
                 }
                 else if((BasketInfo->HorizontalHeadPosition + BasketInfo->HeadTurnSpeed) >= BasketInfo->BasketHorizontalMaxAngle)
                 {

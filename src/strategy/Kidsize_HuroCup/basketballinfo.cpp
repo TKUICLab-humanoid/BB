@@ -76,6 +76,7 @@ void basketballinfo::Init()
     BasketInfo->GetBallFlag = false;
     BasketInfo->TurnFlag = false;
     BasketInfo->FaceBasketFlag = false;
+    BasketInfo->Turnwaistdegree = 0;
     BasketInfo->HandMove = 0;
     BasketInfo->count = 0.0;
 

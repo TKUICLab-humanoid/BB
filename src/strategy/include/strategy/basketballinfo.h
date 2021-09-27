@@ -232,6 +232,7 @@ public:
     bool FaceBasketFlag;
     int CatchBallVerticalHeadPosition;
     int CatchBallYLine;
+    int Turnwaistdegree;
     int HandMove;
     double count;
 
