@@ -22,7 +22,7 @@
 #define CameraHeight 3.84
 //Object Color Models
 #define Ballfarsize 500
-#define Basketfarsize 1000
+#define Basketfarsize 700
 //HeadVerticalState
 #define HeadTurnNear 0
 #define HeadTurnClose 1

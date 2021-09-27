@@ -664,7 +664,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
     {
         ROS_INFO("Miss Ball");
         walk_con->stopContinuous();
-        tool->Delay(800);
+        tool->Delay(100);
         BasketInfo->StraightCatchFlag = true;
         BasketInfo->PreRotateFlag = false;
         BasketInfo->Robot_State = Find_Ball;
@@ -824,7 +824,7 @@ void KidsizeStrategy::TraceballBody()
         {
             ROS_INFO("Miss Ball");
             walk_con->stopContinuous();
-            tool->Delay(1500);
+            tool->Delay(100);
             BasketInfo->StraightCatchFlag = true;
             BasketInfo->PreRotateFlag = false;
             BasketInfo->Robot_State = Find_Ball;
@@ -907,12 +907,14 @@ void KidsizeStrategy::TraceballBody()
 	}
     else if(BasketInfo->StoopFlag)//機器人彎腰準備進行夾球
     { 
+        ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
         if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)//BasketInfo->HorizontalHeadPosition < (2048 - 300) || BasketInfo->HorizontalHeadPosition > (2048 + 300) ||        && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
                 {
                     BasketInfo->CatchBallModeFlag = true;
                 }
         if(BasketInfo->Ball.size <= Ballfarsize)
         {
+            ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
             ROS_INFO("Miss Ball");
             BasketInfo->Robot_State = Find_Ball;
         }
@@ -985,10 +987,10 @@ void KidsizeStrategy::TraceballBody()
         {
             ros_com->sendBodySector(101);
             tool->Delay(7000);
-            ros_com->sendBodySector(102);
-            tool->Delay(5000);
+            // ros_com->sendBodySector(102);
+            // tool->Delay(5000);
             BasketInfo->MoveFlag = false;
-            // BasketInfo->GetBallFlag = true;
+            BasketInfo->GetBallFlag = true;
         }
         else if(BasketInfo->Ball.X != 0)
         {
@@ -1021,7 +1023,7 @@ void KidsizeStrategy::TraceballBody()
         else if(BasketInfo->CatchBallModeFlag == false)
         {
             ROS_INFO("Waist up");
-            ros_com->sendBodySector(BB_WaistUp2);
+            ros_com->sendBodySector(102);
             tool->Delay(5000);//////////////////fix/////////////////////////////////////////////
             if(BasketInfo->InReturnFlag)
             {
@@ -1033,7 +1035,7 @@ void KidsizeStrategy::TraceballBody()
                 BasketInfo->InReturnFlag = false;
             }
             tool->Delay(500);
-            ros_com->sendBodySector(BB_WaistUpFeedBack);
+            //ros_com->sendBodySector(BB_WaistUpFeedBack);
             tool->Delay(3000);
         }
         if(BasketInfo->OutReturnFlag)
@@ -1222,6 +1224,7 @@ void KidsizeStrategy::TracebasketHead()
     {
         if(BasketInfo->Basket.size <= Basketfarsize)//當找不到籃框時，重新進Find_Target
         {
+            ROS_INFO("BasketInfo->Basket.size = %d", BasketInfo->Basket.size);
             ROS_INFO("miss the basket");
             BasketInfo->Robot_State = Find_Target;
         }
