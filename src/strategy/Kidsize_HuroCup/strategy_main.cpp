@@ -681,7 +681,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
         {
             if(BasketInfo->StraightCatchFlag)
             {
-                if(BasketInfo->HorizontalHeadPosition > (2048 - 150) && BasketInfo->HorizontalHeadPosition < (2048 + 300) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && !walk_con->isStartContinuous())//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
+                if(BasketInfo->HorizontalHeadPosition > (2048 - 150) && BasketInfo->HorizontalHeadPosition < (2048 + 300) && BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && !walk_con->isStartContinuous() && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
                 {
                     std::printf("\033[0;33mCatch Ball\033[0m\n");
                     BasketInfo->PreRotateFlag = true; 
@@ -856,22 +856,21 @@ void KidsizeStrategy::TraceballBody()
 		else if(BasketInfo->VerticalHeadPosition <= BasketInfo->ContinuousSlowLine)
 		{
             ROS_INFO("Stand_2");
-            // if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
-            // {
-            //     ROS_INFO("Back");
-            //     if(!walk_con->isStartContinuous())
-            //     {
-            //         walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
-            //     }
-            //     else
-            //     {
-            //         ROS_INFO("Catch Ball Back");
-            //         MoveContinuous(ContinuousBackward);
-            //         BasketInfo->Robot_State = Trace_Ball;
-            //     }
-            // }
-            // else 
-            if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine)//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
+            if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)
+            {
+                ROS_INFO("Back");
+                if(!walk_con->isStartContinuous())
+                {
+                    walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
+                }
+                else
+                {
+                    ROS_INFO("Catch Ball Back");
+                    MoveContinuous(ContinuousBackward);
+                    BasketInfo->Robot_State = Trace_Ball;
+                }
+            }
+            else if(BasketInfo->VerticalHeadPosition <= BasketInfo->CatchBallLine && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)//&& BasketInfo->VerticalHeadPosition >= BasketInfo->backLine)
             {
                 if(walk_con->isStartContinuous())//當要回到找球狀態時，關閉連續步態
                 {
@@ -885,13 +884,13 @@ void KidsizeStrategy::TraceballBody()
             {
                 walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             }
-            else if(BasketInfo->HorizontalHeadPosition > (2048 + 10))//在這區間執行原地小左旋修正
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 50))//在這區間執行原地小左旋修正
             {
                 ROS_INFO("Catch Ball Left");
                 MoveContinuous(ContinuousSmallTurnLeft);
                 BasketInfo->Robot_State = Trace_Ball;
             }
-            else if(BasketInfo->HorizontalHeadPosition < (2048 - 10))//在這區間執行原地小右旋修正
+            else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//在這區間執行原地小右旋修正
             {
                 ROS_INFO("Catch Ball Right");
                 MoveContinuous(ContinuousSmallTurnRight);
@@ -908,10 +907,10 @@ void KidsizeStrategy::TraceballBody()
     else if(BasketInfo->StoopFlag)//機器人彎腰準備進行夾球
     { 
         ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
-        if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)//BasketInfo->HorizontalHeadPosition < (2048 - 300) || BasketInfo->HorizontalHeadPosition > (2048 + 300) ||        && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
-                {
-                    BasketInfo->CatchBallModeFlag = true;
-                }
+        // if(BasketInfo->VerticalHeadPosition <= BasketInfo->backLine)//BasketInfo->HorizontalHeadPosition < (2048 - 300) || BasketInfo->HorizontalHeadPosition > (2048 + 300) ||        && BasketInfo->VerticalHeadPosition >= BasketInfo->backLine 不開啟步態且符合夾球範圍時，機器人不追蹤球直接進行夾球，避免撞到球
+        //         {
+        //             BasketInfo->CatchBallModeFlag = true;
+        //         }
         if(BasketInfo->Ball.size <= Ballfarsize)
         {
             ROS_INFO("Ball.size = %d", BasketInfo->Ball.size);
@@ -938,8 +937,8 @@ void KidsizeStrategy::TraceballBody()
                 }
                 else
                 {
-                    ros_com->sendBodySector(100);
-                    tool->Delay(7000);
+                    ros_com->sendBodySector(128);
+                    tool->Delay(3000);
                     // ros_com->sendBodySector(BB_WaistCatch2);
                     // tool->Delay(1000);
                 }
@@ -985,7 +984,9 @@ void KidsizeStrategy::TraceballBody()
         // }
         if(BasketInfo->Ball.X > 157 && BasketInfo->Ball.X < 163)
         {
-            ros_com->sendBodySector(101);
+            ros_com->sendBodySector(900);
+            tool->Delay(3000);
+            ros_com->sendBodySector(901);
             tool->Delay(7000);
             // ros_com->sendBodySector(102);
             // tool->Delay(5000);
@@ -1025,7 +1026,7 @@ void KidsizeStrategy::TraceballBody()
         else if(BasketInfo->CatchBallModeFlag == false)
         {
             ROS_INFO("Waist up");
-            ros_com->sendBodySector(102);
+            ros_com->sendBodySector(902);
             tool->Delay(5000);//////////////////fix/////////////////////////////////////////////
             if(BasketInfo->InReturnFlag)
             {
@@ -1038,7 +1039,7 @@ void KidsizeStrategy::TraceballBody()
             }
             tool->Delay(500);
             //ros_com->sendBodySector(BB_WaistUpFeedBack);
-            tool->Delay(3000);
+            tool->Delay(2000);
         }
         if(BasketInfo->OutReturnFlag)
         {
@@ -1059,7 +1060,7 @@ void KidsizeStrategy::TraceballBody()
         ROS_INFO("waist Back");
         ROS_INFO("BasketInfo->Turnwaistdegree = %d", BasketInfo->Turnwaistdegree);
         ros_com->sendSingleMotor(9, BasketInfo->Turnwaistdegree, 20);
-        tool->Delay(7000);
+        tool->Delay(4000);
         // ros_com->sendBodySector(BB_WaistUpFeedBack);
         // tool->Delay(2000);
         //==========================================change===============================================
