@@ -21,7 +21,7 @@
 #define Scale2Deg 0.087890625 // 360/4096
 #define CameraHeight 3.84
 //Object Color Models
-#define Ballfarsize 500
+#define Ballfarsize 400
 #define Basketfarsize 700
 //HeadVerticalState
 #define HeadTurnNear 0
@@ -260,6 +260,7 @@ public:
 
     //SlamDunk
     bool HandUpFlag;
+    bool DunkWaistFlag;
     bool SlamDunkFlag;
     int SlamDunkHorizontalAngle;
 

@@ -105,7 +105,7 @@ void KidsizeStrategy::strategymain()
             image();
             Draw();
             // Triangulation();
-            // AreaSizeDistance();
+            //AreaSizeDistance();
 	        ROS_INFO("----------------------------------------");
             ROS_INFO("BasketInfo->Basket.size = %d", BasketInfo->Basket.size);
             ROS_INFO("BasketInfo->Basket.YMax = %d", BasketInfo->Basket.YMax);
@@ -793,7 +793,7 @@ void KidsizeStrategy::TraceballHead()//頭追蹤球
         }
         else
         {
-            if(BasketInfo->HorizontalHeadPosition < (BasketInfo->HorizontalMinAngle + 200) || BasketInfo->HorizontalHeadPosition > (BasketInfo-> HorizontalMaxAngle - 200))//代表追蹤球的誤差過大，需重新找球並判斷是否預先
+            if(BasketInfo->HorizontalHeadPosition < (BasketInfo->HorizontalMinAngle + 300) || BasketInfo->HorizontalHeadPosition > (BasketInfo-> HorizontalMaxAngle - 300))//代表追蹤球的誤差過大，需重新找球並判斷是否預先
             {
                 walk_con->stopContinuous();
                 tool->Delay(1500);
@@ -836,12 +836,12 @@ void KidsizeStrategy::TraceballBody()
             {
                 walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             }
-            else if(BasketInfo->HorizontalHeadPosition > (2048 + 130))//在這區間執行前進小左旋修正
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 150))//在這區間執行前進小左旋修正
             {
                 std::printf("\033[0;33mTurn Left\033[0m\n");
                 MoveContinuous(ContinuousSmallLeft);
             }
-            else if(BasketInfo->HorizontalHeadPosition < (2048 - 130))//在這區間執行前進小右旋修正
+            else if(BasketInfo->HorizontalHeadPosition < (2048 - 150))//在這區間執行前進小右旋修正
             {
                 std::printf("\033[0;33mTurn Right\033[0m\n");
                 MoveContinuous(ContinuousSmallRight);
@@ -884,13 +884,13 @@ void KidsizeStrategy::TraceballBody()
             {
                 walk_con->startContinuous((WalkingMode)BasketInfo->ContinuousStep[ContinuousStand].ContinuousInit.Mode, (SensorMode)IMUSet);
             }
-            else if(BasketInfo->HorizontalHeadPosition > (2048 + 50))//在這區間執行原地小左旋修正
+            else if(BasketInfo->HorizontalHeadPosition > (2048 + 80))//在這區間執行原地小左旋修正
             {
                 ROS_INFO("Catch Ball Left");
                 MoveContinuous(ContinuousSmallTurnLeft);
                 BasketInfo->Robot_State = Trace_Ball;
             }
-            else if(BasketInfo->HorizontalHeadPosition < (2048 - 50))//在這區間執行原地小右旋修正
+            else if(BasketInfo->HorizontalHeadPosition < (2048 - 80))//在這區間執行原地小右旋修正
             {
                 ROS_INFO("Catch Ball Right");
                 MoveContinuous(ContinuousSmallTurnRight);
@@ -1027,7 +1027,7 @@ void KidsizeStrategy::TraceballBody()
         {
             ROS_INFO("Waist up");
             ros_com->sendBodySector(902);
-            tool->Delay(5000);//////////////////fix/////////////////////////////////////////////
+            tool->Delay(6000);//////////////////fix/////////////////////////////////////////////
             if(BasketInfo->InReturnFlag)
             {
                 // ros_com->sendSingleMotor(5, (-1)*BasketInfo->HandMove, 100);
@@ -1683,56 +1683,33 @@ void KidsizeStrategy::SlamDunk()//灌籃
         image();
         BasketInfo->BasketMoveX = BasketInfo->Basket.X - 160;//可以當作與籃框baseline的差
         BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX / (double)RobotVisionWidth;//馬達轉攝影機320pixel時轉的角度*與球baseline的差/320pixel,算出會得到角度
-        MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
+        //MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
+        MoveHead(HeadMotorID::HorizontalID, BasketInfo->SlamDunkHorizontalAngle, 200);
         ROS_INFO("turnwaistangle = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle));
         ROS_INFO("Hand_UP");
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
         ros_com->sendBodySector(BB_UpHand);
         tool->Delay(5000);
         BasketInfo->HandUpFlag = false;
-        BasketInfo->SlamDunkFlag = true;
+        BasketInfo->DunkWaistFlag = true;
 
-        ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        tool->Delay(2000);
-
-        // if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>=200)
-        // {
-        //     ROS_INFO("turnwaistangle*1.15 = %d", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*1.15);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1.15, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
-        // else if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)<200 && (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>=150)
-        // {
-        //     ROS_INFO("turnwaistangle*1.25 = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*1.25);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1.25, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
-        // else if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)<150 && (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>=100)
-        // {
-        //     ROS_INFO("turnwaistangle*1.4 = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*1.4);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1.4, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
-        // else if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)<100 && (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>=50)
-        // {
-        //     ROS_INFO("turnwaistangle*2 = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*2.2);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 2, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
-        // else if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)<50 && (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>0)
-        // {
-        //     ROS_INFO("turnwaistangle*2.5 = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*2.5);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 2.5, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
-        // else if((BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)<0 && (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)>-200)
-        // {
-        //     ROS_INFO("turnwaistangle*1 = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle)*1);
-        //     ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
-        //     tool->Delay(2000);
-        // }
+        // ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 1, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
+        // tool->Delay(2000);
 
     }
+    else if(BasketInfo->DunkWaistFlag)
+        if(BasketInfo->Basket.X > 157 && BasketInfo->Basket.X < 163)
+        {
+            BasketInfo->DunkWaistFlag = false;
+            BasketInfo->SlamDunkFlag = true;
+            
+        }
+        else 
+        {
+            ros_com->sendSingleMotor(9, -(BasketInfo->Basket.X - 160), 20);
+            BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Basket.X - 160);
+            tool->Delay(1000);
+        }
     else if(BasketInfo->SlamDunkFlag)
     {
         ros_com->sendBodySector(BB_SlamDunk);
