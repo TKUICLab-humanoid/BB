@@ -175,6 +175,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->SizeOfDist[2] = this->readvalue(fin,"Size70", 0);
         BasketInfo->SizeOfDist[3] = this->readvalue(fin,"Size80", 0);
         BasketInfo->SizeOfDist[4] = this->readvalue(fin,"Size90", 0);
+        BasketInfo->SizeOfDist[5] = this->readvalue(fin,"Size100", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->BallVerticalError = this->readvalue(fin,"BallVerticalError", 0);
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);

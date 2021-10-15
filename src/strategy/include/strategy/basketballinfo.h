@@ -290,9 +290,9 @@ public:
     int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
-    int SizeOfDist[5];
-    double Distance_50;
-    double Distance_80;
+    int SizeOfDist[6];
+    double Distance_60;
+    double Distance_90;
     double Distancenew;
     double timeuse;
 };
