@@ -63,9 +63,9 @@ public:
 	typedef enum{
 		//BB
 		//Catch Ball
-		BB_WaistDown1			= 2118,
-		BB_WaistCatch1          = 2110,
-		BB_WaistUp1			    = 2114,
+		BB_WaistDown1			= 900,
+		BB_WaistCatch1          = 901,
+		BB_WaistUp1			    = 902,
 		BB_WaistDown2			= 118,
 		BB_WaistCatch2          = 1110,
 		BB_WaistUp2			    = 1114,
@@ -74,12 +74,13 @@ public:
 		//Shooting
 		BB_RaiseHand			= 1115,
 		BB_ShootingBall		    = 1125,
+		BB_ShootingBall2		= 1126,
 		BB_KeepBall			    = 1117,
 		//LayUp
 		BB_UpHand               = 1140,
 		BB_SlamDunk             = 1150,
 		//Stand
-		BB_StandFix             = 1218,
+		BB_StandFix             = 128,
 
 		Robot_StandUp			= 29	
 		
