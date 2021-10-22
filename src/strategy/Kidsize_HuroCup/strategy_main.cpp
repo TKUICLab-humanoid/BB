@@ -492,8 +492,8 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
         BasketInfo->weight_35 = 0.0;
         BasketInfo->weight_40 = 0.0;
         BasketInfo->weight_50 = 0.0;
-        BasketInfo->weight_60 = (BasketInfo->dis70_x -BasketInfo-> Distancenew) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
-        BasketInfo->weight_61 = 0.0;
+        BasketInfo->weight_60 = 0.0;
+        BasketInfo->weight_61 = (BasketInfo->dis70_x -BasketInfo-> Distancenew) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
         BasketInfo->weight_70 = (BasketInfo->Distancenew - BasketInfo->dis60_x) / (BasketInfo->dis70_x - BasketInfo->dis60_x);
         BasketInfo->weight_71 = 0.0;
         BasketInfo->weight_80 = 0.0;
@@ -556,7 +556,7 @@ void KidsizeStrategy::ComputeSpeed()//計算力道，利用權重算法，ex:距
     ROS_INFO("BasketInfo->dis80speed = %d",BasketInfo->dis80speed);
     ROS_INFO("BasketInfo->weight_90 = %d",BasketInfo->weight_90);
     ROS_INFO("BasketInfo->dis90speed = %d",BasketInfo->dis90speed);
-    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed + BasketInfo->Disspeedfix;
+    BasketInfo->disspeed =  BasketInfo->weight_35*BasketInfo->dis35speed + BasketInfo->weight_40*BasketInfo->dis40speed + BasketInfo->weight_50*BasketInfo->dis50speed + BasketInfo->weight_60*BasketInfo->dis60speed + BasketInfo->weight_61*BasketInfo->dis61speed + BasketInfo->weight_70*BasketInfo->dis70speed + BasketInfo->weight_71*BasketInfo->dis71speed + BasketInfo->weight_80*BasketInfo->dis80speed + BasketInfo->weight_81*BasketInfo->dis81speed + BasketInfo->weight_90*BasketInfo->dis90speed + BasketInfo->Disspeedfix;
     ROS_INFO("---\tfinish computing, the speed is %d\t---",BasketInfo->disspeed);
 }
 
@@ -590,14 +590,17 @@ void KidsizeStrategy::SelectBaseLine()//以測距後的值來判斷BasketVertica
     if(BasketInfo->RobotPosition == BigGOAhead)//看球的初始方向在哪，以此來考慮是否要幫baseline加補償值
     {
         BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine;
+        BasketInfo->disspeed += 0;
     }
     else if(BasketInfo->RobotPosition == TurnLeft)//同上
     {
-        BasketInfo->BasketVerticalBaseLine += 0;
+        BasketInfo->BasketVerticalBaseLine += 0;///+3
+        BasketInfo->disspeed += 3;
     }
     else if(BasketInfo->RobotPosition == TurnRight)//同上
     {
-        BasketInfo->BasketVerticalBaseLine += 3; 
+        BasketInfo->BasketVerticalBaseLine -= 0;///-3
+        BasketInfo->disspeed += 3; 
     }
 
 }
@@ -1203,7 +1206,7 @@ void KidsizeStrategy::TracebasketHead()
         BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
         MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
         MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-        if(BasketInfo->HorizontalHeadPosition >= (2048 - 30) && BasketInfo->HorizontalHeadPosition <= (2048 + 30) && BasketInfo->Basket.size <= ((BasketInfo->SizeOfDist[4]+BasketInfo->SizeOfDist[5])/2 ) && BasketInfo->Basket.size > (BasketInfo->SizeOfDist[5] ))//頭部水平位置誤差小於50及籃框面積介於85cm~90cm時執行投籃對框
+        if(BasketInfo->HorizontalHeadPosition >= (2048 - 20) && BasketInfo->HorizontalHeadPosition <= (2048 + 20) && BasketInfo->Basket.size <= ((BasketInfo->SizeOfDist[4]+BasketInfo->SizeOfDist[5])/2 ) && BasketInfo->Basket.size > (BasketInfo->SizeOfDist[5] ))//頭部水平位置誤差小於50及籃框面積介於85cm~90cm時執行投籃對框
         {
             BasketInfo->Robot_State = Goto_Target;
         }
@@ -1256,28 +1259,28 @@ void KidsizeStrategy::TracebasketHead()
 
         if(BasketInfo->FindBasketFlag)
         {
-            BasketInfo->BasketMoveX = (BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine);//跟上籃的追蹤籃框為同一方法
-            BasketInfo->BasketMoveY = (BasketInfo->Basket.Y - BasketInfo->BasketHorizontalBaseLine);
-            BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX/(double)RobotVisionWidth;
-            BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
-            MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-            MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
-            if( abs( BasketInfo->HorizontalHeadPosition - 2048) <= 10 )
-            {
+            // BasketInfo->BasketMoveX = (BasketInfo->Basket.X - BasketInfo->BasketVerticalBaseLine);//跟上籃的追蹤籃框為同一方法
+            // BasketInfo->BasketMoveY = (BasketInfo->Basket.Y - BasketInfo->BasketHorizontalBaseLine);
+            // BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX/(double)RobotVisionWidth;
+            // BasketInfo->ErrorVerticalAngle  = BasketInfo->ImgVerticalAngle * (double)BasketInfo->BasketMoveY/(double)RobotVisionHeight;
+            // MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+            // MoveHead(HeadMotorID::VerticalID, BasketInfo->VerticalHeadPosition - (BasketInfo->ErrorVerticalAngle * TraceDegreePercent * 0.5 * Deg2Scale) , 200);
+            // if( abs( BasketInfo->HorizontalHeadPosition - 2048) <= 10 )
+            // {
                 BasketInfo->FindBasketFlag = false;
                 BasketInfo->Robot_State = Goto_Target;
                 //BasketInfo->TurnWaistFlag = true;
-            }
-            else if(BasketInfo->HorizontalHeadPosition > (2048))//在這區間執行腰部左轉修正
-            {
-                ROS_INFO("Left");
-                ros_com->sendSingleMotor(9, 1*7, 75);
-            }
-            else if(BasketInfo->HorizontalHeadPosition < (2048))//在這區間執行腰部右轉修正
-            {
-                ROS_INFO("Right");
-                ros_com->sendSingleMotor(9, (-1)*7, 75);
-            } 
+            // }
+            // else if(BasketInfo->HorizontalHeadPosition > (2048))//在這區間執行腰部左轉修正
+            // {
+            //     ROS_INFO("Left");
+            //     ros_com->sendSingleMotor(9, 1*7, 75);
+            // }
+            // else if(BasketInfo->HorizontalHeadPosition < (2048))//在這區間執行腰部右轉修正
+            // {
+            //     ROS_INFO("Right");
+            //     ros_com->sendSingleMotor(9, (-1)*7, 75);
+            // } 
         }
         // if(BasketInfo->TurnWaistFlag)
         // {
