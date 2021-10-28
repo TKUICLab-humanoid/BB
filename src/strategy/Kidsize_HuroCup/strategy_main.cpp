@@ -565,22 +565,32 @@ void KidsizeStrategy::SelectBaseLine()//以測距後的值來判斷BasketVertica
     if(BasketInfo->Distancenew > 90)
 	{
 		BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine90;
+        BasketInfo->BasketLeftBaselineFix = 0;
+        BasketInfo->BasketVerticalBaseLine = 0;
 	}
     else if(BasketInfo->Distancenew > 80)
 	{
 		BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine80;
+        BasketInfo->BasketLeftBaselineFix = 0;
+        BasketInfo->BasketVerticalBaseLine = 0;
 	}
 	else if(BasketInfo->Distancenew > 70)
 	{
 		BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine70;
+        BasketInfo->BasketLeftBaselineFix = 0;
+        BasketInfo->BasketVerticalBaseLine = 0;
 	}
 	else if(BasketInfo->Distancenew > 60)
 	{
 		BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine60;
+        BasketInfo->BasketLeftBaselineFix = 0;
+        BasketInfo->BasketVerticalBaseLine = 0;
 	}
 	else if(BasketInfo->Distancenew > 50)
 	{
 		BasketInfo->BasketVerticalBaseLine = BasketInfo->BasketVerticalBaseLine50;
+        BasketInfo->BasketLeftBaselineFix = 0;
+        BasketInfo->BasketVerticalBaseLine = 0;
 	}
     else
     {

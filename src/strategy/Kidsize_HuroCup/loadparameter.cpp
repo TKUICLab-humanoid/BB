@@ -169,6 +169,8 @@ void LoadParameter::LoadParameters()
         BasketInfo->BasketVerticalBaseLine70 = this->readvalue(fin,"BasketVerticalBaseLine70", 0);
         BasketInfo->BasketVerticalBaseLine60 = this->readvalue(fin,"BasketVerticalBaseLine60", 0);
 	    BasketInfo->BasketVerticalBaseLine50 = this->readvalue(fin,"BasketVerticalBaseLine50", 0);
+        BasketInfo->BasketLeftBaselineFix = this->readvalue(fin,"BasketLeftBaselineFix", 0);
+	    BasketInfo->BasketRightBaselineFix = this->readvalue(fin,"BasketRightBaselineFix", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->SizeOfDist[0] = this->readvalue(fin,"Size50", 0);
         BasketInfo->SizeOfDist[1] = this->readvalue(fin,"Size60", 0);
@@ -463,6 +465,8 @@ void LoadParameter::TestParameters()
     ROS_INFO("BasketVerticalBaseLine70 = %d",BasketInfo->BasketVerticalBaseLine70);
     ROS_INFO("BasketVerticalBaseLine60 = %d",BasketInfo->BasketVerticalBaseLine60);
     ROS_INFO("BasketVerticalBaseLine50 = %d",BasketInfo->BasketVerticalBaseLine50);
+    ROS_INFO("BasketLeftBaselineFix = %d",BasketInfo->BasketLeftBaselineFix);
+    ROS_INFO("BasketRightBaselineFix = %d",BasketInfo->BasketRightBaselineFix);
     ROS_INFO("WaistError = %d",BasketInfo->WaistError);
     ROS_INFO("SpeedError = %d",BasketInfo->SpeedError);
     ROS_INFO("BallVerticalError = %d",BasketInfo->BallVerticalError);

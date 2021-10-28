@@ -207,6 +207,8 @@ public:
     int BasketVerticalBaseLine70;
     int BasketVerticalBaseLine60;
     int BasketVerticalBaseLine50;
+    int BasketLeftBaselineFix;
+    int BasketRightBaselineFix;
 
     //TraceballHead
     bool PreRotateFlag;
