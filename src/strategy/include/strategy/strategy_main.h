@@ -76,6 +76,7 @@ public:
 		BB_ReadyToShoot			= 1116,
 		BB_ShootingBall		    = 1125,
 		BB_ShootingBall2		= 1126,
+		BB_ShootingBall3		= 1127,
 		BB_KeepBall			    = 1117,
 		//LayUp
 		BB_UpHand               = 1140,

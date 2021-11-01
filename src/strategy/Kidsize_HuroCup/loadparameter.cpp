@@ -190,6 +190,7 @@ void LoadParameter::LoadParameters()
         fin.getline(temp, sizeof(temp));
         BasketInfo->WaistError = this->readvalue(fin,"WaistError", 0);
         BasketInfo->SpeedError = this->readvalue(fin,"SpeedError", 0);
+        BasketInfo->Point5DisError = this->readvalue(fin,"Point5DisError", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->UpBasketStopLine = this->readvalue(fin,"UpBasketStopLine", 0);
         BasketInfo->ContinuousSlowLine2 = this->readvalue(fin,"ContinuousSlowLine2", 0);
@@ -469,6 +470,7 @@ void LoadParameter::TestParameters()
     ROS_INFO("BasketRightBaselineFix = %d",BasketInfo->BasketRightBaselineFix);
     ROS_INFO("WaistError = %d",BasketInfo->WaistError);
     ROS_INFO("SpeedError = %d",BasketInfo->SpeedError);
+    ROS_INFO("Point5DisError = %d",BasketInfo->Point5DisError);
     ROS_INFO("BallVerticalError = %d",BasketInfo->BallVerticalError);
     ROS_INFO("BallHorizontalError = %d",BasketInfo->BallHorizontalError);
     ROS_INFO("ContinuousSlowLine = %d",BasketInfo->ContinuousSlowLine);

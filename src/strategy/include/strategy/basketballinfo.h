@@ -254,6 +254,7 @@ public:
     bool ThrowBallFlag;
     int WaistError;
     int SpeedError;
+    int Point5DisError;
 
     //UPbasket
     bool BackFlag;
