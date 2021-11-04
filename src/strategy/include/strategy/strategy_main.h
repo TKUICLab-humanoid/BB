@@ -51,6 +51,7 @@ public:
 	void TraceballHead();
 	void TraceballBody();
 	void FindbasketHead();
+	void TurnbasketHead();
 	void TracebasketHead();
 	void TracebasketBody();
 	void Draw();

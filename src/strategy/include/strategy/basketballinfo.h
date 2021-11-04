@@ -45,6 +45,7 @@ enum
     Goto_Ball,
     Find_Target,
     Move_to_Basket,
+    Turn_Target,
     Trace_Target,
     Goto_Target,
     UP_Basket,
