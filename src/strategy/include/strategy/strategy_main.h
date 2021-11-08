@@ -83,7 +83,8 @@ public:
 		BB_UpHand               = 1140,
 		BB_SlamDunk             = 1150,
 		//Stand
-		BB_StandFix             = 128,
+		BB_StandFix             = 1218,
+		BB_CatchballStandFix    = 128,
 
 		Robot_StandUp			= 29	
 		
