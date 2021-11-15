@@ -1166,27 +1166,42 @@ void KidsizeStrategy::TracebasketHead()
         {
             ROS_INFO("Adjust direction 1");
             ROS_INFO("Basket.X = %d", BasketInfo->Basket.X);
-            if(BasketInfo->Basket.size > (BasketInfo->SizeOfDist[4] + BasketInfo->Point5DisError))//籃框面積大於距離90時的籃框面積大小時，執行後退
+            if(abs(BasketInfo->Basket.X - 160) > 40)
             {
-                ROS_INFO("Back");
-                MoveContinuous(ContinuousBackward);
+                if((BasketInfo->Basket.X - 160) < -40)//在此區間執行小左旋修正  BasketInfo->HorizontalHeadPosition > (2048 + 10)
+                {
+                    ROS_INFO("Turn Left");
+                    MoveContinuous(ContinuousTurnLeft);
+                }
+                else if((BasketInfo->Basket.X - 160) > 40)//在此區間執行小右旋修正   BasketInfo->HorizontalHeadPosition < (2048 - 10)
+                {
+                    ROS_INFO("Turn Right");
+                    MoveContinuous(ContinuousTurnRight);
+                }
             }
-            else if(BasketInfo->Basket.size < (((BasketInfo->SizeOfDist[4]) * 2 + BasketInfo->SizeOfDist[5])/3 + BasketInfo->Point5DisError))//籃框面積小於距離95時的籃框面積大小時，執行前進(BasketInfo->SizeOfDist[4]+BasketInfo->SizeOfDist[5])/2 )
+            else
             {
-                ROS_INFO("Forward");
-                MoveContinuous(ContinuousSmallForward);
-            }
-            else if((BasketInfo->Basket.X - 160) < -3)//在此區間執行小左旋修正  BasketInfo->HorizontalHeadPosition > (2048 + 10)
-            {
-                ROS_INFO("Turn Left");
-                MoveContinuous(ContinuousTurnLeft);
-            }
-            else if((BasketInfo->Basket.X - 160) > 3)//在此區間執行小右旋修正   BasketInfo->HorizontalHeadPosition < (2048 - 10)
-            {
-                ROS_INFO("Turn Right");
-                MoveContinuous(ContinuousTurnRight);
-            }
-              
+                if(BasketInfo->Basket.size > (BasketInfo->SizeOfDist[4] + BasketInfo->Point5DisError))//籃框面積大於距離90時的籃框面積大小時，執行後退
+                {
+                    ROS_INFO("Back");
+                    MoveContinuous(ContinuousBackward);
+                }
+                else if(BasketInfo->Basket.size < (((BasketInfo->SizeOfDist[4]) * 2 + BasketInfo->SizeOfDist[5])/3 + BasketInfo->Point5DisError))//籃框面積小於距離95時的籃框面積大小時，執行前進(BasketInfo->SizeOfDist[4]+BasketInfo->SizeOfDist[5])/2 )
+                {
+                    ROS_INFO("Forward");
+                    MoveContinuous(ContinuousSmallForward);
+                }
+                else if((BasketInfo->Basket.X - 160) < -3)//在此區間執行小左旋修正  BasketInfo->HorizontalHeadPosition > (2048 + 10)
+                {
+                    ROS_INFO("Turn Left");
+                    MoveContinuous(ContinuousTurnLeft);
+                }
+                else if((BasketInfo->Basket.X - 160) > 3)//在此區間執行小右旋修正   BasketInfo->HorizontalHeadPosition < (2048 - 10)
+                {
+                    ROS_INFO("Turn Right");
+                    MoveContinuous(ContinuousTurnRight);
+                }
+            }  
         }
     }
     else//投籃策略，這邊trace的概念跟traceball的概念一樣
