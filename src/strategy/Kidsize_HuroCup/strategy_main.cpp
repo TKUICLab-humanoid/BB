@@ -978,10 +978,10 @@ void KidsizeStrategy::TraceballBody()
         ROS_INFO("waist Back");
         ROS_INFO("BasketInfo->Turnwaistdegree = %d", BasketInfo->Turnwaistdegree);
         ros_com->sendSingleMotor(9, BasketInfo->Turnwaistdegree, 20);
-        tool->Delay(1500);
+        tool->Delay(1200);
         MoveHead(HeadMotorID::VerticalID, 2048, 200);
         MoveHead(HeadMotorID::HorizontalID, 2048, 200);
-        tool->Delay(1000);
+        tool->Delay(500);
         ROS_INFO("Start Finding Basket");
         tool->Delay(500);
         BasketInfo->GetBallFlag = false;
