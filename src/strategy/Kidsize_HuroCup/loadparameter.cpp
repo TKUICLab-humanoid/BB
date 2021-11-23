@@ -183,6 +183,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);
         BasketInfo->ContinuousSlowLine = this->readvalue(fin,"ContinuousSlowLine", 0);
         BasketInfo->CatchBallLine = this->readvalue(fin,"CatchBallLine", 0);
+        BasketInfo->BallXCenter = this->readvalue(fin,"BallXCenter", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->CatchBallVerticalHeadPosition = this->readvalue(fin,"CatchBallVerticalHeadPosition", 0);
         BasketInfo->CatchBallYLine = this->readvalue(fin,"CatchBallYLine", 0);
@@ -195,6 +196,7 @@ void LoadParameter::LoadParameters()
         BasketInfo->UpBasketStopLine = this->readvalue(fin,"UpBasketStopLine", 0);
         BasketInfo->ContinuousSlowLine2 = this->readvalue(fin,"ContinuousSlowLine2", 0);
         BasketInfo->SlamDunkHorizontalAngle = this->readvalue(fin,"SlamDunkHorizontalAngle", 0);
+        BasketInfo->BasketXCenter = this->readvalue(fin,"BasketXCenter", 0);
         fin.close();
         ROS_INFO("fileclose Throw.ini");
     }

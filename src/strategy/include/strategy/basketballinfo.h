@@ -267,6 +267,7 @@ public:
     bool DunkWaistFlag;
     bool SlamDunkFlag;
     int SlamDunkHorizontalAngle;
+    int BasketXCenter;
 
     //Variables of Head
     int BallHorizontalBaseLine;
@@ -290,6 +291,7 @@ public:
     int BallHorizontalError;
     int BallVerticalError;
     int CatchBallLine;
+    int BallXCenter;
     int ContinuousSlowLine;
     int ContinuousSlowLine2;
     int RobotPosition;
