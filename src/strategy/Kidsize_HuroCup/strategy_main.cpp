@@ -1497,9 +1497,9 @@ void KidsizeStrategy::SlamDunk()//灌籃
         // BasketInfo->BasketMoveX = BasketInfo->Basket.X - 160;//可以當作與籃框baseline的差
         // BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX / (double)RobotVisionWidth;//馬達轉攝影機320pixel時轉的角度*與球baseline的差/320pixel,算出會得到角度
         // MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
-        MoveHead(HeadMotorID::HorizontalID, (BasketInfo->SlamDunkHorizontalAngle), 200);//頭部轉到指定刻度，用於轉腰細部微調
         // ros_com->sendSingleMotor(9, (2048 - BasketInfo->SlamDunkHorizontalAngle) * 1, 80);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改
-        tool->Delay(1000);
+        MoveHead(HeadMotorID::HorizontalID, (BasketInfo->SlamDunkHorizontalAngle), 200);//頭部轉到指定刻度，用於轉腰細部微調
+        tool->Delay(100);
         ROS_INFO("Hand_UP");
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
         ros_com->sendBodySector(BB_UpHand);
@@ -1510,10 +1510,10 @@ void KidsizeStrategy::SlamDunk()//灌籃
     }
     else if(BasketInfo->DunkWaistFlag)
     {
+        image();
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
-        if(abs(BasketInfo->Basket.X - BasketInfo->BasketXCenter) <= 3)    //同夾球轉腰修正方法
+        if(abs(BasketInfo->Basket.X - BasketInfo->BasketXCenter) <= 5)    //同夾球轉腰修正方法
         {
-            ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
             tool->Delay(300);
             BasketInfo->DunkWaistFlag = false;
             BasketInfo->SlamDunkFlag = true;
@@ -1525,15 +1525,11 @@ void KidsizeStrategy::SlamDunk()//灌籃
                 if((BasketInfo->Basket.X - BasketInfo->BasketXCenter) < 0)
                 {
                     ros_com->sendSingleMotor(9,5, 30);
-                    ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
-                    // BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Basket.X - 160);
                     tool->Delay(30);
                 }
                 else if((BasketInfo->Basket.X - BasketInfo->BasketXCenter) > 0)
                 {
                     ros_com->sendSingleMotor(9, 5, 30);
-                    
-                    // BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Basket.X - 160);
                     tool->Delay(30);
                 }
             }
