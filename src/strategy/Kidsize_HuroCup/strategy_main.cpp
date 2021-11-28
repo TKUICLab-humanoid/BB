@@ -969,7 +969,7 @@ void KidsizeStrategy::TraceballBody()
         else if(BasketInfo->Ball.X != 0)
         {
             ros_com->sendSingleMotor(9, -(BasketInfo->Ball.X - BasketInfo->BallXCenter), 20);
-            BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Ball.X - 180);
+            BasketInfo->Turnwaistdegree = BasketInfo->Turnwaistdegree + (BasketInfo->Ball.X - BasketInfo->BallXCenter);
             ROS_INFO("waist = %d", BasketInfo->Turnwaistdegree);
             tool->Delay(500);
         }
@@ -1494,17 +1494,17 @@ void KidsizeStrategy::SlamDunk()//灌籃
     {
         tool->Delay(1000);
         image();
-        // BasketInfo->BasketMoveX = BasketInfo->Basket.X - 160;//可以當作與籃框baseline的差
-        // BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX / (double)RobotVisionWidth;//馬達轉攝影機320pixel時轉的角度*與球baseline的差/320pixel,算出會得到角度
-        // MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
-        // ros_com->sendSingleMotor(9, (2048 - BasketInfo->SlamDunkHorizontalAngle) * 1, 80);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改
-        MoveHead(HeadMotorID::HorizontalID, (BasketInfo->SlamDunkHorizontalAngle), 200);//頭部轉到指定刻度，用於轉腰細部微調
-        tool->Delay(100);
+        BasketInfo->BasketMoveX = BasketInfo->Basket.X - 160;//可以當作與籃框baseline的差
+        BasketInfo->ErrorHorizontalAngle = BasketInfo->ImgHorizontalAngle * (double)BasketInfo->BasketMoveX / (double)RobotVisionWidth;//馬達轉攝影機320pixel時轉的角度*與球baseline的差/320pixel,算出會得到角度
+        MoveHead(HeadMotorID::HorizontalID, BasketInfo->HorizontalHeadPosition - (BasketInfo->ErrorHorizontalAngle * Deg2Scale), 200);//再利用上面得到的角度來換算成刻度，來call MoveHead()
         ROS_INFO("Hand_UP");
-        ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
         ros_com->sendBodySector(BB_UpHand);
         tool->Delay(4400);
-        ROS_INFO("turnwaistangle = %f", (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle));
+        BasketInfo->HandUpFlag = false;
+        BasketInfo->SlamDunkFlag = true;
+        ros_com->sendSingleMotor(9, (BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle) * 0.8, 50);//將當前得水平刻度數值減去定值，計算出轉腰所需的轉動刻度，定值可在ini檔中做修改   *0.9  
+        MoveHead(HeadMotorID::HorizontalID, BasketInfo->SlamDunkHorizontalAngle, 200);
+        tool->Delay(1500);
         BasketInfo->HandUpFlag = false;
         BasketInfo->DunkWaistFlag = true;
     }
@@ -1512,36 +1512,20 @@ void KidsizeStrategy::SlamDunk()//灌籃
     {
         image();
         ROS_INFO("BasketInfo->Basket.X = %d", BasketInfo->Basket.X);
-        if(abs(BasketInfo->Basket.X - BasketInfo->BasketXCenter) <= 5)    //同夾球轉腰修正方法
+        if(abs(BasketInfo->Basket.X - BasketInfo->BallXCenter) < 3)   //同夾球轉腰修正方法
         {
-            tool->Delay(300);
             BasketInfo->DunkWaistFlag = false;
             BasketInfo->SlamDunkFlag = true;
         }
-        else
+        else 
         {
-            if(abs(BasketInfo->Basket.X - BasketInfo->BasketXCenter) >= 30)
-            {
-                if((BasketInfo->Basket.X - BasketInfo->BasketXCenter) < 0)
-                {
-                    ros_com->sendSingleMotor(9,5, 30);
-                    tool->Delay(30);
-                }
-                else if((BasketInfo->Basket.X - BasketInfo->BasketXCenter) > 0)
-                {
-                    ros_com->sendSingleMotor(9, 5, 30);
-                    tool->Delay(30);
-                }
-            }
-            else
-            {
-                tool->Delay(500);
-                ros_com->sendSingleMotor(9, (BasketInfo->BasketXCenter - BasketInfo->Basket.X), 20);
-            }
+            ros_com->sendSingleMotor(9, (BasketInfo->BallXCenter - BasketInfo->Basket.X), 10);
+            tool->Delay(600);
         }
     }
     else if(BasketInfo->SlamDunkFlag)
     {
+        
         ros_com->sendBodySector(BB_SlamDunk);
         tool->Delay(5000);
         ROS_INFO("Slam Dunk Is End!!!!!!!!!!!!!!");
@@ -1549,5 +1533,6 @@ void KidsizeStrategy::SlamDunk()//灌籃
         std::printf("\033[0;33m Horizontal Move Degree : %d\033[0m\n", BasketInfo->HorizontalHeadPosition - BasketInfo->SlamDunkHorizontalAngle);
         BasketInfo->SlamDunkFlag = false;
         BasketInfo->Robot_State = End;
+        
     }
 }
