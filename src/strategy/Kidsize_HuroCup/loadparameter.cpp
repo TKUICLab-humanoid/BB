@@ -169,17 +169,21 @@ void LoadParameter::LoadParameters()
         BasketInfo->BasketVerticalBaseLine70 = this->readvalue(fin,"BasketVerticalBaseLine70", 0);
         BasketInfo->BasketVerticalBaseLine60 = this->readvalue(fin,"BasketVerticalBaseLine60", 0);
 	    BasketInfo->BasketVerticalBaseLine50 = this->readvalue(fin,"BasketVerticalBaseLine50", 0);
+        BasketInfo->BasketLeftBaselineFix = this->readvalue(fin,"BasketLeftBaselineFix", 0);
+	    BasketInfo->BasketRightBaselineFix = this->readvalue(fin,"BasketRightBaselineFix", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->SizeOfDist[0] = this->readvalue(fin,"Size50", 0);
         BasketInfo->SizeOfDist[1] = this->readvalue(fin,"Size60", 0);
         BasketInfo->SizeOfDist[2] = this->readvalue(fin,"Size70", 0);
         BasketInfo->SizeOfDist[3] = this->readvalue(fin,"Size80", 0);
         BasketInfo->SizeOfDist[4] = this->readvalue(fin,"Size90", 0);
+        BasketInfo->SizeOfDist[5] = this->readvalue(fin,"Size100", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->BallVerticalError = this->readvalue(fin,"BallVerticalError", 0);
         BasketInfo->BallHorizontalError = this->readvalue(fin,"BallHorizontalError", 0);
         BasketInfo->ContinuousSlowLine = this->readvalue(fin,"ContinuousSlowLine", 0);
         BasketInfo->CatchBallLine = this->readvalue(fin,"CatchBallLine", 0);
+        BasketInfo->BallXCenter = this->readvalue(fin,"BallXCenter", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->CatchBallVerticalHeadPosition = this->readvalue(fin,"CatchBallVerticalHeadPosition", 0);
         BasketInfo->CatchBallYLine = this->readvalue(fin,"CatchBallYLine", 0);
@@ -187,10 +191,12 @@ void LoadParameter::LoadParameters()
         fin.getline(temp, sizeof(temp));
         BasketInfo->WaistError = this->readvalue(fin,"WaistError", 0);
         BasketInfo->SpeedError = this->readvalue(fin,"SpeedError", 0);
+        BasketInfo->Point5DisError = this->readvalue(fin,"Point5DisError", 0);
         fin.getline(temp, sizeof(temp));
         BasketInfo->UpBasketStopLine = this->readvalue(fin,"UpBasketStopLine", 0);
         BasketInfo->ContinuousSlowLine2 = this->readvalue(fin,"ContinuousSlowLine2", 0);
         BasketInfo->SlamDunkHorizontalAngle = this->readvalue(fin,"SlamDunkHorizontalAngle", 0);
+        BasketInfo->BasketXCenter = this->readvalue(fin,"BasketXCenter", 0);
         fin.close();
         ROS_INFO("fileclose Throw.ini");
     }
@@ -462,8 +468,11 @@ void LoadParameter::TestParameters()
     ROS_INFO("BasketVerticalBaseLine70 = %d",BasketInfo->BasketVerticalBaseLine70);
     ROS_INFO("BasketVerticalBaseLine60 = %d",BasketInfo->BasketVerticalBaseLine60);
     ROS_INFO("BasketVerticalBaseLine50 = %d",BasketInfo->BasketVerticalBaseLine50);
+    ROS_INFO("BasketLeftBaselineFix = %d",BasketInfo->BasketLeftBaselineFix);
+    ROS_INFO("BasketRightBaselineFix = %d",BasketInfo->BasketRightBaselineFix);
     ROS_INFO("WaistError = %d",BasketInfo->WaistError);
     ROS_INFO("SpeedError = %d",BasketInfo->SpeedError);
+    ROS_INFO("Point5DisError = %d",BasketInfo->Point5DisError);
     ROS_INFO("BallVerticalError = %d",BasketInfo->BallVerticalError);
     ROS_INFO("BallHorizontalError = %d",BasketInfo->BallHorizontalError);
     ROS_INFO("ContinuousSlowLine = %d",BasketInfo->ContinuousSlowLine);
