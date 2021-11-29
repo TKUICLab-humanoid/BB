@@ -74,8 +74,9 @@ void basketballinfo::Init()
     BasketInfo->OutReturnFlag = false;
     BasketInfo->InReturnFlag = false;
     BasketInfo->GetBallFlag = false;
-    BasketInfo->TurnFlag = false;
+    BasketInfo->TurnFlag = true;
     BasketInfo->FaceBasketFlag = false;
+    BasketInfo->Turnwaistdegree = 0;
     BasketInfo->HandMove = 0;
     BasketInfo->count = 0.0;
 
@@ -98,6 +99,7 @@ void basketballinfo::Init()
 
     //SlamDunk
     BasketInfo->HandUpFlag = true;
+    BasketInfo->DunkWaistFlag = false;
     BasketInfo->SlamDunkFlag = false;
 
 
@@ -111,8 +113,8 @@ void basketballinfo::Init()
  	//Common
  	BasketInfo->RobotPosition = BigGOAhead;
  	BasketInfo->Robot_State = Initialization;
-    BasketInfo->Distance_50 = 0.0;
-    BasketInfo->Distance_80 = 0.0;
+    BasketInfo->Distance_60 = 0.0;
+    BasketInfo->Distance_90 = 0.0;
     BasketInfo->Distancenew = 0.0;
     BasketInfo->timeuse = 0;
 }

@@ -21,8 +21,8 @@
 #define Scale2Deg 0.087890625 // 360/4096
 #define CameraHeight 3.84
 //Object Color Models
-#define Ballfarsize 500
-#define Basketfarsize 1000
+#define Ballfarsize 400
+#define Basketfarsize 400
 //HeadVerticalState
 #define HeadTurnNear 0
 #define HeadTurnClose 1
@@ -45,6 +45,7 @@ enum
     Goto_Ball,
     Find_Target,
     Move_to_Basket,
+    Turn_Target,
     Trace_Target,
     Goto_Target,
     UP_Basket,
@@ -207,6 +208,8 @@ public:
     int BasketVerticalBaseLine70;
     int BasketVerticalBaseLine60;
     int BasketVerticalBaseLine50;
+    int BasketLeftBaselineFix;
+    int BasketRightBaselineFix;
 
     //TraceballHead
     bool PreRotateFlag;
@@ -232,6 +235,7 @@ public:
     bool FaceBasketFlag;
     int CatchBallVerticalHeadPosition;
     int CatchBallYLine;
+    int Turnwaistdegree;
     int HandMove;
     double count;
 
@@ -251,6 +255,7 @@ public:
     bool ThrowBallFlag;
     int WaistError;
     int SpeedError;
+    int Point5DisError;
 
     //UPbasket
     bool BackFlag;
@@ -259,8 +264,10 @@ public:
 
     //SlamDunk
     bool HandUpFlag;
+    bool DunkWaistFlag;
     bool SlamDunkFlag;
     int SlamDunkHorizontalAngle;
+    int BasketXCenter;
 
     //Variables of Head
     int BallHorizontalBaseLine;
@@ -284,13 +291,14 @@ public:
     int BallHorizontalError;
     int BallVerticalError;
     int CatchBallLine;
+    int BallXCenter;
     int ContinuousSlowLine;
     int ContinuousSlowLine2;
     int RobotPosition;
     int Robot_State;
-    int SizeOfDist[5];
-    double Distance_50;
-    double Distance_80;
+    int SizeOfDist[6];
+    double Distance_60;
+    double Distance_90;
     double Distancenew;
     double timeuse;
 };
