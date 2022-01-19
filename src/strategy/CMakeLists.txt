@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 	cv_bridge 
 	message_generation
 	roscpp
+	rospy
 	roslib
 	sensor_msgs
 	std_msgs
@@ -51,11 +52,6 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
-
-add_executable(BBthrow Kidsize_HuroCup/strategy_main.cpp Kidsize_HuroCup/basketballinfo.cpp  Kidsize_HuroCup/loadparameter.cpp)
-add_dependencies(BBthrow ${catkin_EXPORTED_TARGETS})
-target_link_libraries(BBthrow ${catkin_LIBRARIES} ${TKU_LIBRARIES} ${ROSCOMMUNICATION_LIBRARIES})
-
 
 
 
