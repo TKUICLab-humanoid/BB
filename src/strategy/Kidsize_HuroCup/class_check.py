@@ -183,7 +183,7 @@ class motor_move():
             send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
             time.sleep(1.2)
             motor.move_head(1,1848,880,880,50) #1748
-            time.sleep(2)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+            time.sleep(2.3)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
             target.ball_parameter()
             
             
@@ -243,17 +243,17 @@ class motor_move():
 
     def body_trace_basket_straight_2(self,degree,basket_error) :
         
-        if self.head_vertical - degree > basket_error  and self.head_vertical > 1450 :
+        if self.head_vertical - degree > basket_error  and self.head_vertical > 1980 :
             motor.MoveContinuous(2500+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead bbbb to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
 
-        elif self.head_vertical - degree > basket_error and  self.head_vertical < 1450:
-            motor.MoveContinuous(1000+correct[0],0+correct[1],0,0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
+        elif self.head_vertical - degree > basket_error and  self.head_vertical < 1980:
+            motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead sss to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)    
         elif self.head_vertical - degree < basket_error and abs(self.head_vertical - degree) > basket_error:
-            motor.MoveContinuous(-800+correct[0],0+correct[1],0,0+correct[2],100,100,2)#!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(-800+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!!!
             print( "--------------------go back from basket-------------------- ",self.head_vertical)
             time.sleep(0.05)
         elif abs(self.head_vertical - degree) < basket_error : 
@@ -487,9 +487,50 @@ class motor_move():
                 self.now_state = next_state
                 
 
-        # elif send.is_start == False :
-        #     if self.now_state == 0 and reset_close == 0:
+        elif send.is_start == False :
+            if self.now_state == 0 and reset_close == 0:
+                send.sendHeadMotor(1,2048,30)
+                send.sendHeadMotor(2,2048,30)
+                time.sleep(0.05)
+                send.sendBodySector(29)
+                print("-------------------reset and stoping-------------------------")
+                print("-------------------reset and stoping-------------------------")
+                print("好棒棒")
+                print("")
+                print("◢███◣。。。。。。◢███◣" )
+                print("▇▇□██。。。。。。██□██")
+                print("  ◥███◤◢████◣◥███◤")
+                print("◢█。。。。。。。。。。█◣")
+                print("█。╔╗。。。。。。。╔╗。█")
+                print("█。∥●。。。╭╮。。。∥●。█")
+                print("█。╚╝。。。╰╯。。。╚╝。█")
+                print("   ◥▆▆▆▆▆▆▆▆▆▆▆▆▆▆")
+                time.sleep(0.05)
+                print("\n")
+                print(" ┌─╮◆╭═┐╭═┐╭═┐◆╭─┐")
+
+                print("│┌╯◆║加║║油║║囉║◆╰┐│")
+
+                print(" ╰╯↘◆└═╯└═╯└═╯◆↙╰╯")
                 
+        
+
+                print("\n")
+                print("..../\„./\...../\„./\ ")             
+                print("... (=';'=)....(=';'=) ♥♥")              
+                print("..../*♥♥**\ ♥  /*♥♥**\ ")
+                print(".(.| |..| |.)(.| |..| |.)♥")
+    
+            elif motor.now_state ==0 and reset_close == 1:
+                reset_close = 0
+        
+            elif motor.now_state == 1 :
+                send.sendHeadMotor(1,2048,30)
+                send.sendHeadMotor(2,2048,30)
+                time.sleep(0.5)
+                send.sendBodySector(29)
+                send.sendBodyAuto(0,0,0,0,1,0)
+                print("-------------------reset and stoping-------------------------")
             
         
        
@@ -551,13 +592,13 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [0,0,0]
-    left_correct  = [0,0,8]
-    right_correct = [0,0,-8]
+    correct       = [-200,0,-5]
+    left_correct  = [-200,0,2]
+    right_correct = [-200,0,-8]
     #                  x , y , theta   
 
 
-    basket_error = [50,30,100]
+    basket_error = [50,30,80]
     #  for size    三分  五分  灌籃
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
@@ -572,6 +613,7 @@ if __name__ == '__main__' :
         
         while not rospy.is_shutdown():
             if stategy_or_test == 1 :
+                print("head_vertical  head_vertical  head",motor.head_vertical)
                 if send.is_start==True :
                     reset_close = 0
                     send.drawImageFunction(1,0,160,160,0,240,255,255,255) 
@@ -594,6 +636,7 @@ if __name__ == '__main__' :
                                 print("  ball => x:",target.ball_x," y:",target.ball_y," size:",target.ball_size)
                             elif target.ball_size > 70 :
                                 send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
+                                
                                 jmp = jmp + 1
                                 
 
@@ -604,7 +647,7 @@ if __name__ == '__main__' :
                                 motor.trace_revise(target.ball_x,target.ball_y,25)
                                 time.sleep(0.05) 
                             else :
-                                if motor.head_vertical <= 1530:
+                                if motor.head_vertical <= 1550:
                                     too_big = True
                                     print("bigbigbig")
                                     time.sleep(0.3)
@@ -638,7 +681,7 @@ if __name__ == '__main__' :
                                 motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,1)
                                 print("meowmeowmeowmeowmeow")
 
-                                if motor.head_vertical >=1570 :
+                                if motor.head_vertical >=1660 :
                                     too_big = False
 
 
@@ -648,9 +691,9 @@ if __name__ == '__main__' :
                                     motor.body_trace_rotate(trace_parameter[0])    
                                     print("motor.head_vertical=========",motor.head_vertical)
                                 
-                                elif abs(motor.head_vertical - 1620) > 5 : #1320是條球的距離150是誤差######################################## 1590 => 1620
+                                elif abs(motor.head_vertical - 1590) > 5 : #1320是條球的距離150是誤差
                                     print(motor.head_horizon - 2048)
-                                    motor.body_trace_straight(1590,ball_correct[gazebo_robot])#!!!!!!!!!!!!!!!!!!!!!!!!!!!球的距離夠motor.found = True
+                                    motor.body_trace_straight(1610,ball_correct[gazebo_robot])#!!!!!!!!!!!!!!!!!!!!!!!!!!!球的距離夠motor.found = True
                                     print("motor.head_vertical-1320 = ",motor.head_vertical-1590)
     # ............................................................................................................................
     # ............................................................................................................................
@@ -823,51 +866,11 @@ if __name__ == '__main__' :
                 elif send.is_start==False and jmp > -1:
                             
                             motor.bodyauto_close(motor.now_state,reset_close)
-                            aa= 1
+                            target = target_location()
+                            motor = motor_move()
                             jmp = 0
                             reset_close = 1
-                            send.sendHeadMotor(1,2048,30)
-                            send.sendHeadMotor(2,2048,30)
-                            time.sleep(0.05)
-                            send.sendBodySector(29)
-                            print("-------------------reset and stoping-------------------------")
-                            print("-------------------reset and stoping-------------------------")
-                            print("好棒棒")
-                            print("")
-                            print("◢███◣。。。。。。◢███◣" )
-                            print("▇▇□██。。。。。。██□██")
-                            print("  ◥███◤◢████◣◥███◤")
-                            print("◢█。。。。。。。。。。█◣")
-                            print("█。╔╗。。。。。。。╔╗。█")
-                            print("█。∥●。。。╭╮。。。∥●。█")
-                            print("█。╚╝。。。╰╯。。。╚╝。█")
-                            print("   ◥▆▆▆▆▆▆▆▆▆▆▆▆▆▆")
-                            time.sleep(0.05)
-                            print("\n")
-                            print(" ┌─╮◆╭═┐╭═┐╭═┐◆╭─┐")
-
-                            print("│┌╯◆║加║║油║║囉║◆╰┐│")
-
-                            print(" ╰╯↘◆└═╯└═╯└═╯◆↙╰╯")
                             
-                    
-
-                            print("\n")
-                            print("..../\„./\...../\„./\ ")             
-                            print("... (=';'=)....(=';'=) ♥♥")              
-                            print("..../*♥♥**\ ♥  /*♥♥**\ ")
-                            print(".(.| |..| |.)(.| |..| |.)♥")
-                
-                            if motor.now_state ==0 and reset_close == 1:
-                                reset_close = 0
-                    
-                            elif motor.now_state == 1 :
-                                send.sendHeadMotor(1,2048,30)
-                                send.sendHeadMotor(2,2048,30)
-                                time.sleep(0.5)
-                                send.sendBodySector(29)
-                                send.sendBodyAuto(0,0,0,0,1,0)
-                                print("-------------------reset and stoping-------------------------")
                 
             if stategy_or_test == 0 :
                 send.drawImageFunction(4,1,target.basket_x_min ,target.basket_x_max ,target.basket_y_min ,target.basket_y_max,0,0,0)
