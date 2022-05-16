@@ -50,7 +50,7 @@ class target_location():
     def basket_parameter(self):
         self.color_mask_subject_orange = send.color_mask_subject_cnts[5]
         for j in range (self.color_mask_subject_orange):
-            if send.color_mask_subject_size [5][j] > 300 :
+            if send.color_mask_subject_size [5][j] > 200 :
                 self.basket_x =  send.color_mask_subject_X [5][j]
                 self.basket_y = send.color_mask_subject_Y [5][j]
                 self.basket_size = send.color_mask_subject_size [5][j]
@@ -586,15 +586,15 @@ if __name__ == '__main__' :
     basket_size_60_90 =[2250,800]
 
 
-    throw_ball_point = [2250,800,1800] #投籃未寫 #16500
+    throw_ball_point = [2250,800,1750] #投籃未寫 #16500
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-200,0,-5]
-    left_correct  = [-200,0,2]
-    right_correct = [-200,0,-8]
+    correct       = [-200,0,0]
+    left_correct  = [-200,0,4]
+    right_correct = [-200,0,-4]
     #                  x , y , theta   
 
 
@@ -681,7 +681,7 @@ if __name__ == '__main__' :
                                 motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,1)
                                 print("meowmeowmeowmeowmeow")
 
-                                if motor.head_vertical >=1660 :
+                                if motor.head_vertical >=1300 :
                                     too_big = False
 
 
@@ -728,9 +728,9 @@ if __name__ == '__main__' :
                             
                             motor.waist_reset(2048,50)
                             time.sleep(2)  
-                            send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+                            #send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
                             #send.sendBodySector(3)
-                            time.sleep(4)
+                            #time.sleep(4)
                             print(".................................................")
                             jmp = jmp + 1#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                                                             
