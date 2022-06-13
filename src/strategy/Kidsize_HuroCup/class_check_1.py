@@ -91,29 +91,36 @@ class motor_move():
         self.ninty_distance = 0
         self.detect = False
         self.distance_new = 0
+        self.switch_flag = 0
         
-    def switch_control(self):                                                       #need test
-        time.sleep(0.1)
+    def switch_control(self, stop):                                                       #need test
         target.ball_parameter()
         target.basket_parameter()
-        if    send.DIOValue == 9:  
-            motor.test_distance()                                                   #籃框               上下下下
+        if stop == 0:
+            if    send.DIOValue == 9:  
+                motor.test_distance()                                                     #籃框               上下下下
 
-        elif    send.DIOValue == 10:                                                  #球                 下上下下
-            motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
-            #print Basket size  Distance_60 Distance_90 Distance_fin
+            elif    send.DIOValue == 10:                                                  #球                 下上下下
+                motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
+                #print Basket size  Distance_60 Distance_90 Distance_fin
+                time.sleep(0.03)
 
-        elif    send.DIOValue == 27 or send.DIOValue == 11:                           #開啟三分策略        上上下下     
-            #               24+3                    8+3
-            self.switch_flag = 0
-            #print("SW = ", self.switch_flag)
+            elif    send.DIOValue == 27 or send.DIOValue == 11:                           #開啟三分策略        上上下下     
+                #                   24+3                    8+3
+                self.switch_flag = 0
+                #print("SW = ", self.switch_flag)
 
-        elif    send.DIOValue == 31 or send.DIOValue == 15:                           #開啟五分策略        上上上下
-            #               24+7                    8+7
-            self.switch_flag = 1
-            #print("SW = ", self.switch_flag)
+            elif    send.DIOValue == 31 or send.DIOValue == 15:                           #開啟五分策略        上上上下
+                #                   24+7                    8+7
+                self.switch_flag = 1
+                #print("SW = ", self.switch_flag)
 
-        else:
+            elif    send.DIOValue == 24 or send.DIOValue == 8 :                           #開啟二分策略        上上上下
+                #                   24                      8
+                self.switch_flag = 2
+                #print("SW = ", self.switch_flag)
+
+        if stop == 1:
             self.switch_flag = 2
 
 
@@ -325,12 +332,12 @@ class motor_move():
             motor.bodyauto_close(0)
             target.basket_parameter()
             
-            time.sleep(0.5)
+            time.sleep(2)
             motor.move_head(1,2048,880,880,30)
             time.sleep(0.2)
-            # send.sendBodySector(3)   #33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
-            print("-------------------------send.sendBodySector(3)------------------------------")
-            time.sleep(2)
+            send.sendBodySector(5301)
+            print("-------------------------send.sendBodySector(5301)------------------------------")
+            time.sleep(3)
             self.found = True
             self.catch = True
 
@@ -355,12 +362,12 @@ class motor_move():
             motor.bodyauto_close(0)
             target.basket_parameter()
             
-            time.sleep(0.5)
+            time.sleep(2)
             motor.move_head(1,2048,880,880,30)
             time.sleep(0.2)
-            # # send.sendBodySector(3)   #5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555
-            # print("-------------------------send.sendBodySector(3)------------------------------")
-            # time.sleep(2)
+            send.sendBodySector(5301)
+            print("-------------------------send.sendBodySector(5301)------------------------------")
+            time.sleep(3)
             self.found = True
             self.catch = True
     
@@ -613,7 +620,7 @@ if __name__ == '__main__' :
     stop=1
     target = target_location()
     motor = motor_move()
-    step ='being'
+    step ='begin'
     #step  = ['begin','find_ball','open_ball_trace','walk_to_ball','ball_trace','catch_ball','find_basekt','basket_trace','walk_to_basket','find','waisting','finish']
     
     #           0              1                2           3             4                5             6           7               8      9           10
@@ -634,8 +641,8 @@ if __name__ == '__main__' :
     
 
     correct       = [-200,0,0]
-    left_correct  = [-200,0,4]
-    right_correct = [-200,0,-4]
+    left_correct  = [-200,0,6]
+    right_correct = [-200,0,-6]
     #                  x , y , theta   
 
 
@@ -653,7 +660,7 @@ if __name__ == '__main__' :
         
         
         while not rospy.is_shutdown():
-            motor.switch_control()
+            motor.switch_control(0)
             sw = motor.switch_flag
             if send.is_start==True :
                 reset_close = 0
@@ -736,7 +743,7 @@ if __name__ == '__main__' :
                             
                             elif abs(motor.head_vertical - 1590) > 5 : #1320是條球的距離150是誤差
                                 print(motor.head_horizon - 2048)
-                                motor.body_trace_straight(1610,ball_correct[gazebo_robot])#!!!!!!!!!!!!!!!!!!!!!!!!!!!球的距離夠motor.found = True
+                                motor.body_trace_straight(1660,ball_correct[gazebo_robot])#!!!!!!!!!!!!!!!!!!!!!!!!!!!球的距離夠motor.found = True
                                 print("motor.head_vertical-1320 = ",motor.head_vertical-1590)
 # ............................................................................................................................
 # ............................................................................................................................
@@ -850,6 +857,7 @@ if __name__ == '__main__' :
                                 print("motor.catch = ",motor.catch)
                                 if motor.catch == True :
                                     print("step is ",step)#@@@@@@@@@@@@@@@@@@@@@@@
+                                    
 
                     
                     
@@ -857,38 +865,38 @@ if __name__ == '__main__' :
                 elif  motor.found == True and motor.catch == True :
                     if step == 'walk_to_basket' :
                         target.basket_parameter()
-                        if sw == 0:
-                            if target.basket_x != 0 :
-                                motor.WaistFix(target.basket_x,target.basket_y,160,120)
-                                print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 3:
-                                    step = 'find'#@@@@@@@@@@@@@@@@@@@@@
-                                    print("step==========",step)
-                        elif sw == 1:
-                            if target.basket_x != 0 :
-                                motor.WaistFix(target.basket_x,target.basket_y,160,120)
-                                print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 3:
-                                    step = 'find'#@@@@@@@@@@@@@@@@@@@@
-                                    print("step==========",step)#@@@@@@@@@@@@@@@@@@@@
-                        elif sw == 2 :
-                            if target.basket_x != 0 :
-                                motor.WaistFix(target.basket_x,target.basket_y,160,120)
-                                print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 3:
-                                    step = 'find'#@@@@@@@@@@@@@@@@@@@@@
-                                    print("step======",step)#@@@@@@@@@@@@@@@@@
+                        # if sw == 0:
+                        if target.basket_x != 0 :
+                            motor.WaistFix(target.basket_x,target.basket_y,160,120)
+                            print("abs(target.basket_x-160)",abs(target.basket_x-160))
+                            if abs(target.basket_x-160) < 3:
+                                step = 'find'#@@@@@@@@@@@@@@@@@@@@@
+                                print("step======",step)#@@@@@@@@@@@@@@@@@
+                        # elif sw == 1:
+                        #     if target.basket_x != 0 :
+                        #         motor.WaistFix(target.basket_x,target.basket_y,160,120)
+                        #         print("abs(target.basket_x-160)",abs(target.basket_x-160))
+                        #         if abs(target.basket_x-160) < 3:
+                        #             step = 'find'#@@@@@@@@@@@@@@@@@@@@
+                        #             print("step======",step)#@@@@@@@@@@@@@@@@@
+                        # elif sw == 2 :
+                        #     if target.basket_x != 0 :
+                        #         motor.WaistFix(target.basket_x,target.basket_y,160,120)
+                        #         print("abs(target.basket_x-160)",abs(target.basket_x-160))
+                        #         if abs(target.basket_x-160) < 3:
+                        #             step = 'find'#@@@@@@@@@@@@@@@@@@@@@
+                        #             print("step======",step)#@@@@@@@@@@@@@@@@@
                     
 
                     elif step == 'find' :
                         if sw == 0:
                             time.sleep(0.5)
-                            send.sendBodySector(5353)
+                            send.sendBodySector(3302)
                             print("3333333333")
                         elif sw == 1:
                             time.sleep(0.5)
-                            send.sendBodySector(5353)
-                            print("555555")
+                            send.sendBodySector(5502)
+                            print("5555555555")
 
                         elif sw == 2 :
                             time.sleep(1)
@@ -905,7 +913,9 @@ if __name__ == '__main__' :
                             
                 
             else :
-                if step != 'begin' and (send.DIOValue == 8 or send.DIOValue == 24 or send.DIOValue == 27 or send.DIOValue == 31):
+                if step != 'begin' and (send.DIOValue == 8  or send.DIOValue == 9  or send.DIOValue == 10 or 
+                                                               send.DIOValue == 11 or send.DIOValue == 15 or
+                                        send.DIOValue == 24 or send.DIOValue == 27 or send.DIOValue == 31):
 
                     motor.bodyauto_close(0)
                     target = target_location()
@@ -943,7 +953,7 @@ if __name__ == '__main__' :
                     print("..../*♥♥**\ ♥  /*♥♥**\ ")
                     print(".(.| |..| |.)(.| |..| |.)♥")
 
-                    motor.switch_control()
+                    motor.switch_control(1)
                             
                 
             
