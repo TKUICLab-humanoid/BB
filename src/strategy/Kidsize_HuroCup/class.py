@@ -101,12 +101,12 @@ class motor_move():
             motor.test_distance()                                       #籃框
             #motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
             #print Basket size  Distance_60 Distance_90 Distance_fin
-            now == 'test'
+            now = 1
         if    send.DIOValue == 10:                  
             time.sleep(0.1)                                #球
             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
             
-            now == 'test'
+            now = 1
         
         elif    send.DIOValue == 27 or send.DIOValue == 11:                           #開啟三分策略        上上下下     
             #               24+3                    8+3
@@ -306,17 +306,20 @@ class motor_move():
     
     def body_trace_basket_straight_5(self,degree,basket_error) :
         
-        if self.head_vertical - degree < basket_error  and self.head_vertical < 2000 :
+        if self.head_vertical - degree < basket_error  and abs(self.head_vertical - degree) > basket_error and self.head_vertical < 2130 :
             motor.MoveContinuous(-1500+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go back bbbb to basket---------------------  ",self.head_vertical)
+            print(  "head_vertica =",self.head_vertical,"degree =",degree,"basket_error =",basket_error)
             time.sleep(0.05)
 
-        elif self.head_vertical - degree < basket_error and  self.head_vertical > 2000:
+        elif self.head_vertical - degree < basket_error  and abs(self.head_vertical - degree) > basket_error and self.head_vertical > 2130:
             motor.MoveContinuous(-1000+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go back sss to basket---------------------  ",self.head_vertical)
+            print(  "head_vertica =",self.head_vertical,"degree =",degree,"basket_error =",basket_error)
             time.sleep(0.05)    
-        elif self.head_vertical - degree > basket_error and abs(self.head_vertical - degree) < basket_error:
+        elif self.head_vertical - degree > basket_error:
             motor.MoveContinuous(800+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!
+            print(  "head_vertica =",self.head_vertical,"degree =",degree,"basket_error =",basket_error)
     
             print( "--------------------go ahead from basket-------------------- ",self.head_vertical)
             time.sleep(0.05)
@@ -326,8 +329,8 @@ class motor_move():
             motor.bodyauto_close(0)
             target.basket_parameter()
             
-            time.sleep(1)
-            
+            time.sleep(3)
+            send.sendBodySector(53)
             time.sleep(0.8)
             
             print("-------------------------send.sendBodySector(3)------------------------------")
@@ -536,20 +539,20 @@ if __name__ == '__main__' :
     basket_size_60_90 =[2250,800]
 
 
-    throw_ball_point = [2250,2200,1800] #投籃未寫 #16500
-    ball_catch_size =[1635]
+    throw_ball_point = [2250,2200,1825] #投籃未寫 #16500
+    ball_catch_size =[1650]
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-200,0,-1]
-    left_correct  = [-200,0,6]
-    right_correct = [-200,0,-7]
+    correct       = [-200,600,-1]
+    left_correct  = [-200,600,5]
+    right_correct = [-200,600,-5]
     #                  x , y , theta   
 
 
-    basket_error = [50,50,80]
+    basket_error = [50,1,80]
     #  for size    三分  五分  灌籃
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
@@ -558,6 +561,7 @@ if __name__ == '__main__' :
 
     trace_parameter =[80]#25
     too_big = True
+    situation = 1
     try:
         
         
@@ -573,14 +577,14 @@ if __name__ == '__main__' :
                 
 
                 if motor.found == False  :
-                    print("head head",motor.head_vertical)
+                    print("head head1",motor.head_vertical)
                     if step == 'begin':
                         step = 'find_ball'
 
                     elif step == 'find_ball':#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         
                         if target.ball_size < 70 :
-                            motor.view_move(2698,1498,1800,1098,55,0.05)                 
+                            motor.view_move(2698,1498,1800,1128,55,0.05)                 
                             time.sleep(0.05)
                             print("start to find the ball")
                             print("stop====\n")
@@ -599,7 +603,7 @@ if __name__ == '__main__' :
                             motor.trace_revise(target.ball_x,target.ball_y,25)
                             time.sleep(0.05) 
                         else :
-                            if motor.head_vertical <= 1700:
+                            if motor.head_vertical <= ball_catch_size[0] + 65:
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
@@ -633,7 +637,7 @@ if __name__ == '__main__' :
                             motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,1)
                             print("meowmeowmeowmeowmeow")
 
-                            if motor.head_vertical >=1720 :
+                            if motor.head_vertical >=ball_catch_size[0] +85 :
                                 too_big = False
 
 
@@ -697,7 +701,7 @@ if __name__ == '__main__' :
                                 motor.view_move(2448,1648,1948,1898,50,0.05)
                                 time.sleep(0.04)
                                 target.basket_parameter()
-                                print("  basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
+                                print("  basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size," degree:",motor.head_vertical)
                         elif target.basket_size > 350 :
                                 step = 'basket_trace'#@@@@@@@@@@@@@@@@@@
                                 target.basket_parameter()
@@ -719,7 +723,7 @@ if __name__ == '__main__' :
                     elif  step == 'walk_to_basket' :#@@@@@@@@@@@@@@@@@@
                         print("walk_to_basket")
                         target.basket_parameter()
-                        print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
+                        print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size," degree:",motor.head_vertical)
                         motor.trace_revise(target.basket_x,target.basket_y,25)
 
                         
@@ -813,9 +817,11 @@ if __name__ == '__main__' :
                                     print("step==========",step)#@@@@@@@@@@@@@@@@@@@@
 
                         elif step == 'find' :#@@@@@@@@@@@@@@@@@@@@@@@@
-                            time.sleep(0.5)
+                            time.sleep(3)
                             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
+                            send.sendBodySector(55)
                             print("555555")
+                            step = 'finial'
                             
             
                 
@@ -827,6 +833,7 @@ if __name__ == '__main__' :
                     target = target_location()
                     motor = motor_move()
                     step = 'begin'
+                    situation = 0
                     send.sendHeadMotor(1,2048,30)
                     send.sendHeadMotor(2,2048,30)
                     time.sleep(0.05)
@@ -859,7 +866,10 @@ if __name__ == '__main__' :
                     print("..../*♥♥**\ ♥  /*♥♥**\ ")
                     print(".(.| |..| |.)(.| |..| |.)♥")
 
-                    motor.switch_control(step)
+                    motor.switch_control(situation)
+                    if situation == 1:
+                        step = "test"
+
                             
                 
             
