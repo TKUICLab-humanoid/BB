@@ -91,37 +91,51 @@ class motor_move():
         self.ninty_distance = 0
         self.detect = False
         self.distance_new = 0
-        self.switch_flag = 0
+        self.switch_flag = 2
+        self.switch_reset_flag = 1
         
-    def switch_control(self, stop):                                                       #need test
+        
+    def switch_control(self):                                                       #need test
         target.ball_parameter()
         target.basket_parameter()
-        if stop == 0:
-            if    send.DIOValue == 9:  
-                motor.test_distance()                                                     #籃框               上下下下
 
-            elif    send.DIOValue == 10:                                                  #球                 下上下下
-                motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
-                #print Basket size  Distance_60 Distance_90 Distance_fin
-                time.sleep(0.03)
+        if    send.DIOValue == 9:  
+            motor.test_distance()                                                     #籃框               上下下下
+            self.switch_reset_flag = 1
 
-            elif    send.DIOValue == 27 or send.DIOValue == 11:                           #開啟三分策略        上上下下     
-                #                   24+3                    8+3
-                self.switch_flag = 0
-                #print("SW = ", self.switch_flag)
+        elif    send.DIOValue == 10:                                                  #球                 下上下下
+            motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
+            #print Basket size  Distance_60 Distance_90 Distance_fin
+            self.switch_reset_flag = 1
+            time.sleep(0.03)
 
-            elif    send.DIOValue == 31 or send.DIOValue == 15:                           #開啟五分策略        上上上下
-                #                   24+7                    8+7
-                self.switch_flag = 1
-                #print("SW = ", self.switch_flag)
+        elif    (send.DIOValue == 27 or send.DIOValue == 11) and self.switch_reset_flag == 1 :                           #開啟三分策略        上上下下     
+            #                   24+3                    8+3
+            self.switch_flag = 0
+            print("SW = ", self.switch_flag)
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            self.switch_reset_flag = 0
 
-            elif    send.DIOValue == 24 or send.DIOValue == 8 :                           #開啟二分策略        上上上下
-                #                   24                      8
-                self.switch_flag = 2
-                #print("SW = ", self.switch_flag)
+        elif    (send.DIOValue == 31 or send.DIOValue == 15) and self.switch_reset_flag == 1 :                           #開啟五分策略        上上上下
+            #                   24+7                    8+7
+            self.switch_flag = 1
+            print("SW = ", self.switch_flag)
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            self.switch_reset_flag = 0
 
-        if stop == 1:
+        elif    (send.DIOValue == 24 or send.DIOValue ==  8) and self.switch_reset_flag == 1 :                           #開啟二分策略        下下下下
+            #                   24                      8
             self.switch_flag = 2
+            print("SW = ", self.switch_flag)
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            self.switch_reset_flag = 0
+
+
+            
+
 
 
     def move_head(self,ID,Position,max_head_horizon_size,max_head_vertical_size,Speed):
@@ -660,7 +674,7 @@ if __name__ == '__main__' :
         
         
         while not rospy.is_shutdown():
-            motor.switch_control(0)
+            motor.switch_control()
             sw = motor.switch_flag
             if send.is_start==True :
                 reset_close = 0
@@ -953,7 +967,7 @@ if __name__ == '__main__' :
                     print("..../*♥♥**\ ♥  /*♥♥**\ ")
                     print(".(.| |..| |.)(.| |..| |.)♥")
 
-                    motor.switch_control(1)
+                    motor.switch_control()
                             
                 
             
