@@ -92,36 +92,62 @@ class motor_move():
         self.detect = False
         self.distance_new = 0
         self.now_switch_state = "begin"
+        self.switch_flag = 2
+        self.switch_reset_flag = 1
         
     def switch_control(self):                                                       #need test
+        target = target_location()
+        motor = motor_move()
         
-        target.ball_parameter()
-        target.basket_parameter()
-        if      send.DIOValue == 9:  
-            time.sleep(0.1)
-            motor.test_distance()                                       #籃框
-            #motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
-            #print Basket size  Distance_60 Distance_90 Distance_fin
-            self.now_switch_state = "test"
-            
-        elif    send.DIOValue == 10:                  
-            time.sleep(0.1)                                #球
+        if    send.DIOValue == 9:  
+            motor.test_distance()                                                     #籃框               上下下下
+            self.switch_reset_flag = 1
+
+        elif    send.DIOValue == 10:                                                  #球                 下上下下
             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
-            self.now_switch_state = "test"
-            
-        
-        elif    send.DIOValue == 27 or send.DIOValue == 11:                           #開啟三分策略        上上下下     
-            #               24+3                    8+3
+            #print Basket size  Distance_60 Distance_90 Distance_fin
+            self.switch_reset_flag = 1
+            time.sleep(0.03)
+
+        elif    (send.DIOValue == 27 or send.DIOValue == 11) and self.switch_reset_flag == 1 :#開啟三分策略        上上下下     
+            #                   24+3                    8+3
             self.switch_flag = 0
-            #print("SW = ", self.switch_flag)
+            print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
 
-        elif    send.DIOValue == 31 or send.DIOValue == 15:                           #開啟五分策略        上上上下
-            #               24+7                    8+7
+            self.switch_reset_flag = 0
+
+        elif    (send.DIOValue == 31 or send.DIOValue == 15) and self.switch_reset_flag == 1 :#開啟五分策略        上上上下
+            #                   24+7                    8+7
             self.switch_flag = 1
-            #print("SW = ", self.switch_flag)
+            print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
+            self.switch_reset_flag = 0
 
-        else:
+        elif    (send.DIOValue == 24 or send.DIOValue ==  8) and self.switch_reset_flag == 1 :#開啟二分策略        下下下下
+            #                   24                      8
             self.switch_flag = 2
+            print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
+            send.sendHeadMotor(1,2048,30)
+            send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
+            self.switch_reset_flag = 0
 
     def move_head(self,ID,Position,max_head_horizon_size,max_head_vertical_size,Speed):
         send.sendHeadMotor(ID,Position,Speed)
@@ -539,7 +565,7 @@ if __name__ == '__main__' :
     
     #           0              1                2           3             4                5             6           7               8      9           10
     
-    sw = 2
+    # sw = 2
     gazebo_robot = 1
     # 0 for gazebo 1 for robot
     stategy_or_test = 1

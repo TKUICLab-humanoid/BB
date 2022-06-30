@@ -50,7 +50,7 @@ class target_location():
     def basket_parameter(self):
         self.color_mask_subject_orange = send.color_mask_subject_cnts[5]
         for j in range (self.color_mask_subject_orange):
-            if send.color_mask_subject_size [5][j] > 200 :
+            if send.color_mask_subject_size [5][j] > 400 :
                 self.basket_x =  send.color_mask_subject_X [5][j]
                 self.basket_y = send.color_mask_subject_Y [5][j]
                 self.basket_size = send.color_mask_subject_size [5][j]
@@ -96,9 +96,9 @@ class motor_move():
         
         
     def switch_control(self):                                                       #need test
-        target.ball_parameter()
-        target.basket_parameter()
-
+        target = target_location()
+        motor = motor_move()
+        
         if    send.DIOValue == 9:  
             motor.test_distance()                                                     #籃框               上下下下
             self.switch_reset_flag = 1
@@ -109,28 +109,44 @@ class motor_move():
             self.switch_reset_flag = 1
             time.sleep(0.03)
 
-        elif    (send.DIOValue == 27 or send.DIOValue == 11) and self.switch_reset_flag == 1 :                           #開啟三分策略        上上下下     
+        elif    (send.DIOValue == 27 or send.DIOValue == 11) and self.switch_reset_flag == 1 :#開啟三分策略        上上下下     
             #                   24+3                    8+3
             self.switch_flag = 0
             print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
             send.sendHeadMotor(1,2048,30)
             send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
+
             self.switch_reset_flag = 0
 
-        elif    (send.DIOValue == 31 or send.DIOValue == 15) and self.switch_reset_flag == 1 :                           #開啟五分策略        上上上下
+        elif    (send.DIOValue == 31 or send.DIOValue == 15) and self.switch_reset_flag == 1 :#開啟五分策略        上上上下
             #                   24+7                    8+7
             self.switch_flag = 1
             print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
             send.sendHeadMotor(1,2048,30)
             send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
             self.switch_reset_flag = 0
 
-        elif    (send.DIOValue == 24 or send.DIOValue ==  8) and self.switch_reset_flag == 1 :                           #開啟二分策略        下下下下
+        elif    (send.DIOValue == 24 or send.DIOValue ==  8) and self.switch_reset_flag == 1 :#開啟二分策略        下下下下
             #                   24                      8
             self.switch_flag = 2
             print("SW = ", self.switch_flag)
+            motor.bodyauto_close(0)
+            target.ball_parameter()
+            target.basket_parameter()
+            step = 'begin'
             send.sendHeadMotor(1,2048,30)
             send.sendHeadMotor(2,2048,30)
+            send.sendBodySector(29)
             self.switch_reset_flag = 0
 
 
@@ -224,9 +240,9 @@ class motor_move():
             self.found = True
             time.sleep(1.2)
             send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-            time.sleep(1.2)
+            time.sleep(1.5)
             motor.move_head(1,1848,880,880,50) #1748
-            time.sleep(2.5)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+            time.sleep(1)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
             target.ball_parameter()
             
             
@@ -495,14 +511,16 @@ class motor_move():
         self.move_head(1,2048,880,880,50)
         target.basket_parameter()
         if abs(target.basket_y - 120) > 3 :
-            if target.basket_y == 0 :
-                self.move_head(1,1850,880,880,50)
-            elif target.basket_y - 120 > 0 :
-                self.move_head(2,self.head_vertical - 1,880,880,50)
-            elif target.basket_y - 120 < 0 :
-                self.move_head(2,self.head_vertical + 1,880,880,50)
-            target.basket_parameter()
-            print("Basket Y = ",target.basket_y)
+            motor.trace_revise(target.basket_x,target.basket_y,25)
+            # if target.basket_y == 0 :
+            #     self.move_head(1,1850,880,880,50)
+            # elif target.basket_y - 120 > 0 :
+            #     self.move_head(2,self.head_vertical - 1,880,880,50)
+            # elif target.basket_y - 120 < 0 :
+            #     self.move_head(2,self.head_vertical + 1,880,880,50)
+            # target.basket_parameter()
+            # print("Basket Y = ",target.basket_y)
+            time.sleep(0.05)
         
         else  :
             self.sixty_distance = sqrt(abs((3600*six)/target.basket_size))
@@ -648,13 +666,13 @@ if __name__ == '__main__' :
     basket_size_60_90 =[2250,800]
 
 
-    throw_ball_point = [2250,800,1800] #投籃未寫 #16500
+    throw_ball_point = [2250,800,1850] #投籃未寫 #16500
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-200,0,0]
+    correct       = [-250,0,0]
     left_correct  = [-200,0,6]
     right_correct = [-200,0,-6]
     #                  x , y , theta   
@@ -786,7 +804,7 @@ if __name__ == '__main__' :
                         
                         # send.sendBodySector(2)    #1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
                         send.sendBodySector(6)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-                        time.sleep(2)     
+                        time.sleep(2.5)     
                         print("stop to the ball")
                         print("----------------------------------ready to waist_reset---------------------------------------")
                         
@@ -795,7 +813,7 @@ if __name__ == '__main__' :
                         time.sleep(2)  
                         send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
                         #send.sendBodySector(3)
-                        time.sleep(4)
+                        time.sleep(2.5)
                         print(".................................................")
                         step = 'find_basekt'#@@@@@@@@@@@@@@@@@@
                                                                         
