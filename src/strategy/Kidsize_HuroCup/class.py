@@ -286,7 +286,7 @@ class motor_move():
             send.sendBodySector(887)
             # send.sendBodySector(3)   #準備上籃之動作一（舉手...）111111111111111111111111111111111111111111111111111111111`
             print("-------------------------send.sendBodySector(3)------------------------------")
-            time.sleep(2.5)
+            time.sleep(1.5)
             self.found = True
             self.catch = True
     
@@ -548,7 +548,7 @@ if __name__ == '__main__' :
     
     target = target_location()
     motor = motor_move()
-    step ='zero'
+    step ='begin'
     #step  = ['begin','find_ball','open_ball_trace','walk_to_ball','ball_trace','catch_ball','find_basekt','basket_trace','walk_to_basket','find','waisting','finish']
     
     #           0              1                2           3             4                5             6           7               8      9           10
@@ -570,9 +570,9 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-350,-200,2]
-    left_correct  = [-350,-200,7]
-    right_correct = [-350,-200,-7]
+    correct       = [-200,0,0]
+    left_correct  = [-350,0,7]
+    right_correct = [-350,0,-7]
     #                  x , y , theta   
 
 
@@ -658,10 +658,10 @@ if __name__ == '__main__' :
                         print("abs(motor.x_body_rotate)",abs(motor.x_body_rotate),motor.head_horizon-2048)
 
                         if too_big == True:
-                            motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,1)
+                            motor.MoveContinuous(-1000+correct[0],0+correct[1],0+correct[2],100,100,1)
                             print("meowmeowmeowmeowmeow")
 
-                            if motor.head_vertical >=ball_catch_size[0]+85 :
+                            if motor.head_vertical >=ball_catch_size[0]+75 :
                                 too_big = False
 
 

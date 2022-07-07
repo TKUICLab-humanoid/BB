@@ -672,13 +672,13 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-250,0,0]
-    left_correct  = [-200,0,6]
-    right_correct = [-200,0,-6]
+    correct       = [-350,0,0]
+    left_correct  = [-350,0,7]
+    right_correct = [-350,0,-7]
     #                  x , y , theta   
 
 
-    basket_error = [50,30,80]
+    basket_error = [50,5,80]
     #  for size    三分  五分  灌籃
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
@@ -687,7 +687,6 @@ if __name__ == '__main__' :
 
     trace_parameter =[80]#25
     too_big = True
-    reset_close = 0
     try:
         
         
@@ -695,7 +694,6 @@ if __name__ == '__main__' :
             motor.switch_control()
             sw = motor.switch_flag
             if send.is_start==True :
-                reset_close = 0
                 send.drawImageFunction(1,0,160,160,0,240,255,255,255) 
                 send.drawImageFunction(2,0,0,320,120,120,255,255,255)
                 send.drawImageFunction(3,1,target.ball_x_min ,target.ball_x_max ,target.ball_y_min ,target.ball_y_max,255,0,255)
