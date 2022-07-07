@@ -63,7 +63,7 @@ class Sendmessage:
         walkdata.sensor_mode = sensor
         self.walkingGait_pub.publish(walkdata)
 
-    def sendHeadMotor(self,ID,Position,Speed):	#頭部馬達
+    def sendHeadMotor(self,ID,Position,Speed):	#頭部馬達   
         HeadData = HeadPackage()
         HeadData.ID = ID
         HeadData.Position = Position
