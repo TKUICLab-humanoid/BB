@@ -32,7 +32,7 @@ class target_location():
     def ball_parameter(self):
         self.color_mask_subject_red = send.color_mask_subject_cnts[0]
         for j in range (self.color_mask_subject_red):
-            if send.color_mask_subject_size [0][j] > 70 :
+            if send.color_mask_subject_size [0][j] > 100 :
                 self.ball_x =  send.color_mask_subject_X [0][j]
                 self.ball_y = send.color_mask_subject_Y [0][j]
                 self.ball_size = send.color_mask_subject_size [0][j]
@@ -50,7 +50,7 @@ class target_location():
     def basket_parameter(self):
         self.color_mask_subject_orange = send.color_mask_subject_cnts[5]
         for j in range (self.color_mask_subject_orange):
-            if send.color_mask_subject_size [5][j] > 200 :
+            if send.color_mask_subject_size [5][j] > 300 :
                 self.basket_x =  send.color_mask_subject_X [5][j]
                 self.basket_y = send.color_mask_subject_Y [5][j]
                 self.basket_size = send.color_mask_subject_size [5][j]
@@ -593,9 +593,9 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-400,300,4]
-    left_correct  = [-400,300,7]
-    right_correct = [-400,300,-7]
+    correct       = [-300,200,4]
+    left_correct  = [-400,200,7]
+    right_correct = [-400,200,-7]
     #                  x , y , theta   
 
 
