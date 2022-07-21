@@ -206,7 +206,6 @@ class motor_move():
         self.y_degree = self.y_differ * (43.3 / 240)
         self.move_head(1, self.head_horizon - round(self.x_degree * 4096 / 360 *0.25),880,880,speed)
         self.move_head(2, self.head_vertical - round(self.y_degree * 4096 / 360 *0.25),880,880,speed)
-        time.sleep(0.05)
 
     def body_trace_rotate(self,degree) :
         self.x_body_rotate = self.head_horizon - 2048
@@ -243,7 +242,7 @@ class motor_move():
             time.sleep(1.2)
             send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
             time.sleep(1.2)
-            motor.move_head(1,1800,880,880,50) #1748
+            motor.move_head(1,1830,880,880,50) #1748
             time.sleep(2.5)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
             target.ball_parameter()
             
@@ -293,7 +292,7 @@ class motor_move():
             time.sleep(0.8)
             send.sendBodySector(887)
             # send.sendBodySector(3)   #準備上籃之動作一（舉手...）111111111111111111111111111111111111111111111111111111111`
-            print("-------------------------send.sendBodySector(3)------------------------------")
+            print("-------------------------send.sendBodySector(887)------------------------------")
             time.sleep(1.5)
             self.found = True
             self.catch = True
@@ -435,7 +434,7 @@ class motor_move():
         #if target.basket_size >= 300 and abs(motor.head_horizon-2048) < 600:
 
         if abs(target.basket_x - 160) > 5  or abs(target.basket_y - 120) > 4 :
-            motor.trace_revise(target.basket_x,target.basket_y,25)
+            motor.trace_revise(target.basket_x,target.basket_y,35)
             target.basket_parameter() 
             
             time.sleep(0.05) 
@@ -504,7 +503,8 @@ class motor_move():
         
         target.basket_parameter()
         if abs(target.basket_y - 120) > 1 :
-            motor.trace_revise(target.basket_x,target.basket_y,25)
+            motor.trace_revise(target.basket_x,target.basket_y,35)
+            time.sleep(0.05)
         
         else  :
             self.sixty_distance = sqrt(abs((3600*six)/target.basket_size))
@@ -593,13 +593,13 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-100,300,0]
-    left_correct  = [-200,200,5]
-    right_correct = [-200,200,-5]
+    correct       = [-400,300,4]
+    left_correct  = [-400,300,7]
+    right_correct = [-400,300,-7]
     #                  x , y , theta   
 
 
-    basket_error = [70,50,60]
+    basket_error = [70,50,50]
     #  for size    三分  五分  灌籃
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
@@ -647,7 +647,7 @@ if __name__ == '__main__' :
                         if abs(target.ball_x - 160) > 5  or abs(target.ball_y - 120) > 20 :
                             target.ball_parameter() 
                             print("open_ball_trace is opening")
-                            motor.trace_revise(target.ball_x,target.ball_y,25)
+                            motor.trace_revise(target.ball_x,target.ball_y,35)
                             time.sleep(0.05) 
                         else :
                             if ball_catch_size[0]-80 < motor.head_vertical <ball_catch_size[0]+100 and motor.head_horizon <= 2048:
@@ -689,8 +689,9 @@ if __name__ == '__main__' :
                         
                         target.ball_parameter()   
                         print(" ball => x:",target.ball_x," y:",target.ball_y," size:",target.ball_size)                   
-                        motor.trace_revise(target.ball_x,target.ball_y,25)
+                        motor.trace_revise(target.ball_x,target.ball_y,35)
                         print("abs(motor.x_body_rotate)",abs(motor.x_body_rotate),motor.head_horizon-2048)
+                        time.sleep(0.05)
 
                         if too_big == True:
                             motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,1)
@@ -769,7 +770,7 @@ if __name__ == '__main__' :
                     elif step == 'basket_trace' :
                         if abs(target.basket_x - 160) > 8  or abs(target.basket_y - 120) > 6 :
                             target.basket_parameter() 
-                            motor.trace_revise(target.basket_x,target.basket_y,25)
+                            motor.trace_revise(target.basket_x,target.basket_y,35)
                             print("-------------basekt_trace有進喔--------------")
                             time.sleep(0.05) 
                         else :
@@ -782,10 +783,8 @@ if __name__ == '__main__' :
                         print("walk_to_basket")
                         target.basket_parameter()
                         print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
-                        motor.trace_revise(target.basket_x,target.basket_y,25)
-
-                        
-
+                        motor.trace_revise(target.basket_x,target.basket_y,35)
+                        time.sleep(0.05)
 
                         if abs(motor.head_horizon-2048) > 80 :#!!!!
                             target.basket_parameter()
