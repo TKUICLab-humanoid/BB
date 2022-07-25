@@ -31,8 +31,11 @@ class target_location():
         
     def ball_parameter(self):
         self.color_mask_subject_red = send.color_mask_subject_cnts[0]
+        self.ball_x = 0
+        self.ball_y = 0
+        self.ball_size = 0
         for j in range (self.color_mask_subject_red):
-            if send.color_mask_subject_size [0][j] > 70 :
+            if send.color_mask_subject_size [0][j] > 70  and send.color_mask_subject_size [0][j] > self.ball_size:
                 self.ball_x =  send.color_mask_subject_X [0][j]
                 self.ball_y = send.color_mask_subject_Y [0][j]
                 self.ball_size = send.color_mask_subject_size [0][j]
@@ -40,17 +43,18 @@ class target_location():
                 self.ball_y_min = send.color_mask_subject_YMin[0][j] 
                 self.ball_x_max = send.color_mask_subject_XMax[0][j] 
                 self.ball_y_max =send.color_mask_subject_YMax[0][j]
-            else :
-                self.ball_x = 0
-                self.ball_y = 0
-                self.ball_size = 0
+            
+                
 
             
     
     def basket_parameter(self):
-        self.color_mask_subject_orange = send.color_mask_subject_cnts[5]
+        self.color_mask_subject_orange = send.color_mask_subject_cnts[5] 
+        self.basket_x= 0
+        self.basket_y = 0
+        self.basket_size = 0
         for j in range (self.color_mask_subject_orange):
-            if send.color_mask_subject_size [5][j] > 200 :
+            if send.color_mask_subject_size [5][j] > 100 and send.color_mask_subject_size [5][j] > self.basket_size:
                 self.basket_x =  send.color_mask_subject_X [5][j]
                 self.basket_y = send.color_mask_subject_Y [5][j]
                 self.basket_size = send.color_mask_subject_size [5][j]
@@ -58,10 +62,8 @@ class target_location():
                 self.basket_y_min = send.color_mask_subject_YMin[5][j] 
                 self.basket_x_max = send.color_mask_subject_XMax[5][j] 
                 self.basket_y_max =send.color_mask_subject_YMax[5][j]
-            else :
-                self.basket_x= 0
-                self.basket_y = 0
-                self.basket_size = 0
+        
+               
    
 
 class motor_move():
@@ -103,7 +105,7 @@ class motor_move():
         
         if    send.DIOValue == 9 or send.DIOValue == 12 :  
             motor.test_distance()                
-            time.sleep(0.25)                                     #籃框               上下下下 or 下下上下 or 上下上下
+            time.sleep(0.2)                                     #籃框               上下下下 or 下下上下 or 上下上下
             self.switch_reset_flag = 1 #sector 111  
             self.in_tacties = 0
 
@@ -199,14 +201,14 @@ class motor_move():
                 self.head_horizon_flag = 1
     
     def trace_revise(self,x_target,y_target,speed) :
-        #if abs(x_target) > 0 and abs(y_target) > 0:
-        self.x_differ =  x_target - 160 
-        self.y_differ =  y_target - 120 
-        self.x_degree = self.x_differ * (70.42 / 320)
-        self.y_degree = self.y_differ * (43.3 / 240)
-        self.move_head(1, self.head_horizon - round(self.x_degree * 4096 / 360 *0.25),880,880,speed)
-        self.move_head(2, self.head_vertical - round(self.y_degree * 4096 / 360 *0.25),880,880,speed)
-        time.sleep(0.05)
+        if x_target != 0 and y_target != 0:
+            self.x_differ =  x_target - 160 
+            self.y_differ =  y_target - 120 
+            self.x_degree = self.x_differ * (65 / 320)
+            self.y_degree = self.y_differ * (38 / 240)
+            self.move_head(1, self.head_horizon - round(self.x_degree * 4096 / 360 *0.15),880,880,speed)
+            self.move_head(2, self.head_vertical - round(self.y_degree * 4096 / 360 *0.15),880,880,speed)
+            time.sleep(0.05)
 
     def body_trace_rotate(self,degree) :
         self.x_body_rotate = self.head_horizon - 2048
@@ -243,7 +245,7 @@ class motor_move():
             time.sleep(1.2)
             send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
             time.sleep(1.2)
-            motor.move_head(1,1800,880,880,50) #1748
+            motor.move_head(1,1820,880,880,50) #1748
             time.sleep(2.5)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
             target.ball_parameter()
             
@@ -328,6 +330,7 @@ class motor_move():
             time.sleep(0.5)
             motor.move_head(1,2048,880,880,30)
             time.sleep(0.2)
+            send.sendBodySector(5301)
             # send.sendBodySector(3)   #33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333
             print("-------------------------send.sendBodySector(3)------------------------------")
             time.sleep(2)
@@ -433,7 +436,7 @@ class motor_move():
         send.drawImageFunction(4,1,target.basket_x_min ,target.basket_x_max ,target.basket_y_min ,target.basket_y_max,0,0,0)
         target.basket_parameter()
         #if target.basket_size >= 300 and abs(motor.head_horizon-2048) < 600:
-
+        print("Basket Y = ",target.basket_size , "Basket vert = ",motor.head_vertical ,target.basket_size)
         if abs(target.basket_x - 160) > 5  or abs(target.basket_y - 120) > 4 :
             motor.trace_revise(target.basket_x,target.basket_y,25)
             target.basket_parameter() 
@@ -503,10 +506,10 @@ class motor_move():
         print("target.basket_y - 120",target.basket_y - 120)
         
         target.basket_parameter()
-        if abs(target.basket_y - 120) > 1 :
-            motor.trace_revise(target.basket_x,target.basket_y,90)
-        
-        else  :
+        if abs(target.basket_y - 120) > 3 :
+            motor.trace_revise(target.basket_x,target.basket_y,30)
+    
+        elif abs(target.basket_y - 120) <= 3  :
             self.sixty_distance = sqrt(abs((3600*six)/target.basket_size))
             self.ninty_distance = sqrt(abs((8100*nine)/target.basket_size))
             if ( six + nine ) / 2 > target.basket_size :
@@ -581,11 +584,11 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[1755,725] #sector 111
+    basket_size_60_90 =[1885,900] #sector 111
     five_point_degree = [1950]
     throw_plus =  4  #line  0   battery +11 
 
-    throw_ball_point = [0,850,1840] #投籃未寫 #strength
+    throw_ball_point = [910,910,1840] #投籃未寫 #strength
     #                    size,degree
     ball_catch_size =[1640]
     # # for size          三分  五分  灌籃
@@ -593,9 +596,9 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-400,0,-1]
-    left_correct  = [-500,-100,7]
-    right_correct = [-400,300,-7]
+    correct       = [-100,0,4]
+    left_correct  = [-100,0,9]
+    right_correct = [-100,0,-5]
     #                  x , y , theta   
 
 
@@ -745,12 +748,12 @@ if __name__ == '__main__' :
                         send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
                         #send.sendBodySector(3)
                         time.sleep(3)
-                        target.basket_size = 0
+                        # target.basket_size = 0
                         print(".................................................")
                         step = 'find_basekt'#@@@@@@@@@@@@@@@@@@
                                                                         
 
-                    if step == 'find_basekt' :#@@@@@@@@@@@@@@@@@@
+                    elif step == 'find_basekt' :#@@@@@@@@@@@@@@@@@@
                         target.basket_parameter()
                         if target.basket_size < 350 :
                                 
@@ -766,11 +769,11 @@ if __name__ == '__main__' :
                                 
 
                     elif step == 'basket_trace' :
-                        if abs(target.basket_x - 160) > 8  or abs(target.basket_y - 120) > 6 :
+                        if abs(target.basket_x - 160) > 12  or abs(target.basket_y - 120) > 9 :
                             target.basket_parameter() 
-                            motor.trace_revise(target.basket_x,target.basket_y,25)
+                            motor.trace_revise(target.basket_x,target.basket_y,35)
                             print("-------------basekt_trace有進喔--------------")
-                            time.sleep(0.05) 
+                            time.sleep(0.09) 
                         else :
                                                     
                             motor.bodyauto_close(1)                
@@ -781,7 +784,7 @@ if __name__ == '__main__' :
                         print("walk_to_basket")
                         target.basket_parameter()
                         print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
-                        motor.trace_revise(target.basket_x,target.basket_y,25)
+                        motor.trace_revise(target.basket_x,target.basket_y,35)
 
                         
 
@@ -814,16 +817,20 @@ if __name__ == '__main__' :
                                 print("motor.catch = ",motor.catch)
                                 if motor.catch == True :
                                     print("step is ",step)#@@@@@@@@@@@@@@@@@@@@@@
+                                    motor.move_head(1,five_point_degree[0],880,880,50)
+                                    motor.move_head(2,2048,880,880,50)
+                                    time.sleep(2)
 
                             elif sw == 1:
                                 print("----------------start the action of get point--------------")
                                 motor.body_trace_basket_straight_5(throw_ball_point[sw],basket_error[sw])
                                 print("motor.catch = ",motor.catch)
                                 if motor.catch == True :
-                                    print("step is ",step)#@@@@@@@@@@@@@@@@@@@@@@@
+                                    print("step is kkkk",step)#@@@@@@@@@@@@@@@@@@@@@@@
                                     motor.move_head(1,five_point_degree[0],880,880,50)
                                     motor.move_head(2,2048,880,880,50)
                                     time.sleep(2)
+                                
 
                     
                     
@@ -853,29 +860,56 @@ if __name__ == '__main__' :
                         if step == 'walk_to_basket' :
                             time.sleep(0.03)
                             target.basket_parameter()
+                            print("sdfghjkl;",target.basket_x,target.basket_size)
+                                
                             if target.basket_x != 0 :
                                 motor.WaistFix(target.basket_x,target.basket_y,160,120)
                                 print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 3:
+                                if abs(target.basket_x-160) < 1:
                                     step = 'find'#@@@@@@@@@@@@@@@@@@@@@
-                                    print("step==========",step)
+                                    print("step======",step)#@@@@@@@@@@@@@@@@@
 
-                        elif step == 'find' :#@@@@@@@@@@@@@@@@
-                            time.sleep(0.5)
+                        elif step == 'find' :#@@@@@@@@@@@@@@@@@@@@@@@@
+                            time.sleep(0.05)
                             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
-                            print("3333333333")
+                            print("throw_strength = ", motor.throw_strength)
+                            if motor.start_get_point == True :
+
+                                send.sendSingleMotor(9,-round((motor.distance_new-90)*1.8),15)
+                                time.sleep(0.7)
+                                step = "waisting"                           
+
+                        elif step == 'waisting' :#@@@@@@@@@@@@@@@@@@@@@@@@
+                            
+                            time.sleep(0.1)
+                            
+                            send.sendBodySector(5502)
+                            time.sleep(2)
+                            motor.throw_strength = motor.throw_strength - throw_plus
+                            send.sendHandSpeed(503,motor.throw_strength + throw_plus )
+                            print("sdfghjkl;")
+                            time.sleep(2)
+                            send.sendBodySector(503)
+                            print("tttttt",motor.throw_strength + throw_plus)
+
+
+                            step ="finish"
                             
                             
                     
 
                     elif sw == 1:
+                        
                         if step == 'walk_to_basket' :
-                           if step == 'walk_to_basket' :
+                            time.sleep(0.03)
                             target.basket_parameter()
+                            print('aaaaaa')
+                            print("sdfghjkl;",target.basket_x,target.basket_size)
+                                
                             if target.basket_x != 0 :
                                 motor.WaistFix(target.basket_x,target.basket_y,160,120)
                                 print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 3:
+                                if abs(target.basket_x-160) < 1:
                                     step = 'find'#@@@@@@@@@@@@@@@@@@@@@
                                     print("step======",step)#@@@@@@@@@@@@@@@@@
 
@@ -949,6 +983,7 @@ if __name__ == '__main__' :
                     print(".(.| |..| |.)(.| |..| |.)♥")
 
                     motor.switch_control()
+
                     
 
                             
