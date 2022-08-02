@@ -302,7 +302,7 @@ class motor_move():
     def body_trace_basket_straight_2(self,degree,basket_error) :
         
         if self.head_vertical - degree > basket_error  and self.head_vertical > 1980 :
-            motor.MoveContinuous(2900+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
+            motor.MoveContinuous(2700+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead bbbb to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
 
@@ -623,11 +623,11 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[2020,900] #sector 111
+    basket_size_60_90 =[2020, 899] #sector 111   left side 2020 899 right side  2303 961
     five_point_degree = [1960]
-    throw_plus =  0  #line  0   battery +11 
+    throw_plus =  5 #line  0   battery +11 
 
-    throw_ball_point = [910,1054,1840] #投籃未寫 #strength
+    throw_ball_point = [910,1122,1840] #投籃未寫 #strength left 1122 right 1122
     #                    size,degree
     ball_catch_size =[1640]
     # # for size          三分  五分  灌籃
@@ -635,9 +635,9 @@ if __name__ == '__main__' :
     # for degree          三分  五分  灌籃
     
 
-    correct       = [-300,0,4]
-    left_correct  = [-300,0,10]
-    right_correct = [-300,0,-7]
+    correct       = [-250,-100,4]
+    left_correct  = [-250,-100,9]
+    right_correct = [-250,-100,-7]
     #                  x , y , theta   
 
 
