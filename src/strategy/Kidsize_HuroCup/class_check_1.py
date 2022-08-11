@@ -291,7 +291,7 @@ class motor_move():
             self.MoveW = -15
         
         self.waist_reset((self.waist_position + self.MoveW), 30)
-        self.move_head(2, self.head_vertical + round(self.y_degree * 4096 / 360 *0.15),880,880,20)
+        self.move_head(2, self.head_vertical + round(self.y_degree * 4096 / 360 *0.1),880,880,20)
         time.sleep(0.15)
         
         # time.sleep(0.2)
@@ -528,7 +528,7 @@ class motor_move():
             self.throw_strength = round(abs( 311 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
 
         elif self.distance_new >= 95 and self.distance_new < 100 : #70cm
-            self.throw_strength = round(abs( 319 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5)))
+            self.throw_strength = round(abs( 319 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
 
         elif self.distance_new >= 100 and self.distance_new < 105 : #70cm
             self.throw_strength = round(abs( 322 * (-(self.distance_new - 105)/5) + 324 * ((self.distance_new - 100)/5)))
@@ -623,23 +623,21 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[2020, 899] #sector 111   left side 2020 899 right side  2303 961
-    five_point_degree = [1960]
-    throw_plus =  5 #line  0   battery +11 
+    basket_size_60_90 =[2116, 810] #sector 111   left side 1978, 899 right side  2140, 961
+    five_point_degree = [1940]# left side 1960 right side  1940   too left-big too right-small
+    throw_plus =  0 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1122,1840] #投籃未寫 #strength left 1122 right 1122
+    throw_ball_point = [910,1100,1846] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
     ball_catch_size =[1640]
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-
-    correct       = [-250,-100,4]
-    left_correct  = [-250,-100,9]
-    right_correct = [-250,-100,-7]
+    correct       = [-150,0,4]
+    left_correct  = [-150,0,8]
+    right_correct = [-150,0,-7]
     #                  x , y , theta   
-
 
     basket_error = [70,100,60]
     #  for size    三分  五分  灌籃
@@ -692,7 +690,7 @@ if __name__ == '__main__' :
                             motor.trace_revise(target.ball_x,target.ball_y,35)
                             time.sleep(0.05) 
                         else :
-                            if ball_catch_size[0]-80 < motor.head_vertical <ball_catch_size[0]+210 and  (1668 <= motor.head_horizon <=2448):
+                            if ball_catch_size[0]-90 < motor.head_vertical <ball_catch_size[0]+210 and  (1868 <= motor.head_horizon <=2448):
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
                                 send.sendBodySector(55)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
@@ -704,7 +702,7 @@ if __name__ == '__main__' :
                                 motor.directly = True
                                 step = 'walk_to_ball'
                                 
-                            elif (motor.head_vertical <= ball_catch_size[0]-80) or (ball_catch_size[0]-80 < motor.head_vertical <ball_catch_size[0]+210 and (1668 >= motor.head_horizon or motor.head_horizon>=2448)):
+                            elif (motor.head_vertical <= ball_catch_size[0]-80) or (ball_catch_size[0]-90 < motor.head_vertical <ball_catch_size[0]+210 and (1868 >= motor.head_horizon or motor.head_horizon>=2448)):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
@@ -850,6 +848,8 @@ if __name__ == '__main__' :
                                 send.sendBodySector(5301)
                                 print("-------------------------send.sendBodySector(3)------------------------------")
                                 time.sleep(2)
+                                send.sendBodySector(5595)
+                                time.sleep(1)
                                 motor.catch = True
                                 motor.move_head(1,five_point_degree[0],880,880,50)
                                 motor.move_head(2,2048,880,880,50)
@@ -959,9 +959,9 @@ if __name__ == '__main__' :
                             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
                             print("throw_strength = ", motor.throw_strength)
                             if motor.start_get_point == True :
-
-                                send.sendSingleMotor(9,-round((motor.distance_new-90)*1.8),15)
-                                time.sleep(2)
+                                if motor.directly == False :
+                                    send.sendSingleMotor(9,-round((motor.distance_new-90)*1.8),15)
+                                    time.sleep(2)
                                 step = "waisting"                           
 
                         elif step == 'waisting' :#@@@@@@@@@@@@@@@@@@@@@@@@
@@ -1003,10 +1003,11 @@ if __name__ == '__main__' :
                             motor.basket_distance(basket_size_60_90[0],basket_size_60_90[1])
                             print("throw_strength = ", motor.throw_strength)
                             if motor.start_get_point == True :
-                                
-                                send.sendSingleMotor(9,round((motor.distance_new-90)*3.2),15)
-                                time.sleep(1)
-                                step = "waisting"                           
+                                if motor.directly == False :
+                                    send.sendSingleMotor(9,-round((motor.distance_new-90)*1.8),15)
+                                    print("ASDFGHJ")
+                                    time.sleep(2)
+                                step = "waisting"                          
 
                         elif step == 'waisting' :#@@@@@@@@@@@@@@@@@@@@@@@@
                             
