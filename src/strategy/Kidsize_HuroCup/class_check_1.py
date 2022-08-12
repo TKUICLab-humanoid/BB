@@ -102,6 +102,7 @@ class motor_move():
         self.num = 3
         self.directly = False
         self.clock = 3
+        self.temp = 2048
         
 
     def switch_control(self):                                                       #need test
@@ -627,7 +628,7 @@ if __name__ == '__main__' :
     five_point_degree = [1940]# left side 1960 right side  1940   too left-big too right-small
     throw_plus =  0 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1100,1846] #投籃未寫 #strength left 1054 right 1156
+    throw_ball_point = [910,1054,1846] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
     ball_catch_size =[1640]
     # # for size          三分  五分  灌籃
@@ -690,7 +691,13 @@ if __name__ == '__main__' :
                             motor.trace_revise(target.ball_x,target.ball_y,35)
                             time.sleep(0.05) 
                         else :
-                            if ball_catch_size[0]-90 < motor.head_vertical <ball_catch_size[0]+210 and  (1868 <= motor.head_horizon <=2448):
+
+                            print("motor.head_vertical",motor.head_vertical)
+                            print("motor.head_horizon",motor.head_horizon)
+                            # time.sleep(8)
+
+                            if ball_catch_size[0]-40 < motor.head_vertical <ball_catch_size[0]+200 and  (1668 <= motor.head_horizon <=2848):
+                                motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
                                 send.sendBodySector(55)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
@@ -702,7 +709,7 @@ if __name__ == '__main__' :
                                 motor.directly = True
                                 step = 'walk_to_ball'
                                 
-                            elif (motor.head_vertical <= ball_catch_size[0]-80) or (ball_catch_size[0]-90 < motor.head_vertical <ball_catch_size[0]+210 and (1868 >= motor.head_horizon or motor.head_horizon>=2448)):
+                            elif (motor.head_vertical <= ball_catch_size[0]-100):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
@@ -722,15 +729,26 @@ if __name__ == '__main__' :
                                 
 
                     elif  step == 'walk_to_ball' :#@@@@@@@@@@@@@@@@@@
-                        if motor.directly == True  and target.ball_size <= 200 :
-                            motor.clock = motor.clock - 1
-                            if motor.clock > 0 :
-                                print("tcvyubhbgc")
-                                time.sleep(1)
-                            elif motor.clock <= 0 and motor.waist_position < 2548:
-                                print("hothothothto")
-                                motor.waist_reset(motor.waist_position + 10,30)
-                                time.sleep(0.3)
+                        print("motor.temp",motor.temp)
+
+                        if motor.directly == True  and motor.temp > 2048 :
+                            motor.waist_position = 2048+round((motor.temp-ball_catch_size[0])*0.4)
+                            send.sendSingleMotor(9,round((motor.temp-ball_catch_size[0])*0.4),5)
+                            time.sleep(4)
+                            print("ubwuivbwuivb")
+                            target.ball_parameter() 
+                            motor.found = True
+                            step = 'ball_trace'
+
+                        # if motor.directly == True  and target.ball_size <= 200 :
+                            # motor.clock = motor.clock - 1
+                            # if motor.clock > 0 :
+                            #     print("tcvyubhbgc")
+                            #     time.sleep(1)
+                            # elif motor.clock <= 0 and motor.waist_position < 2548:
+                            #     print("hothothothto")
+                            #     motor.waist_reset(motor.waist_position + 10,30)
+                            #     time.sleep(0.3)
 
                         else :
                             if motor.directly == True :
@@ -793,14 +811,21 @@ if __name__ == '__main__' :
                         
                         time.sleep(1)   
                         # send.sendBodySector(2)    #1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
-                        send.sendBodySector(6)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-                        time.sleep(1)     
+                       
+                        if motor.directly == False :
+                            send.sendBodySector(6)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+                            print("fuckvbhubruiefe...")
+                            time.sleep(1)
+                        elif motor.directly == True :
+                            print("fuckefef...")
+                            send.sendBodySector(6873)
+                            time.sleep(1)      
                         print("stop to the ball")
                         print("----------------------------------ready to waist_reset---------------------------------------")
                         
                         
-                        motor.waist_reset(2048,50)
-                        time.sleep(2)  
+                        motor.waist_reset(2048,70)
+                        time.sleep(3)  
                         if motor.directly == False :
                             send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
                             print("fuckvbhubrui...")
