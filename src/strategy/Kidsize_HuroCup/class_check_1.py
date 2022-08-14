@@ -283,19 +283,19 @@ class motor_move():
             target.ball_parameter()
             
     def WaistFix(self, Target_X, Target_Y, TargetXCenter, TargeYCenter):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
-        # self.MoveW = round((TargetXCenter - Target_X)*0.5)
-        # self.MoveY = TargeYCenter - Target_Y
-
+        
         self.MoveW = TargetXCenter - Target_X
         if self.MoveW > 15:
             self.MoveW = 15
         elif self.MoveW < -15:
             self.MoveW = -15
         
-        self.waist_reset((self.waist_position + self.MoveW), 30)
-        self.move_head(2, self.head_vertical + round(self.y_degree * 4096 / 360 *0.1),880,880,20)
-        time.sleep(0.15)
         
+
+        self.waist_reset((self.waist_position + self.MoveW), 30)
+        self.move_head(2, self.head_vertical ,880,880,20)
+        
+        time.sleep(0.15)
         # time.sleep(0.2)
 
 
@@ -626,8 +626,8 @@ if __name__ == '__main__' :
     # 0 for test 1 for stategy
 
     basket_size_60_90 =[2116, 899] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [1950]# left side 1960 right side  1940   too left-big too right-small
-    throw_plus =  -1 #line  0   left side 0 right side  4
+    five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
+    throw_plus = -1 #line  0   left side 0 right side  4
 
     throw_ball_point = [910,1188,1850] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
@@ -697,7 +697,7 @@ if __name__ == '__main__' :
                             print("motor.head_horizon",motor.head_horizon)
                             # time.sleep(8)
 
-                            if (ball_catch_size[0]+70 <= motor.head_vertical <ball_catch_size[0]+200) and  (1698 <= motor.head_horizon <=2398):
+                            if (ball_catch_size[0]+70 <= motor.head_vertical <ball_catch_size[0]+190) and  (1698 <= motor.head_horizon <=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -711,7 +711,7 @@ if __name__ == '__main__' :
                                 motor.dir_num = 2
                                 step = 'walk_to_ball'
 
-                            elif (ball_catch_size[0] < motor.head_vertical <ball_catch_size[0]+70) and  (1698 <= motor.head_horizon <=2398):
+                            elif (ball_catch_size[0]+30 < motor.head_vertical <ball_catch_size[0]+70) and  (1698 <= motor.head_horizon <=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -725,7 +725,7 @@ if __name__ == '__main__' :
                                 motor.dir_num = 1
                                 step = 'walk_to_ball'
 
-                            elif (ball_catch_size[0]-40 <= motor.head_vertical <ball_catch_size[0]+40) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
+                            elif (ball_catch_size[0]+5 <= motor.head_vertical <ball_catch_size[0]+30) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -740,7 +740,7 @@ if __name__ == '__main__' :
                                 step = 'walk_to_ball'
 
                                 
-                            elif (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-10) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
+                            elif (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]+5) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
@@ -1059,7 +1059,7 @@ if __name__ == '__main__' :
                             if target.basket_x != 0 :
                                 motor.WaistFix(target.basket_x,target.basket_y,160,120)
                                 print("abs(target.basket_x-160)",abs(target.basket_x-160))
-                                if abs(target.basket_x-160) < 1:
+                                if abs(target.basket_x-160) < 2:
                                     step = 'find'#@@@@@@@@@@@@@@@@@@@@@
                                     print("step======",step)#@@@@@@@@@@@@@@@@@
 
