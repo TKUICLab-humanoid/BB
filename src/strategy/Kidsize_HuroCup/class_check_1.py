@@ -36,14 +36,16 @@ class target_location():
         self.ball_y = 0
         self.ball_size = 0
         for j in range (self.color_mask_subject_red):
-            if send.color_mask_subject_size [0][j] > 350  and send.color_mask_subject_size [0][j] > self.ball_size:
-                self.ball_x =  send.color_mask_subject_X [0][j]
-                self.ball_y = send.color_mask_subject_Y [0][j]
-                self.ball_size = send.color_mask_subject_size [0][j]
-                self.ball_x_min = send.color_mask_subject_XMin[0][j] 
-                self.ball_y_min = send.color_mask_subject_YMin[0][j] 
-                self.ball_x_max = send.color_mask_subject_XMax[0][j] 
-                self.ball_y_max =send.color_mask_subject_YMax[0][j]
+            if 310 > send.color_mask_subject_X [0][j] > 10 and 230 > send.color_mask_subject_Y [0][j] > 10:
+
+                if send.color_mask_subject_size [0][j] > 350  and send.color_mask_subject_size [0][j] > self.ball_size:
+                    self.ball_x =  send.color_mask_subject_X [0][j]
+                    self.ball_y = send.color_mask_subject_Y [0][j]
+                    self.ball_size = send.color_mask_subject_size [0][j]
+                    self.ball_x_min = send.color_mask_subject_XMin[0][j] 
+                    self.ball_y_min = send.color_mask_subject_YMin[0][j] 
+                    self.ball_x_max = send.color_mask_subject_XMax[0][j] 
+                    self.ball_y_max =send.color_mask_subject_YMax[0][j]
             
                 
 
@@ -627,18 +629,18 @@ if __name__ == '__main__' :
 
     basket_size_60_90 =[2116, 899] #sector 111   left side 1978, 899 right side  2140, 961
     five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
-    throw_plus = -1 #line  0   left side 0 right side  4
+    throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1188,1850] #投籃未寫 #strength left 1054 right 1156
+    throw_ball_point = [910,1200,1850] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1640]
+    ball_catch_size =[1700] #line  1650
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [-150,0,0]
-    left_correct  = [-150,0,6]
-    right_correct = [-150,0,-6]
+    correct       = [-350,0,-3]
+    left_correct  = [-400,0,6]
+    right_correct = [-400,0,-8]
     #                  x , y , theta   
 
     basket_error = [70,100,60]
@@ -646,7 +648,7 @@ if __name__ == '__main__' :
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
 
-    ball_correct = [50,100]
+    ball_correct = [50,80]
 
     trace_parameter =[80]#25
     too_big = True
@@ -669,19 +671,22 @@ if __name__ == '__main__' :
                 if motor.found == False  :
                     print("head head sdfghjkl;gfdsdfghjkl;",motor.head_vertical)
                     if step == 'begin':
+                        send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
+                        time.sleep(0.7)
+                        send.sendBodySector(8910)
+                        time.sleep(0.2)
                         step = 'find_ball'
 
                     elif step == 'find_ball':#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         
                         if target.ball_size <= 350 :
-                            motor.view_move(2428,1668,1800,1150,40,0.05)                 
+                            motor.view_move(2428,1668,1800,1200,40,0.05)                 
                             print("start to find the ball")
                             print("stop====\n")
                             target.ball_parameter()  
                             print("  ball => x:",target.ball_x," y:",target.ball_y," size:",target.ball_size)
                         elif target.ball_size > 350 :
-                            send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
-                            time.sleep(1)
+                            
                             step = 'open_ball_trace'#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                             
 
@@ -697,7 +702,8 @@ if __name__ == '__main__' :
                             print("motor.head_horizon",motor.head_horizon)
                             # time.sleep(8)
 
-                            if (ball_catch_size[0]+70 <= motor.head_vertical <ball_catch_size[0]+190) and  (1698 <= motor.head_horizon <=2398):
+                            # if (1740 <= motor.head_vertical < 1830) and  (1698 <= motor.head_horizon <=2398):
+                            if (ball_catch_size[0]+10 <= motor.head_vertical <ball_catch_size[0]+130) and  (1698 <= motor.head_horizon <=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -711,7 +717,8 @@ if __name__ == '__main__' :
                                 motor.dir_num = 2
                                 step = 'walk_to_ball'
 
-                            elif (ball_catch_size[0]+30 < motor.head_vertical <ball_catch_size[0]+70) and  (1698 <= motor.head_horizon <=2398):
+                            # elif (1670 < motor.head_vertical < 1740) and  (1698 <= motor.head_horizon <=2398):
+                            elif (ball_catch_size[0]-30 < motor.head_vertical <ball_catch_size[0]+10) and  (1698 <= motor.head_horizon <=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -724,8 +731,9 @@ if __name__ == '__main__' :
                                 motor.directly = True
                                 motor.dir_num = 1
                                 step = 'walk_to_ball'
-
-                            elif (ball_catch_size[0]+5 <= motor.head_vertical <ball_catch_size[0]+30) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
+                            
+                            # elif (1645 <= motor.head_vertical <1670) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
+                            elif (ball_catch_size[0]-55 <= motor.head_vertical <ball_catch_size[0]-30) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
                                 motor.temp = motor.head_horizon
                                 motor.move_head(1,1850,880,880,50) #1748
                                 time.sleep(0.1)
@@ -740,7 +748,7 @@ if __name__ == '__main__' :
                                 step = 'walk_to_ball'
 
                                 
-                            elif (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]+5) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
+                            elif (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-55) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
@@ -873,7 +881,7 @@ if __name__ == '__main__' :
                             print("fuck...")
                             send.sendBodySector(7)
                             time.sleep(2)
-                        time.sleep(1)
+                        time.sleep(3)
                         # target.basket_size = 0
                         print(".................................................")
                         step = 'find_basekt'#@@@@@@@@@@@@@@@@@@
@@ -883,14 +891,14 @@ if __name__ == '__main__' :
                         target.basket_parameter()
                         if target.basket_size < 500 :
                                 
-                                print("find_basket")
-                                motor.view_move(2548,1548,2048,1948,40,0.04)
+                                print("find_basket",target.basket_size)
+                                motor.view_move(2548,1548,2048,1948,50,0.04)
 
                                 target.basket_parameter()
                                 print("  basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
                         elif target.basket_size > 500 :
                                 step = 'basket_trace'#@@@@@@@@@@@@@@@@@@
-                                time.sleep(0.5)
+                                time.sleep(1)
                                 target.basket_parameter()
                                 print("jump to basket_trace   !!!!!!!!!")
                                 
