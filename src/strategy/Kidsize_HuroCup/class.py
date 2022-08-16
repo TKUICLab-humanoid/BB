@@ -609,11 +609,11 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[1755,783] #sector 111
-    five_point_degree = [1950]
+    basket_size_60_90 =[2020,899] #sector 111
+    five_point_degree = [1960]
     throw_plus =  0  #line  0   battery +11 
 
-    throw_ball_point = [910,880,1840] #投籃未寫 #strength
+    throw_ball_point = [910,1122,1840] #投籃未寫 #strength
     #                    size,degree
     ball_catch_size =[1640]
     # # for size          三分  五分  灌籃
