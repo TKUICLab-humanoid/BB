@@ -518,6 +518,7 @@ class motor_move():
             
             pass
         elif self.now_state != next_state :
+            send.sendSensorReset()
             send.sendBodyAuto(0,0,0,0,1,0)
             self.now_state = next_state
                 
