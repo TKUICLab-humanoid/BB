@@ -113,13 +113,16 @@ class motor_move():
         motor = motor_move()
         
         if    send.DIOValue == 9 or send.DIOValue == 12 :  
-            motor.test_distance()                
+            motor.test_distance() 
+            print("Ball Y = ",target.basket_size , "Basket vert = ",motor.head_vertical)               
             time.sleep(0.2)                                     #籃框               上下下下 or 下下上下 or 上下上下
             self.switch_reset_flag = 1 #sector 111  
             self.in_tacties = 0
 
-        elif    send.DIOValue == 13:                                                  #球                 上下up下
-            print("Basket Y = ",target.basket_size , "Basket vert = ",motor.head_vertical)
+        elif    send.DIOValue == 13: 
+            motor.trace_revise(target.ball_x,target.ball_y,25)
+                                                             #球                 上下up下
+            print("Ball vert = ",motor.head_vertical)
             self.switch_reset_flag = 1
             self.in_tacties = 0
             time.sleep(0.03)
@@ -260,15 +263,15 @@ class motor_move():
     def body_trace_straight(self,degree,ball_degree) :
         
         if (self.head_vertical - degree) - 150 > ball_degree :
-            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(2400+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead bigbigbigbigbigbigbig= ",self.head_vertical)
             time.sleep(0.05)
         elif (self.head_vertical - degree) - 150 < ball_degree and (self.head_vertical - degree)  > ball_degree:
-            motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead smallsmallsmallsmall= ",self.head_vertical)
             time.sleep(0.05)
         elif (self.head_vertical - degree) < -ball_degree :
-            motor.MoveContinuous(-1500+correct[0],0+correct[1],0+correct[2],100,100,2)
+            motor.MoveContinuous(-2400+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "go back = ",self.head_vertical)
             time.sleep(0.05)
         elif  abs(self.head_vertical - degree) <= ball_degree :
@@ -339,20 +342,20 @@ class motor_move():
 
     def body_trace_basket_straight_3(self,basket_size,basket_error) :
         
-        if target.basket_size - basket_size < -basket_error and target.basket_size > 2100:
+        if target.basket_size - basket_size < -basket_error and target.basket_size > 1718:
             send.sendContinuousValue(300+correct[0],0+correct[1],0,0+correct[2],0)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
-        elif target.basket_size - basket_size < -basket_error and target.basket_size < 2100:
+        elif target.basket_size - basket_size < -basket_error and target.basket_size < 1718:
             send.sendContinuousValue(1200+correct[0],0+correct[1],0,0+correct[2],0)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
 
-        elif target.basket_size - basket_size > basket_error and target.basket_size > 2400:
+        elif target.basket_size - basket_size > basket_error and target.basket_size > 1718:
             send.sendContinuousValue(-1200+correct[0],0+correct[1],0,0+correct[2],0)#!!!!!!!!!!!!!!!!!
             print( "--------------------go back from basket-------------------- ",self.head_vertical)
             time.sleep(0.05)   
-        elif target.basket_size - basket_size > basket_error and target.basket_size < 2400:
+        elif target.basket_size - basket_size > basket_error and target.basket_size < 1718:
             send.sendContinuousValue(-800+correct[0],0+correct[1],0,0+correct[2],0)#!!!!!!!!!!!!!!!!!
             print( "--------------------go back from basket-------------------- ",self.head_vertical)
             time.sleep(0.05)
@@ -633,14 +636,14 @@ if __name__ == '__main__' :
 
     throw_ball_point = [910,1200,1850] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1700] #line  1650
+    ball_catch_size =[1500] #line  1650
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [-350,0,-3]
-    left_correct  = [-400,0,6]
-    right_correct = [-400,0,-8]
+    correct       = [0,0,-1]
+    left_correct  = [0,0,3]
+    right_correct = [0,0,-5]
     #                  x , y , theta   
 
     basket_error = [70,100,60]
@@ -673,7 +676,7 @@ if __name__ == '__main__' :
                     if step == 'begin':
                         send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
                         time.sleep(0.7)
-                        send.sendBodySector(8910)
+                        # send.sendBodySector(8910)
                         time.sleep(0.2)
                         step = 'find_ball'
 
