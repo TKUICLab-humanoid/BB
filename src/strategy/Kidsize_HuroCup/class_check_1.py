@@ -309,12 +309,12 @@ class motor_move():
     def body_trace_basket_straight_2(self,degree,basket_error) :
         
         if self.head_vertical - degree > basket_error  and self.head_vertical > 1990 :
-            motor.MoveContinuous(2500+correct[0],0+correct[1],0+correct[2],75,100,2)#!!!!!!!!!!!!!!!
+            motor.MoveContinuous(3500+correct[0],0+correct[1],0+correct[2],75,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead bbbb to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
 
         elif self.head_vertical - degree > basket_error and  self.head_vertical < 1990:
-            motor.MoveContinuous(600+correct[0],0+correct[1],0+correct[2],150,100,2)#!!!!!!!!!!!!!!!
+            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],150,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead sss to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)    
         elif self.head_vertical - degree < basket_error and abs(self.head_vertical - degree) > basket_error:
@@ -634,7 +634,7 @@ if __name__ == '__main__' :
     five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1200,1850] #投籃未寫 #strength left 1054 right 1156
+    throw_ball_point = [910,1200,1718] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
     ball_catch_size =[1500] #line  1650
     # # for size          三分  五分  灌籃
@@ -676,7 +676,7 @@ if __name__ == '__main__' :
                     if step == 'begin':
                         send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
                         time.sleep(0.7)
-                        # send.sendBodySector(8910)
+                        send.sendBodySector(8910)
                         time.sleep(0.2)
                         step = 'find_ball'
 
@@ -706,52 +706,52 @@ if __name__ == '__main__' :
                             # time.sleep(8)
 
                             # if (1740 <= motor.head_vertical < 1830) and  (1698 <= motor.head_horizon <=2398):
-                            if (ball_catch_size[0]+10 <= motor.head_vertical <ball_catch_size[0]+130) and  (1698 <= motor.head_horizon <=2398):
-                                motor.temp = motor.head_horizon
-                                motor.move_head(1,1850,880,880,50) #1748
-                                time.sleep(0.1)
-                                send.sendBodySector(55)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-                                time.sleep(0.2)
+                            # if (ball_catch_size[0]+10 <= motor.head_vertical <ball_catch_size[0]+130) and  (1698 <= motor.head_horizon <=2398):
+                            #     motor.temp = motor.head_horizon
+                            #     motor.move_head(1,1850,880,880,50) #1748
+                            #     time.sleep(0.1)
+                            #     send.sendBodySector(55)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+                            #     time.sleep(0.2)
                                 
-                                target.ball_parameter()
-                                time.sleep(2)
+                            #     target.ball_parameter()
+                            #     time.sleep(2)
                                 
-                                motor.directly = True
-                                motor.dir_num = 2
-                                step = 'walk_to_ball'
+                            #     motor.directly = True
+                            #     motor.dir_num = 2
+                            #     step = 'walk_to_ball'
 
-                            # elif (1670 < motor.head_vertical < 1740) and  (1698 <= motor.head_horizon <=2398):
-                            elif (ball_catch_size[0]-30 < motor.head_vertical <ball_catch_size[0]+10) and  (1698 <= motor.head_horizon <=2398):
-                                motor.temp = motor.head_horizon
-                                motor.move_head(1,1850,880,880,50) #1748
-                                time.sleep(0.1)
-                                send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-                                time.sleep(0.2)
-                                print("sjkcnqnvklqmeveqvmqeibmovqpe,obinbqmo,pqeqbqoinkeob")
-                                target.ball_parameter()
-                                time.sleep(2)
+                            # # elif (1670 < motor.head_vertical < 1740) and  (1698 <= motor.head_horizon <=2398):
+                            # elif (ball_catch_size[0]-30 < motor.head_vertical <ball_catch_size[0]+10) and  (1698 <= motor.head_horizon <=2398):
+                            #     motor.temp = motor.head_horizon
+                            #     motor.move_head(1,1850,880,880,50) #1748
+                            #     time.sleep(0.1)
+                            #     send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+                            #     time.sleep(0.2)
+                            #     print("sjkcnqnvklqmeveqvmqeibmovqpe,obinbqmo,pqeqbqoinkeob")
+                            #     target.ball_parameter()
+                            #     time.sleep(2)
                                 
-                                motor.directly = True
-                                motor.dir_num = 1
-                                step = 'walk_to_ball'
+                            #     motor.directly = True
+                            #     motor.dir_num = 1
+                            #     step = 'walk_to_ball'
                             
-                            # elif (1645 <= motor.head_vertical <1670) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
-                            elif (ball_catch_size[0]-55 <= motor.head_vertical <ball_catch_size[0]-30) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
-                                motor.temp = motor.head_horizon
-                                motor.move_head(1,1850,880,880,50) #1748
-                                time.sleep(0.1)
-                                send.sendBodySector(5872)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
-                                time.sleep(0.2)
-                                print("dfghjkl;dfghjkbhuwfneuinvieuqnviquenviequnveiqnviueqnvuenvie")
-                                target.ball_parameter()
-                                time.sleep(2)
+                            # # elif (1645 <= motor.head_vertical <1670) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
+                            # elif (ball_catch_size[0]-55 <= motor.head_vertical <ball_catch_size[0]-30) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398):
+                            #     motor.temp = motor.head_horizon
+                            #     motor.move_head(1,1850,880,880,50) #1748
+                            #     time.sleep(0.1)
+                            #     send.sendBodySector(5872)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+                            #     time.sleep(0.2)
+                            #     print("dfghjkl;dfghjkbhuwfneuinvieuqnviquenviequnveiqnviueqnvuenvie")
+                            #     target.ball_parameter()
+                            #     time.sleep(2)
                                 
-                                motor.directly = True
-                                motor.dir_num = 1
-                                step = 'walk_to_ball'
+                            #     motor.directly = True
+                            #     motor.dir_num = 1
+                            #     step = 'walk_to_ball'
 
                                 
-                            elif (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-55) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
+                            if (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-55) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
