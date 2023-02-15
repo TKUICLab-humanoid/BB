@@ -308,13 +308,13 @@ class motor_move():
 
     def body_trace_basket_straight_2(self,degree,basket_error) :
         
-        if self.head_vertical - degree > basket_error  and self.head_vertical > 1990 :
-            motor.MoveContinuous(3500+correct[0],0+correct[1],0+correct[2],75,100,2)#!!!!!!!!!!!!!!!
+        if self.head_vertical - degree > basket_error  and self.head_vertical > 1965 :  #與籃匡距離（減速）
+            motor.MoveContinuous(1200+correct[0],0+correct[1],0+correct[2],75,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead bbbb to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)
 
-        elif self.head_vertical - degree > basket_error and  self.head_vertical < 1990:
-            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],150,100,2)#!!!!!!!!!!!!!!!
+        elif self.head_vertical - degree > basket_error and  self.head_vertical < 1965:
+            motor.MoveContinuous(1200+correct[0],0+correct[1],0+correct[2],150,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go ahead sss to basket---------------------  ",self.head_vertical)
             time.sleep(0.05)    
         elif self.head_vertical - degree < basket_error and abs(self.head_vertical - degree) > basket_error:
@@ -630,18 +630,18 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[2116, 899] #sector 111   left side 1978, 899 right side  2140, 961
+    basket_size_60_90 =[2116, 725] #sector 111   left side 1978, 899 right side  2140, 961
     five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1200,1718] #投籃未寫 #strength left 1054 right 1156
+    throw_ball_point = [0,837,1600] #投籃點 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1500] #line  1650
+    ball_catch_size =[1500] #line  1650 ＃球大小
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [0,0,-1]
+    correct       = [0,0,0]
     left_correct  = [0,0,3]
     right_correct = [0,0,-5]
     #                  x , y , theta   
@@ -676,7 +676,7 @@ if __name__ == '__main__' :
                     if step == 'begin':
                         send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
                         time.sleep(0.7)
-                        send.sendBodySector(8910)
+                        #send.sendBodySector(8910)
                         time.sleep(0.2)
                         step = 'find_ball'
 
@@ -945,7 +945,7 @@ if __name__ == '__main__' :
                         print("walk_to_basket")
                         target.basket_parameter()
                         print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
-                        motor.trace_revise(target.basket_x,target.basket_y,35)
+                        motor.trace_revise(target.basket_x,target.basket_y_max,35)
 
                         
 
