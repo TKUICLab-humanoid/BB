@@ -12,40 +12,107 @@ send=Sendmessage()
 
 class target_location():
     def __init__(self):
-        self.ball_x = 0
-        self.ball_y = 0
-        self.basket_x = 0
-        self.basket_y = 0
-        self.ball_size = 0
-        self.basket_size = 0
+        # self.ball_x = 0
+        # self.ball_y = 0
+        
+        # self.ball_size = 0
+        
         self.color_mask_subject_red = 0
         self.color_mask_subject_orange = 0
-        self.ball_x_min = 0
-        self.ball_y_min = 0
-        self.ball_x_max = 0
-        self.ball_y_max = 0
+        # self.ball_x_min = 0
+        # self.ball_y_min = 0
+        # self.ball_x_max = 0
+        # self.ball_y_max = 0
+
+
+        self.basket_size = 0
+        self.basket_x = 0
+        self.basket_y = 0
         self.basket_x_min = 0
         self.basket_y_min = 0
         self.basket_x_max = 0
         self.basket_y_max = 0
-        
-        
-    def ball_parameter(self):
-        self.color_mask_subject_red = send.color_mask_subject_cnts[0]
+
+        self.basket_size_list= [0]
+        self.basket_x_list = [0]
+        self.basket_y_list = [0]
+        self.basket_x_min_list = [0]
+        self.basket_y_min_list = [0]
+        self.basket_x_max_list = [0]
+        self.basket_y_max_list = [0]
+
         self.ball_x = 0
         self.ball_y = 0
         self.ball_size = 0
-        for j in range (self.color_mask_subject_red):
-            if 310 > send.color_mask_subject_X [0][j] > 10 and 230 > send.color_mask_subject_Y [0][j] > 10:
+        self.ball_x_min = 0
+        self.ball_y_min = 0
+        self.ball_x_max = 0
+        self.ball_y_max = 0
 
-                if send.color_mask_subject_size [0][j] > 350  and send.color_mask_subject_size [0][j] > self.ball_size:
-                    self.ball_x =  send.color_mask_subject_X [0][j]
-                    self.ball_y = send.color_mask_subject_Y [0][j]
-                    self.ball_size = send.color_mask_subject_size [0][j]
-                    self.ball_x_min = send.color_mask_subject_XMin[0][j] 
-                    self.ball_y_min = send.color_mask_subject_YMin[0][j] 
-                    self.ball_x_max = send.color_mask_subject_XMax[0][j] 
-                    self.ball_y_max =send.color_mask_subject_YMax[0][j]
+        self.ball_x_list = [0]
+        self.ball_y_list = [0]
+        self.ball_size_list = [0]
+        self.ball_x_min_list = [0]
+        self.ball_y_min_list = [0]
+        self.ball_x_max_list = [0]
+        self.ball_y_max_list = [0]
+
+    def ball_parameter(self):
+        self.color_mask_subject_red = send.color_mask_subject_cnts[0]
+        for j in range(self.color_mask_subject_red):
+            if send.color_mask_subject_size[0][j] > 800 :
+                self.ball_x_list.append(send.color_mask_subject_X[0][j])
+                self.ball_y_list.append(send.color_mask_subject_Y[0][j])
+                self.ball_size_list.append(send.color_mask_subject_size[0][j])
+                self.ball_x_min_list.append(send.color_mask_subject_XMin[0][j])
+                self.ball_y_min_list.append(send.color_mask_subject_YMin[0][j])
+                self.ball_x_max_list.append(send.color_mask_subject_XMax[0][j])
+                self.ball_y_max_list.append(send.color_mask_subject_YMax[0][j])
+            else :
+                self.ball_x_list.append(0)
+                self.ball_y_list.append(0)
+                self.ball_size_list.append(0)
+                self.ball_x_min_list.append(0)
+                self.ball_y_min_list.append(0)
+                self.ball_x_max_list.append(0)
+                self.ball_y_max_list.append(0)
+
+#=======================================================================================================================
+#list 取最大值
+        
+        self.ball_x = max(self.ball_x_list)
+        self.ball_y = max(self.ball_y_list)
+        self.ball_size = max(self.ball_size_list)
+        self.ball_x_min = max(self.ball_x_min_list)
+        self.ball_y_min = max(self.ball_y_min_list)
+        self.ball_x_max = max(self.ball_x_max_list)
+        self.ball_y_max =max(self.ball_y_max_list)
+
+        self.ball_x_list = [0]
+        self.ball_y_list = [0]
+        self.ball_size_list = [0]
+        self.ball_x_min_list = [0]
+        self.ball_y_min_list = [0]
+        self.ball_x_max_list = [0]
+        self.ball_y_max_list = [0]
+        
+        
+    # def ball_parameter(self):
+    #     self.color_mask_subject_red = send.color_mask_subject_cnts[0]
+    #     self.ball_x = 0
+    #     self.ball_y = 0
+    #     self.ball_size = 0
+    #     for j in range (self.color_mask_subject_red):
+    #         if 310 > send.color_mask_subject_X [0][j] > 10 and 230 > send.color_mask_subject_Y [0][j] > 10:
+
+    #             if send.color_mask_subject_size [0][j] > 350  and send.color_mask_subject_size [0][j] > self.ball_size:
+    #                 self.ball_x =  send.color_mask_subject_X [0][j]
+    #                 self.ball_y = send.color_mask_subject_Y [0][j]
+    #                 self.ball_size = send.color_mask_subject_size [0][j]
+    #                 self.ball_x_min = send.color_mask_subject_XMin[0][j] 
+    #                 self.ball_y_min = send.color_mask_subject_YMin[0][j] 
+    #                 self.ball_x_max = send.color_mask_subject_XMax[0][j] 
+    #                 self.ball_y_max =send.color_mask_subject_YMax[0][j]
             
                 
 
@@ -53,18 +120,44 @@ class target_location():
     
     def basket_parameter(self):
         self.color_mask_subject_orange = send.color_mask_subject_cnts[5] 
-        self.basket_x= 0
-        self.basket_y = 0
-        self.basket_size = 0
+        # self.basket_x= 0
+        # self.basket_y = 0
+        # self.basket_size = 0
         for j in range (self.color_mask_subject_orange):
-            if send.color_mask_subject_size [5][j] > 500 and send.color_mask_subject_size [5][j] > self.basket_size:
-                self.basket_x =  send.color_mask_subject_X [5][j]
-                self.basket_y = send.color_mask_subject_Y [5][j]
-                self.basket_size = send.color_mask_subject_size [5][j]
-                self.basket_x_min = send.color_mask_subject_XMin[5][j] 
-                self.basket_y_min = send.color_mask_subject_YMin[5][j] 
-                self.basket_x_max = send.color_mask_subject_XMax[5][j] 
-                self.basket_y_max =send.color_mask_subject_YMax[5][j]
+            if send.color_mask_subject_size [5][j] > 500: #and send.color_mask_subject_size [5][j] > self.basket_size:
+                self.basket_x_list.append(send.color_mask_subject_X[5][j])
+                self.basket_y_list.append(send.color_mask_subject_Y[5][j])
+                self.basket_size_list.append(send.color_mask_subject_size[5][j])
+                self.basket_x_min_list.append(send.color_mask_subject_XMin[5][j])
+                self.basket_y_min_list.append(send.color_mask_subject_YMin[5][j])
+                self.basket_x_max_list.append(send.color_mask_subject_XMax[5][j])
+                self.basket_y_max_list.append(send.color_mask_subject_YMax[5][j])
+            else:
+                self.basket_x_list.append(0)
+                self.basket_y_list.append(0)
+                self.basket_size_list.append(0)
+                self.basket_x_min_list.append(0)
+                self.basket_y_min_list.append(0)
+                self.basket_x_max_list.append(0)
+                self.basket_y_max_list.append(0)
+#=======================================================================================================================
+#list 取最大值
+        
+        self.basket_x = max(self.basket_x_list)
+        self.basket_y = max(self.basket_y_list)
+        self.basket_size = max(self.basket_size_list)
+        self.basket_x_min = max(self.basket_x_min_list)
+        self.basket_y_min = max(self.basket_y_min_list)
+        self.basket_x_max = max(self.basket_x_max_list)
+        self.basket_y_max =max(self.basket_y_max_list)
+
+        self.basket_x_list = [0]
+        self.basket_y_list = [0]
+        self.basket_size_list = [0]
+        self.basket_x_min_list = [0]
+        self.basket_y_min_list = [0]
+        self.basket_x_max_list = [0]
+        self.basket_y_max_list = [0]
 
         
                
@@ -188,7 +281,7 @@ class motor_move():
                         self.head_vertical = 2048 - max_head_vertical_size
 
     def waist_reset(self,waist_x,Speed):
-        send.sendSingleMotor(9,waist_x-self.waist_position,Speed)
+        send.sendSingleMotor(9,-(waist_x-self.waist_position),Speed)
         self.waist_position =  waist_x 
     
 
@@ -845,7 +938,7 @@ if __name__ == '__main__' :
                     if step == 'ball_trace' :#@@@@@@@@@@@@@@@@@@
                         time.sleep(0.03)
                         target.ball_parameter()  
-                        step = 'catch_ball'#@@@@@@@@@@@@@@@@@@
+                        step = 'catch_ball'
                         # if abs(target.ball_x-160) < 2 :
                                 
                         #         print("step======",step)
@@ -898,6 +991,8 @@ if __name__ == '__main__' :
                         # target.basket_size = 0
                         print("................................................")
                         step = 'find_basekt'#@@@@@@@@@@@@@@@@@@
+                        target.basket_parameter()
+                        time.sleep(2)
                                                                         
 
                     elif step == 'find_basekt' :#@@@@@@@@@@@@@@@@@@
@@ -906,17 +1001,20 @@ if __name__ == '__main__' :
                                 
                                 print("find_basket",target.basket_size)
                                 motor.view_move(2457,1698,2577,2048,50,0.04)
-
+                            
                                 target.basket_parameter()
                                 print("  basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
                         elif target.basket_size > 2000 :
                                 step = 'basket_trace'#@@@@@@@@@@@@@@@@@@
                                 time.sleep(1)
+                                print("x",target.basket_size)
                                 target.basket_parameter()
+                                print(target.basket_size)
                                 print("jump to basket_trace   !!!!!!!!!")
                                    
 
                     elif step == 'basket_trace' :
+                        target.basket_parameter() 
                         if abs(target.basket_x - 160) > 12  or abs(target.basket_y - 120) > 9 :
                             target.basket_parameter() 
                             motor.trace_revise(target.basket_x,target.basket_y,35)
