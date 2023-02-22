@@ -529,19 +529,19 @@ class motor_move():
             self.throw_strength = round(abs( 305 * (-(self.distance_new - 85)/5) + 311 * ((self.distance_new - 80)/5)))
         
         elif self.distance_new >= 85 and self.distance_new < 90 : #70cm
-            self.throw_strength = round(abs( 311 * (-(self.distance_new - 90)/5) + 311 * ((self.distance_new - 85)/5)))
+            self.throw_strength = round(abs( 318 * (-(self.distance_new - 90)/5) + 311 * ((self.distance_new - 85)/5)))
         
         elif self.distance_new >= 90 and self.distance_new < 95 : #70cm
-            self.throw_strength = round(abs( 311 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
+            self.throw_strength = round(abs( 345 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
 
         elif self.distance_new >= 95 and self.distance_new < 100 : #70cm
-            self.throw_strength = round(abs( 319 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
+            self.throw_strength = round(abs( 355 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
 
         elif self.distance_new >= 100 and self.distance_new < 105 : #70cm
-            self.throw_strength = round(abs( 322 * (-(self.distance_new - 105)/5) + 324 * ((self.distance_new - 100)/5)))
+            self.throw_strength = round(abs( 365 * (-(self.distance_new - 105)/5) + 324 * ((self.distance_new - 100)/5)))
 
         elif self.distance_new >= 105 and self.distance_new < 110 : #70cm
-            self.throw_strength = round(abs( 324 * (-(self.distance_new - 110)/5) + 330 * ((self.distance_new - 105)/5)))
+            self.throw_strength = round(abs( 365 * (-(self.distance_new - 110)/5) + 330 * ((self.distance_new - 105)/5)))
 
         self.start_get_point = True
         print("throw_strength",self.throw_strength)
