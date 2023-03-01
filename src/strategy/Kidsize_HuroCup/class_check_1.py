@@ -239,14 +239,14 @@ class motor_move():
    
     
     def trace_revise(self,x_target,y_target,speed) :
-        if x_target != 0 and y_target != 0:
-            self.x_differ =  x_target - 160 
-            self.y_differ =  y_target - 120 
-            self.x_degree = self.x_differ * (65 / 320)
-            self.y_degree = self.y_differ * (38 / 240)
-            self.move_head(1, self.head_horizon - round(self.x_degree * 4096 / 360 *0.15),880,880,speed)
-            self.move_head(2, self.head_vertical - round(self.y_degree * 4096 / 360 *0.15),880,880,speed)
-            time.sleep(0.05)
+        # if x_target != 0 and y_target != 0:
+        self.x_differ =  x_target - 160 
+        self.y_differ =  y_target - 120 
+        self.x_degree = self.x_differ * (65 / 320)
+        self.y_degree = self.y_differ * (38 / 240)
+        self.move_head(1, self.head_horizon - round(self.x_degree * 4096 / 360 *0.15),880,880,speed)
+        self.move_head(2, self.head_vertical - round(self.y_degree * 4096 / 360 *0.15),880,880,speed)
+        time.sleep(0.05)
 
     def body_trace_rotate(self,degree) :
         self.x_body_rotate = self.head_horizon - 2048
@@ -283,7 +283,7 @@ class motor_move():
             time.sleep(1.2)
             send.sendBodySector(5)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
             time.sleep(1.2)
-            motor.move_head(1,1820,880,880,50) #1748
+            motor.move_head(1,1800,880,880,50) #1748
             time.sleep(2.5)           #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
             target.ball_parameter()
             
@@ -535,7 +535,7 @@ class motor_move():
             self.throw_strength = round(abs( 345 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
 
         elif self.distance_new >= 95 and self.distance_new < 100 : #70cm
-            self.throw_strength = round(abs( 355 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
+            self.throw_strength = round(abs( 360 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
 
         elif self.distance_new >= 100 and self.distance_new < 105 : #70cm
             self.throw_strength = round(abs( 365 * (-(self.distance_new - 105)/5) + 324 * ((self.distance_new - 100)/5)))
@@ -631,12 +631,12 @@ if __name__ == '__main__' :
     # 0 for test 1 for stategy
 
     basket_size_60_90 =[2116, 725] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
+    five_point_degree = [1900]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [0,837,1600] #投籃點 #strength left 1054 right 1156
+    throw_ball_point = [0,833,1550] #投籃點 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1500] #line  1650 ＃球大小
+    ball_catch_size =[1540] #line  1650 ＃球大小
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
@@ -892,14 +892,14 @@ if __name__ == '__main__' :
 
                     elif step == 'find_basekt' :#@@@@@@@@@@@@@@@@@@
                         target.basket_parameter()
-                        if target.basket_size < 500 :
+                        if target.basket_size < 800 :
                                 
                                 print("find_basket",target.basket_size)
                                 motor.view_move(2548,1548,2048,1948,50,0.04)
 
                                 target.basket_parameter()
                                 print("  basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
-                        elif target.basket_size > 500 :
+                        elif target.basket_size > 800 :
                                 step = 'basket_trace'#@@@@@@@@@@@@@@@@@@
                                 time.sleep(1)
                                 target.basket_parameter()
