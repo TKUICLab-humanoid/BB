@@ -631,12 +631,12 @@ if __name__ == '__main__' :
     # 0 for test 1 for stategy
 
     basket_size_60_90 =[2116, 725] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [1900]# left side 1960 right side  1940   too left-big too right-small
+    five_point_degree = [1950]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [0,833,1550] #投籃點 #strength left 1054 right 1156
+    throw_ball_point = [0,837,1550] #投籃點 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1540] #line  1650 ＃球大小
+    ball_catch_size =[1545] #line  1650 ＃球大小
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
@@ -864,6 +864,7 @@ if __name__ == '__main__' :
                             time.sleep(1)  
                         elif motor.directly == True and motor.dir_num == 1:
                             print("fuckefef...")
+                            time.sleep(1)
                             send.sendBodySector(6)
                             time.sleep(1)       
                         print("stop to the ball")
@@ -873,6 +874,7 @@ if __name__ == '__main__' :
                         motor.waist_reset(2048,70)
                         time.sleep(3)  
                         if motor.directly == False :
+                            time.sleep(1)
                             send.sendBodySector(7)    #2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
                             print("fuckvbhubrui...")
                             time.sleep(2)
