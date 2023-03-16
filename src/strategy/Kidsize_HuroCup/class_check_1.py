@@ -199,7 +199,7 @@ class motor_move():
 
         if self.head_horizon_flag == 3 :
             if self.head_horizon >= left_place:
-                self.move_head(1,self.head_horizon,880,880,speed)
+                self.move_head(1,self.head_horizon,880,1000,speed)
                 self.head_horizon = self.head_horizon - speed
                 time.sleep(delay)
             else:
@@ -209,7 +209,7 @@ class motor_move():
 
         elif self.head_horizon_flag == 4 :
             if self.head_vertical <= up_place:
-                self.move_head(2,self.head_vertical,880,880,speed)
+                self.move_head(2,self.head_vertical,880,1000,speed)
                 self.head_vertical = self.head_vertical + speed
                 time.sleep(delay)
             else:
@@ -219,7 +219,7 @@ class motor_move():
                     
         elif  self.head_horizon_flag == 1 :
             if  self.head_horizon <= right_place:
-                self.move_head(1,self.head_horizon,880,880,speed)
+                self.move_head(1,self.head_horizon,880,1000,speed)
                 self.head_horizon = self.head_horizon + speed
                 time.sleep(delay) 
             else:
@@ -229,7 +229,7 @@ class motor_move():
         
         elif self.head_horizon_flag ==  2:
             if self.head_vertical >= down_place:
-                self.move_head(2,self.head_vertical,880,880,speed)
+                self.move_head(2,self.head_vertical,880,1000,speed)
                 self.head_vertical = self.head_vertical - speed
                 time.sleep(delay)
                 
@@ -262,16 +262,16 @@ class motor_move():
 
     def body_trace_straight(self,degree,ball_degree) :
         
-        if (self.head_vertical - degree) - 150 > ball_degree :
-            motor.MoveContinuous(2400+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+        if (self.head_vertical - degree) - 155 > ball_degree :#???????????????????
+            motor.MoveContinuous(2100+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead bigbigbigbigbigbigbig= ",self.head_vertical)
             time.sleep(0.05)
-        elif (self.head_vertical - degree) - 150 < ball_degree and (self.head_vertical - degree)  > ball_degree:
-            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+        elif (self.head_vertical - degree) - 155 < ball_degree and (self.head_vertical - degree)  > ball_degree:
+            motor.MoveContinuous(1400+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead smallsmallsmallsmall= ",self.head_vertical)
             time.sleep(0.05)
         elif (self.head_vertical - degree) < -ball_degree :
-            motor.MoveContinuous(-2400+correct[0],0+correct[1],0+correct[2],100,100,2)
+            motor.MoveContinuous(-2200+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "go back = ",self.head_vertical)
             time.sleep(0.05)
         elif  abs(self.head_vertical - degree) <= ball_degree :
@@ -428,7 +428,7 @@ class motor_move():
                 self.catch = True
         
         elif target.basket_size - basket_size < -basket_error  :
-            motor.MoveContinuous(800+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!
+            motor.MoveContinuous(700+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!
             print( "--------------------go ahead to basket---------------------  ",target.basket_size)
             self.num = 3
             time.sleep(0.05)
@@ -528,16 +528,16 @@ class motor_move():
             self.throw_strength = round(abs( 50 * (-(self.distance_new - 75)/5) + 302 * ((self.distance_new - 70)/5)))
         
         elif self.distance_new >= 75 and self.distance_new < 80 : #70cm
-            self.throw_strength = round(abs( 302 * (-(self.distance_new - 80)/5) + 305 * ((self.distance_new - 75)/5)))
+            self.throw_strength = round(abs( 335 * (-(self.distance_new - 80)/5) + 305 * ((self.distance_new - 75)/5)))
         
         elif self.distance_new >= 80 and self.distance_new < 85 : #70cm
-            self.throw_strength = round(abs( 305 * (-(self.distance_new - 85)/5) + 311 * ((self.distance_new - 80)/5)))
+            self.throw_strength = round(abs( 340 * (-(self.distance_new - 85)/5) + 311 * ((self.distance_new - 80)/5)))
         
         elif self.distance_new >= 85 and self.distance_new < 90 : #70cm
-            self.throw_strength = round(abs( 318 * (-(self.distance_new - 90)/5) + 311 * ((self.distance_new - 85)/5)))
+            self.throw_strength = round(abs( 345 * (-(self.distance_new - 90)/5) + 311 * ((self.distance_new - 85)/5)))
         
         elif self.distance_new >= 90 and self.distance_new < 95 : #70cm
-            self.throw_strength = round(abs( 360 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
+            self.throw_strength = round(abs( 370 * (-(self.distance_new - 95)/5) + 319 * ((self.distance_new - 90)/5)))
 
         elif self.distance_new >= 95 and self.distance_new < 100 : #70cm
             self.throw_strength = round(abs( 400 * (-(self.distance_new - 100)/5) + 322 * ((self.distance_new - 95)/5))) #319   322
@@ -635,13 +635,13 @@ if __name__ == '__main__' :
     stategy_or_test = 1
     # 0 for test 1 for stategy
 
-    basket_size_60_90 =[2116, 725] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [1950]# left side 1960 right side  1940   too left-big too right-small
+    basket_size_60_90 =[2548, 1023] #sector 111   left side 1978, 899 right side  2140, 961
+    five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [0,850,1550] #投籃點 #strength left 1054 right 1156
+    throw_ball_point = [0,1040,1550] #投籃點 #strength left 1054 right 1156
     #                    size,degree
-    ball_catch_size =[1535] #line  1650 ＃球大小
+    ball_catch_size =[1545] #line  1650 ＃球大小
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
@@ -651,12 +651,12 @@ if __name__ == '__main__' :
     right_correct = [0,0,-5]
     #                  x , y , theta   
 
-    basket_error = [70,100,60]
+    basket_error = [70,80,60]
     #  for size    三分  五分  灌籃
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
 
-    ball_correct = [30,80]
+    ball_correct = [20,80]
 
     trace_parameter =[80]#25
     too_big = True
@@ -704,6 +704,7 @@ if __name__ == '__main__' :
                             print("ball siz",target.ball_size) 
                             print("open_ball_trace is opening")
                             motor.trace_revise(target.ball_x,target.ball_y,25)
+                            print("trace_revise")
                             time.sleep(0.05) 
                         else :
                             print("motor.head_vertical",motor.head_vertical)
@@ -756,7 +757,7 @@ if __name__ == '__main__' :
                             #     step = 'walk_to_ball'
 
                                 
-                            if (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-55) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)):
+                            if (motor.head_vertical <= ball_catch_size[0]) or ((motor.head_vertical < ball_catch_size[0]-55) and  (1698 >= motor.head_horizon or motor.head_horizon >=2398)) or(motor.head_vertical <=1000):
                                 too_big = True
                                 print("bigbigbig")
                                 time.sleep(0.3)
