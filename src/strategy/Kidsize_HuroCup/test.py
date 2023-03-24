@@ -357,11 +357,11 @@ class motor_move():
     def body_trace_straight(self,degree,ball_degree) :
         
         if self.head_vertical < 2100 :
-            motor.MoveContinuous(2500+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(3000+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead bigbigbigbigbigbigbig= ",self.head_vertical)
             time.sleep(0.05)
         elif 2100 < self.head_vertical < 2380 :
-            motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) #!!!!!!!!!!!!!!!!!!!!!!
             print( "go ahead smallsmallsmallsmall= ",self.head_vertical)
             time.sleep(0.05)
         elif self.head_vertical > 2440 :
@@ -501,7 +501,7 @@ class motor_move():
     #         self.catch = True
 
     def body_trace_basket_straight_5(self,basket_size,basket_error) :
-        if (abs(target.basket_size - 2900) <= 50):
+        if (abs(target.basket_size - 2800) <= 50):
             self.num = self.num - 1
             if self.num <= 0 :
                 print( "--------------------stop at the basket----------------------",target.basket_size)
@@ -725,19 +725,18 @@ if __name__ == '__main__' :
     # 0 for test 1 for stategy
 
     basket_size_60_90 =[2116, 899] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [1920]# left side 1960 right side  1940   too left-big too right-small
+    five_point_degree = [2000]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1200,2200] #投籃未寫 #strength left 1054 right 1156
     #                    size,degree
     ball_catch_size =[1980] #line  1650
     # # for size          三分  五分  灌籃
-    # throw_ball_point = [0,0,1300] 
+    throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [-600,0,-1]
-    left_correct  = [-680,-200,2]
-    right_correct = [-700,200,-3]
+    correct       = [-1300,-800,0]
+    left_correct  = [-1400,-1100,4]
+    right_correct = [-1300,-300,-4]
     #                  x , y , theta   
 
     basket_error = [70,100,60]
