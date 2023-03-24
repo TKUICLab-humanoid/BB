@@ -725,7 +725,7 @@ if __name__ == '__main__' :
     # 0 for test 1 for stategy
 
     basket_size_60_90 =[2116, 899] #sector 111   left side 1978, 899 right side  2140, 961
-    five_point_degree = [2000]# left side 1960 right side  1940   too left-big too right-small
+    five_point_degree = [1950]# left side 1960 right side  1940   too left-big too right-small
     throw_plus = 1 #line  0   left side 0 right side  4
 
     #                    size,degree
