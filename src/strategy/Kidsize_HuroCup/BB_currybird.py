@@ -45,9 +45,7 @@ class target_location():
                     self.ball_x_min = send.color_mask_subject_XMin[0][j] 
                     self.ball_y_min = send.color_mask_subject_YMin[0][j] 
                     self.ball_x_max = send.color_mask_subject_XMax[0][j] 
-                    self.ball_y_max =send.color_mask_subject_YMax[0][j]
-            
-                
+                    self.ball_y_max =send.color_mask_subject_YMax[0][j]       
 
             
     
@@ -111,60 +109,63 @@ class motor_move():
         self.ready_basket_dunk = False
         self.reg_use = False
         
+    ######################################## switch #######################################
 
-    def switch_control(self):                                                       #need test
+    # def switch_control(self):                                                       #need test
         
-        if    send.DIOValue == 9 or send.DIOValue == 12 :  
-            motor.test_distance()                
-            time.sleep(0.2)                                     #籃框               上下下下 or 下下上下 or 上下上下
-            self.switch_reset_flag = 1 #sector 111  
-            self.in_tacties = 0
+    #     if    send.DIOValue == 9 or send.DIOValue == 12 :  
+    #         motor.test_distance()                
+    #         time.sleep(0.2)                                     #籃框               上下下下 or 下下上下 or 上下上下
+    #         self.switch_reset_flag = 1 #sector 111  
+    #         self.in_tacties = 0
 
-        elif    send.DIOValue == 13:                                                  #球                 上下up下
-            print("Basket Y = ",target.basket_size , "Basket vert = ",motor.head_vertical)
-            self.switch_reset_flag = 1
-            self.in_tacties = 0
-            time.sleep(0.03)
+    #     elif    send.DIOValue == 13:                                                  #球                 上下up下
+    #         print("Basket Y = ",target.basket_size , "Basket vert = ",motor.head_vertical)
+    #         self.switch_reset_flag = 1
+    #         self.in_tacties = 0
+    #         time.sleep(0.03)
 
-        elif    (send.DIOValue == 27 or send.DIOValue == 11) and (self.in_tacties != 10 or self.switch_reset_flag == 1) :    
-            #                   24+3                    8+3 #開啟三分策略  上上下下 
-            self.switch_flag = 0
-            print("SW = ", self.switch_flag)
-            # motor.bodyauto_close(0)
-            target.ball_parameter()
-            target.basket_parameter()
-            send.sendHeadMotor(1,2048,30)
-            send.sendHeadMotor(2,2048,30)
-            send.sendBodySector(29)
+    #     elif    (send.DIOValue == 27 or send.DIOValue == 11) and (self.in_tacties != 10 or self.switch_reset_flag == 1) :    
+    #         #                   24+3                    8+3 #開啟三分策略  上上下下 
+    #         self.switch_flag = 0
+    #         print("SW = ", self.switch_flag)
+    #         # motor.bodyauto_close(0)
+    #         target.ball_parameter()
+    #         target.basket_parameter()
+    #         send.sendHeadMotor(1,2048,30)
+    #         send.sendHeadMotor(2,2048,30)
+    #         send.sendBodySector(29)
 
-            self.switch_reset_flag = 0
-            self.in_tacties = 10
+    #         self.switch_reset_flag = 0
+    #         self.in_tacties = 10
 
-        elif    (send.DIOValue == 31 or send.DIOValue == 15) and (self.in_tacties != 11 or self.switch_reset_flag == 1) :
-            #                   24+7                    8+7 #開啟五分策略  上上上下
-            self.switch_flag = 1
-            print("SW = ", self.switch_flag)
-            # motor.bodyauto_close(0)
-            target.ball_parameter()
-            target.basket_parameter()
-            send.sendHeadMotor(1,2048,30)
-            send.sendHeadMotor(2,2048,30)
-            send.sendBodySector(29)
-            self.switch_reset_flag = 0
-            self.in_tacties = 11
+    #     elif    (send.DIOValue == 31 or send.DIOValue == 15) and (self.in_tacties != 11 or self.switch_reset_flag == 1) :
+    #         #                   24+7                    8+7 #開啟五分策略  上上上下
+    #         self.switch_flag = 1
+    #         print("SW = ", self.switch_flag)
+    #         # motor.bodyauto_close(0)
+    #         target.ball_parameter()
+    #         target.basket_parameter()
+    #         send.sendHeadMotor(1,2048,30)
+    #         send.sendHeadMotor(2,2048,30)
+    #         send.sendBodySector(29)
+    #         self.switch_reset_flag = 0
+    #         self.in_tacties = 11
+    
 
-        elif    (send.DIOValue == 24 or send.DIOValue ==  8) and (self.in_tacties != 12 or self.switch_reset_flag == 1) :
-            #                   24                      8  #開啟二分策略  下下下下
-            self.switch_flag = 2
-            print("SW = ", self.switch_flag)
-            # motor.bodyauto_close(0)
-            target.ball_parameter()
-            target.basket_parameter()
-            send.sendHeadMotor(1,2048,30)
-            send.sendHeadMotor(2,2048,30)
-            send.sendBodySector(29)
-            self.switch_reset_flag = 0
-            self.in_tacties = 12
+    #     elif    (send.DIOValue == 24 or send.DIOValue ==  8) and (self.in_tacties != 12 or self.switch_reset_flag == 1) :
+    #         #                   24                      8  #開啟二分策略  下下下下
+    #         self.switch_flag = 2
+    #         print("SW = ", self.switch_flag)
+    #         # motor.bodyauto_close(0)
+    #         target.ball_parameter()
+    #         target.basket_parameter()
+    #         send.sendHeadMotor(1,2048,30)
+    #         send.sendHeadMotor(2,2048,30)
+    #         send.sendBodySector(29)
+    #         self.switch_reset_flag = 0
+    #         self.in_tacties = 12
+        ######################################## switch #######################################
 
     def move_head(self,ID,Position,max_head_horizon_size,max_head_vertical_size,Speed):  #把相對頭部變化變絕對(call 2048就變2048)
         send.sendHeadMotor(ID,Position,Speed)
@@ -248,13 +249,14 @@ class motor_move():
     def body_trace_rotate(self,degree) : #步態旋轉到可拿球的角度
         self.x_body_rotate = self.head_horizon - 2048
         if self.x_body_rotate > degree :
-            motor.MoveContinuous(left_correct[0],left_correct[1],5+left_correct[2],100,100,2)
+            motor.MoveContinuous(left_correct[0],left_correct[1],left_correct[2],100,100,8)
             print( "rotate left = ",self.x_body_rotate)
             time.sleep(0.05)
         elif self.x_body_rotate < -degree :
-            motor.MoveContinuous(right_correct[0],right_correct[1],-5+right_correct[2],100,100,2)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(right_correct[0],right_correct[1],right_correct[2],100,100,8)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             print( "rotate right = ",self.x_body_rotate)
             time.sleep(0.05)
+            
         
     ######################################## body_trace_straight 副函式 #######################################
 
@@ -277,39 +279,66 @@ class motor_move():
     #         time.sleep(1.2)
     #         self.ready_ball_catch = True
 
+    ######################################## body_trace_straight_new 副函式 ########################################
+
+    def body_trace_straight_new(self,forward_degree,slow_degree,backward_degree) :   #前進後退至可找拿球的距離
+        #前進太多時forward_gait_correct改大
+        #後退太多時back_gait_correct改小
+            
+        if self.head_vertical > forward_degree :  #大前進
+                motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) 
+                print( "大前進,self.head_vertical= ",self.head_vertical)
+                time.sleep(0.05)
+
+        elif slow_degree < self.head_vertical < forward_degree :  #進入減速範圍
+            motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2)
+            print( "進入減速範圍,self.head_vertical= ",self.head_vertical)
+            time.sleep(0.05)
+    
+                
+        elif backward_degree <= self.head_vertical <= slow_degree :
+            motor.bodyauto_close(0) #步態停止
+            time.sleep(1.2)
+            self.ready_ball_catch = True
+            print( "到達夾球範圍STOP!!,self.head_vertical= ",self.head_vertical)                
+            time.sleep(0.05)
+    
+
+        elif self.head_vertical < backward_degree: 
+            motor.MoveContinuous(-500+correct[0],0+correct[1],0+correct[2],100,100,2)
+            print( "大後退,self.head_vertical= ",self.head_vertical)                
+            time.sleep(0.05)
+
     ######################################## body_trace_straight 副函式 ########################################
 
     def body_trace_straight(self,catch_degree,forward_gait_correct,back_gait_correct) :   #前進後退至可找拿球的距離
         #前進太多時forward_gait_correct改大
         #後退太多時back_gait_correct改小
-
+            
         print( "catch_degree= ",catch_degree)
-        if self.head_vertical > (catch_degree + forward_gait_correct) + 300 :  #未進入減速範圍 #前進太多時forward_gait_correct改大
+        if self.head_vertical > (catch_degree + forward_gait_correct) + 200 :  #未進入減速範圍 #前進太多時forward_gait_correct改大
+                motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) 
+                print( "大前進,self.head_vertical= ",self.head_vertical)
+                time.sleep(0.05)
 
-            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) 
-            print( "大前進,self.head_vertical= ",self.head_vertical)
-            time.sleep(0.05)
-
-        elif catch_degree < self.head_vertical < (catch_degree + forward_gait_correct) + 300 : #進入減速範圍
-
+        elif catch_degree + forward_gait_correct < self.head_vertical < (catch_degree + forward_gait_correct) + 200 : #進入減速範圍
             motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "進入減速範圍,self.head_vertical= ",self.head_vertical)
             time.sleep(0.05)
-   
-            
-        elif (catch_degree - back_gait_correct) <= self.head_vertical <= catch_degree :
-
+    
+                
+        elif (catch_degree - back_gait_correct) <= self.head_vertical <= catch_degree + forward_gait_correct :
             motor.bodyauto_close(0) #步態停止
             time.sleep(1.2)
             self.ready_ball_catch = True
-            print( "到達夾球範圍STOP!!,self.head_vertical= ",self.head_vertical)
+            print( "到達夾球範圍STOP!!,self.head_vertical= ",self.head_vertical)                
             time.sleep(0.05)
-  
+    
 
         elif self.head_vertical < (catch_degree + back_gait_correct): 
-           motor.MoveContinuous(-1500+correct[0],0+correct[1],0+correct[2],100,100,2)
-           print( "大後退,self.head_vertical= ",self.head_vertical)
-           time.sleep(0.05)
+            motor.MoveContinuous(-500+correct[0],0+correct[1],0+correct[2],100,100,2)
+            print( "大後退,self.head_vertical= ",self.head_vertical)                
+            time.sleep(0.05)
 
             
     def WaistFix(self, Target_X, TargetXCenter):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
@@ -325,6 +354,17 @@ class motor_move():
         
         time.sleep(0.15)
         # time.sleep(0.2)
+
+    def Null_WaistFix(self, turn_final):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
+
+        if (self.waist_position - 10) < turn_final:
+            self.waist_position -= 10
+            self.waist_rotate(self.waist_position, 30)
+            #self.move_head(2, self.head_vertical ,880,880,20)
+            time.sleep(0.15)
+        else:
+            print("fail")
+      
 
     ######################################## walk_to_basket_dunk 副函式 ######################################## 
 
@@ -376,34 +416,76 @@ class motor_move():
     #             time.sleep(1.5)
     #             self.ready_basket_dunk = True
 
+    ######################################## degree_straight_new 副函式 ########################################
+
+    def degree_straight_new(self,forward_degree,slow_degree,backward_degree) :   #前進後退至可找拿球的距離
+ 
+        print("walk_to_basket")
+        target.basket_parameter()
+        print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
+        self.trace_revise(target.basket_x,target.basket_y,35)
+            
+        if self.head_vertical > forward_degree :  #大前進
+            motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) 
+            print( "大前進,self.head_vertical= ",self.head_vertical)
+            time.sleep(0.05)
+
+        elif slow_degree < self.head_vertical < forward_degree :  #進入減速範圍
+            motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2)
+            print( "進入減速範圍,self.head_vertical= ",self.head_vertical)
+            time.sleep(0.05)
+    
+                
+        elif backward_degree <= self.head_vertical <= slow_degree :
+            print( "--------------------stop at the basket----------------------",self.head_vertical - 2048)
+            motor.bodyauto_close(0)
+            target.basket_parameter()
+            time.sleep(1)
+            motor.move_head(1,1580,880,880,30)
+            time.sleep(0.8)
+            print("伸手準備投籃")
+            send.sendBodySector(887)
+            time.sleep(1.5)
+            self.ready_basket_dunk = True
+    
+
+        elif self.head_vertical < backward_degree: 
+            motor.MoveContinuous(-500+correct[0],0+correct[1],0+correct[2],100,100,2)
+            print( "大後退,self.head_vertical= ",self.head_vertical)                
+            time.sleep(0.05)
+
     ######################################## degree_straight 副函式 ########################################
 
     def degree_straight(self,stop_degree,gait_correct):
+
         print("walk_to_basket")
-        #前進太多時forward_gait_correct改大
-        #後退太多時back_gait_correct改小
         print("stop_degree= ",stop_degree)
+        target.basket_parameter()
+        print(" basket => x:",target.basket_x," y:",target.basket_y," size:",target.basket_size)
+        self.trace_revise(target.basket_x,target.basket_y,35)
 
         if self.head_vertical > (stop_degree + gait_correct) + 300 :  #未進入減速範圍 #前進太多時forward_gait_correct改大
-
             motor.MoveContinuous(1500+correct[0],0+correct[1],0+correct[2],100,100,2) 
             print( "大前進,self.head_vertical= ",self.head_vertical)
             time.sleep(0.05)
 
         elif stop_degree < self.head_vertical < (stop_degree + gait_correct) + 300 : #進入減速範圍
-
             motor.MoveContinuous(1000+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "進入減速範圍,self.head_vertical= ",self.head_vertical)
             time.sleep(0.05)
    
             
         elif self.head_vertical <= stop_degree :
-
-            motor.bodyauto_close(0) #步態停止
-            time.sleep(1.2)
-            self.ready_ball_catch = True
-            print( "到達夾球範圍STOP!!,self.head_vertical= ",self.head_vertical)
-            time.sleep(0.05)
+            print( "--------------------stop at the basket----------------------",self.head_vertical - 2048)
+            motor.bodyauto_close(0)
+            target.basket_parameter()
+            time.sleep(1)
+            motor.move_head(1,1823,880,880,30)
+            time.sleep(0.8)
+            print("伸手準備投籃")
+            send.sendBodySector(887)
+            time.sleep(1.5)
+            self.ready_basket_dunk = True
   
 
     ######################################## walk_to_basket_dunk 副函式 ########################################  
@@ -431,12 +513,12 @@ class motor_move():
             self.ready_basket_dunk = True
 
         elif self.x_body_rotate > 80 :
-            motor.MoveContinuous(left_correct[0],left_correct[1],5+left_correct[2],100,100,2)
+            motor.MoveContinuous(left_correct[0],left_correct[1],left_correct[2],100,100,2)
             print( "rotate left = ",self.x_body_rotate)
             time.sleep(0.08)
 
         elif self.x_body_rotate < -80 :
-            motor.MoveContinuous(right_correct[0],right_correct[1],-5+right_correct[2],100,100,2)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            motor.MoveContinuous(right_correct[0],right_correct[1],right_correct[2],100,100,2)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             print( "rotate right = ",self.x_body_rotate)
             time.sleep(0.08)
 
@@ -690,9 +772,9 @@ class motor_move():
 
     def bodyauto_close(self,next_state):    #步態移動的開關控制(原地踏步)
         #if send.is_start == True :   # 0 stop  1 go
-        if self.now_state == next_state :
-            
+        if self.now_state == next_state :    
             pass
+
         elif self.now_state != next_state :
             send.sendBodyAuto(0,0,0,0,1,0)
             self.now_state = next_state
@@ -723,16 +805,16 @@ if __name__ == '__main__' :
     five_point_degree = [1960]# left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
     throw_plus = 1 #line  0   left side 0 right side  4
 
-    throw_ball_point = [910,1200,1850]   #[0,1,2]=[三分,五分,兩分] #二分走路時測量的籃框距離方法degree #五分走路時站姿高度看籃框size測距離
+    throw_ball_point = [910,1200,1700]   #[0,1,2]=[三分,五分,兩分] #二分走路時測量的籃框距離方法degree #五分走路時站姿高度看籃框size測距離
     #                  [size,size,degree] 
-    ball_catch_size =[1600] #line  1650
+    ball_catch_size =[1500] #line  1650
     # # for size          三分  五分  灌籃
     # throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [0,0,0] #原地踏步修正
-    left_correct  = [0,0,0]  #左旋修正
-    right_correct = [0,0,0] #右旋修正
+    correct       = [-200,0,-1] #原地踏步修正
+    left_correct  = [-100,-200,2]  #左旋修正
+    right_correct = [-200,100,-4] #右旋修正
     #                  x , y , theta   
 
     basket_error = [70,100,60]
@@ -740,27 +822,51 @@ if __name__ == '__main__' :
     # basket_error = [0,0,100]
     # for degree          三分  五分  灌籃
 
-    ball_correct = [20,20]  #forward,backward
+    ball_correct = [300,10]  #forward,backward
 
     trace_parameter =[80]#25
     too_big = True
+
+    catch_ball_line = [1700,1680,1530] #forward_degree,slow_degree,backward_degree
+    two_point_line  = [1800,1800,1690] #forward_degree,slow_degree,backward_degree
     
     try:
            #step為紀錄目前進行到的步驟
         
         while not rospy.is_shutdown():
-            motor.switch_control()                              #warning    這東東把它閹了，改到is_start判斷之後
-            sw = motor.switch_flag   #[sw==2]->2分球;[sw==0]->3分球;[sw==1]->5分球
-            
-            if send.is_start==True : #send.Web
+            #motor.switch_control()                              #warning    這東東把它閹了，改到is_start判斷之後
+            if send.is_start==True: #send.Web
+        
                 send.drawImageFunction(1,0,160,160,0,240,255,255,255) 
                 send.drawImageFunction(2,0,0,320,120,120,255,255,255)
                 send.drawImageFunction(3,1,target.ball_x_min ,target.ball_x_max ,target.ball_y_min ,target.ball_y_max,255,0,255)
                 send.drawImageFunction(4,1,target.basket_x_min ,target.basket_x_max ,target.basket_y_min ,target.basket_y_max,0,0,0)
                 target.ball_parameter() 
 
-
                 if step =='begin':
+
+                ####################################### switch #######################################
+            
+                    if send.DIOValue == 24:  #開啟二分策略  下下下下
+                        sw = 2
+                        print("SW = ", sw)
+
+                    elif send.DIOValue == 25: #開啟三分策略  上下下下                                 
+                        sw = 0
+                        print("SW = ", sw)
+   
+                    elif send.DIOValue == 31: #開啟五分策略  上上上(上)                                 
+                        sw = 1
+                        print("SW = ", sw)
+ 
+                    else :
+                        sw = 2
+                        print("SW = ", sw)
+ 
+
+                      #[sw==2]->2分球;[sw==0]->3分球;[sw==1]->5分球
+
+                ######################################## switch #######################################
 
                     print("開始執行初始化")
                     send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
@@ -782,7 +888,9 @@ if __name__ == '__main__' :
                             motor.trace_revise(target.ball_x,target.ball_y,25) 
                             time.sleep(0.05)
                         else : 
-                            motor.reg = motor.head_horizon
+                            #motor.reg = motor.head_horizon
+                            motor.reg = 2048 - motor.head_horizon
+
                             step = 'start_gait'       
                         
                 elif step == 'start_gait' :
@@ -805,30 +913,34 @@ if __name__ == '__main__' :
 
                         print("到達可夾球位置")
                         print("蹲下")
+                        time.sleep(1.0)
                         send.sendBodySector(5) 
-                        time.sleep(1.2)
+                        time.sleep(3)
                         print("頭往右轉")
                         motor.move_head(1,1820,880,880,50)
                         time.sleep(2.5) 
                         step = 'waist_fix'
 
                     else :
+
                         target.ball_parameter()
                         motor.trace_revise(target.ball_x,target.ball_y,25) 
 
-                        if abs(motor.head_horizon-2048) > 500  :
+                        if abs(motor.head_horizon-2048) > 100  :
                             print("頭部馬達水平刻度偏差>步態影響的")
                             print("rotate調整")
                             time.sleep(0.05)
                             motor.body_trace_rotate(40)
 
-                        elif abs(motor.head_vertical - ball_catch_size[0]) > 10 :
-                        #elif abs(motor.head_horizon-2048) <= 100  :
+                        else:
+                        #elif abs(motor.head_vertical - ball_catch_size[0]) > 10 :
                             print("頭部馬達垂直刻度與抓球角度差太多")
                             print( "head_vertical= ",motor.head_vertical)
                             print("straight調整")
                             time.sleep(0.05)
-                            motor.body_trace_straight(ball_catch_size[0],ball_correct[0],ball_correct[1])
+                            #motor.body_trace_straight(ball_catch_size[0],ball_correct[0],ball_correct[1])
+                            motor.body_trace_straight_new(catch_ball_line[0],catch_ball_line[1],catch_ball_line[2])
+                            
 
                 elif step == 'waist_fix' :
                     
@@ -844,7 +956,7 @@ if __name__ == '__main__' :
                     else:
                         
                         print("球不在視野中->往左邊轉腰")
-                        motor.waist_rotate(2148,70)
+                        #motor.waist_rotate(2148,70)
                         
                 elif step == 'catch_ball' :
 
@@ -875,22 +987,20 @@ if __name__ == '__main__' :
                         print("basket_size = ",target.basket_size)
 
                         if motor.reg_use == False:
-
-                                print("頭部左右找框調整")
-                                motor.move_head(1,motor.reg,880,880,50)                 
-                                print("motor.reg = ",motor.reg)
-                                motor.reg_use = True
-                                time.sleep(1)
+                            print("頭部左右找框調整")
+                            #motor.move_head(1,motor.reg,880,880,50) 
+                            print("motor.reg = ",motor.reg)
+                            time.sleep(1)
+                            print("頭部抬起尋框") 
+                            motor.move_head(2,1900,880,880,50)                
+                            motor.reg_use = True
+                            time.sleep(1)
 
                         else:    
-                            print("頭部抬起尋框")
-                            motor.move_head(2,1900,880,880,50) 
-                            time.sleep(1)
                             print("開始尋框")
                             motor.view_move(2548,1548,2048,1948,50,0.04)
-                            target.basket_parameter()
                             print("  basket_x = ",target.basket_x,"  basket_y =",target.basket_y,"  basket_size = ",target.basket_size)
-                    else:                           
+                    else:                                 #warning    為啥不用else就好
                         print("籃框在視野裡夠大->判斷策略所需前往的位置")
                         if sw == 0:
                             print("3分球")
@@ -907,23 +1017,26 @@ if __name__ == '__main__' :
     ######################################## 二分球仿造catch_ball ######################################## 
 
                 elif step == 'stratagy_2':
+
+                    target.basket_parameter()
+                    motor.trace_revise(target.basket_x,target.basket_y,35)
                         
                     if motor.ready_basket_dunk == False :
+ 
 
-                        target.ball_parameter()
-                        motor.trace_revise(target.ball_x,target.ball_y,25) 
-
-                        if abs(motor.head_horizon-2048) > 80  :
+                        if abs(motor.head_horizon-2048) > 200  :
                             print("頭部馬達水平刻度偏差>步態影響的")
                             print("rotate調整")
                             time.sleep(0.05)
-                            motor.body_trace_rotate(80)
+                            motor.body_trace_rotate(40)
 
-                        elif abs(motor.head_horizon-2048) <= 80 :
-                            print("頭部馬達垂直刻度與框差太多")
+                        else :
+                        #elif abs(motor.head_vertical - ball_catch_size[0]) > 10 :
+                            print("頭部馬達垂直刻度與抓球角度差太多")
                             print("straight調整")
                             time.sleep(0.05)
-                            motor.degree_straight(throw_ball_point[sw],basket_error[sw])
+                            #motor.degree_straight(throw_ball_point[sw],basket_error[sw])
+                            motor.degree_straight_new(two_point_line[0],two_point_line[1],two_point_line[2])
 
                     elif motor.ready_basket_dunk == True :
 
@@ -941,7 +1054,8 @@ if __name__ == '__main__' :
                                 step ="finish"
                         else:
                             print("框不在視野中->往左邊轉腰")
-                            motor.waist_rotate(1900,70) #?????????
+                            #motor.waist_rotate(1900,70) #?????????
+                            motor.Null_WaistFix(1900)
   
 
     ######################################## 二分球舊 ######################################## 
@@ -1011,29 +1125,35 @@ if __name__ == '__main__' :
                     print("執行 walk_to_basket_shoot 副函式")
                     motor.walk_to_basket_shoot(throw_ball_point[sw],basket_error[sw])
                     pass
-               
-
-
-
-
-                
-                
+ 
             else :
-                if step != 'begin' and (send.DIOValue == 8 or send.DIOValue == 9 or send.DIOValue ==10 or send.DIOValue ==12 or send.DIOValue ==13
-                                     or send.DIOValue ==11 or send.DIOValue ==15 or send.DIOValue ==24 or send.DIOValue ==27 or send.DIOValue ==31):
-
-                    motor.bodyauto_close(0)
-                    target = target_location()
-                    motor = motor_move()
-                    step = 'begin'
-                    situation = 0
+                if step != 'begin':
                     send.sendHeadMotor(1,2048,30)
                     send.sendHeadMotor(2,2048,30)
                     time.sleep(0.05)
+                    motor.bodyauto_close(0)
+                    time.sleep(1)
                     send.sendBodySector(29)
-                    print("-------------------reset and stoping-------------------------")
-                    print("-------------------reset and stoping-------------------------")
                     time.sleep(0.05)
+                    target = target_location()
+                    motor = motor_move()
+                    step = 'begin'
+                    print("-------------------reset and stoping-------------------------")
+                    print("主策略指撥關閉->機器人回復初始狀態")
+                    time.sleep(0.05)
+
+                elif send.DIOValue == 11:           #catch ball point  上上下下 
+                    print("Basket vert = ",motor.head_vertical)
+                    time.sleep(0.2) 
+                    step = 'test'
+
+                elif send.DIOValue == 13:       #basket size   上下上下
+                    print("Basket Y = ",target.basket_size , "Basket vert = ",motor.head_vertical)
+                    time.sleep(0.2) 
+                    step = 'test'
+
+                else:
+                    pass
 
     except rospy.ROSInterruptException:
         pass
