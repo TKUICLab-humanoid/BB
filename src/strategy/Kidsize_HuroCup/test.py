@@ -502,7 +502,7 @@ class motor_move():
     #         self.catch = True
 
     def body_trace_basket_straight_5(self,basket_size,basket_error) :
-        if (abs(target.basket_size - 2800) <= 50):
+        if (abs(target.basket_size - 2700) <= 50):
             self.num = self.num - 1
             if self.num <= 0 :
                 print( "--------------------stop at the basket----------------------",target.basket_size)
@@ -517,19 +517,19 @@ class motor_move():
                 self.found = True
                 self.catch = True
         
-        elif (target.basket_size < 2800):
+        elif (target.basket_size < 2700):
             motor.MoveContinuous(500+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!
             print( "--------------------go ahead to basket---------------------  ",target.basket_size)
             self.num = 3
             time.sleep(0.05)
 
         elif (target.basket_size > 3300):
-            motor.MoveContinuous(-1500+correct[0],0+correct[1],0+correct[2],100,100,2)
+            motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "--------------------go back bbbbbb from basket-------------------- ",target.basket_size)
             self.num = 3
             time.sleep(0.05)   
         elif (target.basket_size <3300):
-            motor.MoveContinuous(-1000+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
+            motor.MoveContinuous(-800+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go back ssssss from basket-------------------- ",target.basket_size)
             self.num = 3
             time.sleep(0.05) 
@@ -730,14 +730,14 @@ if __name__ == '__main__' :
     throw_plus = 1 #line  0   left side 0 right side  4
 
     #                    size,degree
-    ball_catch_size =[1980] #line  1650
+    ball_catch_size =[1850] #line  1650
     # # for size          三分  五分  灌籃
     throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [-1300,0,-1]
-    left_correct  = [-1400,-100,3]
-    right_correct = [-1450,300,-4]
+    correct       = [-1700,-100,0]
+    left_correct  = [-1700,-700,3]
+    right_correct = [-1900,-100,-3]
     #                  x , y , theta   
 
     basket_error = [70,100,60]
