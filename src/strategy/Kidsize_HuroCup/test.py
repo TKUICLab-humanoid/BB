@@ -502,7 +502,7 @@ class motor_move():
     #         self.catch = True
 
     def body_trace_basket_straight_5(self,basket_size,basket_error) :
-        if (abs(target.basket_size - 2700) <= 50):
+        if (abs(target.basket_size - 2800) <= 50):
             self.num = self.num - 1
             if self.num <= 0 :
                 print( "--------------------stop at the basket----------------------",target.basket_size)
@@ -524,12 +524,12 @@ class motor_move():
             time.sleep(0.05)
 
         elif (target.basket_size > 3300):
-            motor.MoveContinuous(-1200+correct[0],0+correct[1],0+correct[2],100,100,2)
+            motor.MoveContinuous(-800+correct[0],0+correct[1],0+correct[2],100,100,2)
             print( "--------------------go back bbbbbb from basket-------------------- ",target.basket_size)
             self.num = 3
             time.sleep(0.05)   
         elif (target.basket_size <3300):
-            motor.MoveContinuous(-800+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
+            motor.MoveContinuous(-400+correct[0],0+correct[1],0+correct[2],100,100,2)#!!!!!!!!!!!!!!!
             print( "--------------------go back ssssss from basket-------------------- ",target.basket_size)
             self.num = 3
             time.sleep(0.05) 
@@ -735,9 +735,9 @@ if __name__ == '__main__' :
     throw_ball_point = [0,0,1300] 
     # for degree          三分  五分  灌籃
     
-    correct       = [-1700,-100,0]
-    left_correct  = [-1700,-700,3]
-    right_correct = [-1900,-100,-3]
+    correct       = [-1600,-400,0]
+    left_correct  = [-1900,-700,4]
+    right_correct = [-2000,-300,-4]
     #                  x , y , theta   
 
     basket_error = [70,100,60]
@@ -1056,7 +1056,9 @@ if __name__ == '__main__' :
                                 step = 'walk_to_basket'
 
                         elif motor.directly == False and (abs(target.basket_x - 160) < 12  or abs(target.basket_y - 120) < 9):
-                            print("SDFGHJKLERTYU")                        
+                            print("SDFGHJKLERTYU")    
+                            if sw == 1 :
+                                send.sendBodySector(111)                
                             motor.bodyauto_close(1)                
                             step = 'walk_to_basket' #@@@@@@@@@@@@@@@@@@
 
