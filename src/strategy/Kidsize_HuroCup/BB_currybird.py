@@ -136,7 +136,7 @@ class BasketBall():
             rospy.loginfo(f'SW = {self.sw}')
         #[sw==2]->2分球;[sw==0]->3分球;[sw==1]->5分球
 
-    ######################################## switch #######################################
+        ######################################## switch #######################################
         rospy.logdebug(f'開始執行初始化')
         send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
         time.sleep(0.05)
@@ -168,7 +168,7 @@ class BasketBall():
         motor.bodyauto_close(1)
         time.sleep(0.05)
 
-        if (motor.head_vertical <= 1500) or ((motor.head_vertical < 1445) and  (1698 >= motor.head_horizon or motor.head_horizon >= 2398) ):
+        if (motor.head_vertical <= 1500) or ((motor.head_vertical < 1445) and  (1698 >= motor.head_horizon or motor.head_horizon >= 2398)):
             rospy.logdebug(f'球太大->大倒退')
             motor.MoveContinuous(-1200+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 1) #??????
             self.step = 'walk_to_ball'
@@ -182,7 +182,7 @@ class BasketBall():
         motor.trace_revise(target.ball_x, target.ball_y, 25)
         rospy.loginfo(f"head_vertical = {motor.head_vertical}")
 
-        if CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]:  #到達夾球位置
+        if (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]) and (abs(motor.head_horizon-2048) <= 100):  #到達夾球位置
             motor.bodyauto_close(0) #步態停止
             time.sleep(1.2)
             rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
@@ -300,11 +300,11 @@ class BasketBall():
     
     def stratagy_2(self):
         target.basket_parameter()
-        motor.trace_revise(target.basket_x, target.basket_y, 35)
 
         if not self.ready_dunk:
+            motor.trace_revise(target.basket_x, target.basket_y, 35)
 
-            if TWO_POINT_LINE[2] <= motor.head_vertical <= TWO_POINT_LINE[1] :
+            if (TWO_POINT_LINE[2] <= motor.head_vertical <= TWO_POINT_LINE[1]) and (abs(motor.head_horizon-2048) <= 200):
                 self.ready_dunk = True
                 rospy.loginfo(f'到達可投籃角度 STOP!!, self.head_vertical =  {motor.head_vertical}')
                 motor.bodyauto_close(0)
@@ -314,12 +314,10 @@ class BasketBall():
                 motor.move_head(1, 1800, 880, 880, 30)
                 time.sleep(0.8)
                 rospy.logdebug(f'伸手準備投籃')
-                rospy.loginfo(f'伸手準備投籃')
                 send.sendBodySector(887)
                 time.sleep(1.5)
             
             else:
-                motor.trace_revise(target.basket_x, target.basket_y, 35)
 
                 if abs(motor.head_horizon - 2048) > 200:
                     rospy.logdebug(f'頭部馬達水平刻度偏差 > 步態影響的')
@@ -354,19 +352,38 @@ class BasketBall():
         ######################################## 三分球用size判斷 ########################################
         target.basket_parameter()
 
-        if THREE_POINT_LINE[2] <= target.basket_size <= THREE_POINT_LINE[1]: 
-            rospy.loginfo(f'到達可投籃大小 STOP!!, target.basket_size = {target.basket_size}')
-            motor.bodyauto_close(0)
-            target.basket_parameter()
-            time.sleep(3)
-            rospy.logdebug(f'三分球動作預備')
-            rospy.logdebug(f'頭部水平旋轉調整')
-            motor.move_head(1, 1880, 880, 880, 30)
-            time.sleep(0.8)
-            rospy.logdebug(f'伸手準備投籃')
-            send.sendBodySector(887)
-            time.sleep(1.5)
+        if not self.ready_shoot:  
+            motor.trace_revise(target.basket_x, target.basket_y, 35)
 
+            if (THREE_POINT_LINE[2] <= target.basket_size <= THREE_POINT_LINE[1]) and (abs(motor.head_horizon - 2048) <= 100): 
+
+                self.ready_shoot = True
+                rospy.loginfo(f'到達可投籃大小 STOP!!, target.basket_size = {target.basket_size}')
+                motor.bodyauto_close(0)
+                target.basket_parameter()
+                time.sleep(3)
+                rospy.logdebug(f'三分球動作預備')
+                rospy.logdebug(f'頭部水平旋轉調整')
+                motor.move_head(1, 1880, 880, 880, 30)
+                time.sleep(0.8)
+                rospy.logdebug(f'伸手準備投籃')
+                send.sendBodySector(887)
+                time.sleep(1.5)
+            else:
+
+                if abs(motor.head_horizon - 2048) > 100:
+                    rospy.logdebug(f'頭部馬達水平刻度偏差 > 步態影響的')
+                    rospy.logdebug(f'rotate調整')
+                    time.sleep(0.05)
+                    motor.body_trace_rotate(40)
+
+                else :
+                    rospy.logdebug(f'頭部馬達垂直刻度與抓球角度差太多')
+                    rospy.logdebug(f'straight調整')
+                    time.sleep(0.05)
+                    motor.size_straight(THREE_POINT_LINE[0], THREE_POINT_LINE[1], THREE_POINT_LINE[2], THREE_POINT_LINE[3])
+            
+        else:
             if target.basket_x != 0 :
 
                 if abs(target.basket_x-160) > 3:
@@ -374,7 +391,8 @@ class BasketBall():
                     rospy.logdebug(f'腰部修正')
                     motor.WaistFix(target.basket_x, 160)
                     rospy.loginfo(f'abs(target.basket_x - 160) = {abs(target.basket_x - 160)}')
-                elif abs(target.basket_x-160) < 3:
+
+                else:
                     time.sleep(1)
                     rospy.logdebug(f'執行3分球投籃')
                     send.sendBodySector(886)
@@ -385,28 +403,16 @@ class BasketBall():
             else:
                 rospy.loginfo(f'框不在視野中 -> 往左邊轉腰')
 
-        else:
-            motor.trace_revise(target.basket_x, target.basket_y, 35)
-            if abs(motor.head_horizon - 2048) > 300:
-                rospy.logdebug(f'頭部馬達水平刻度偏差 > 步態影響的')
-                rospy.logdebug(f'rotate調整')
-                time.sleep(0.05)
-                motor.body_trace_rotate(40)
 
-            else :
-                rospy.logdebug(f'頭部馬達垂直刻度與抓球角度差太多')
-                rospy.logdebug(f'straight調整')
-                time.sleep(0.05)
-                motor.size_straight(THREE_POINT_LINE[0], THREE_POINT_LINE[1], THREE_POINT_LINE[2], THREE_POINT_LINE[3])
    
     def stratagy_5(self):
         ######################################## 五分球用size判斷 ########################################
         target.basket_parameter()
-        motor.trace_revise(target.basket_x, target.basket_y, 35)
 
         if not self.ready_shoot:
+            motor.trace_revise(target.basket_x, target.basket_y, 35)
 
-            if FIVE_POINT_LINE[2] <= target.basket_size <= FIVE_POINT_LINE[1]:
+            if (FIVE_POINT_LINE[2] <= target.basket_size <= FIVE_POINT_LINE[1]) and (abs(motor.head_horizon - 2048) <= 100):
                 self.ready_shoot = True
                 rospy.loginfo(f'到達可投籃大小 STOP!!, target.basket_size = {target.basket_size}')
                 motor.bodyauto_close(0)
@@ -425,9 +431,7 @@ class BasketBall():
 
             else:
 
-                motor.trace_revise(target.basket_x,target.basket_y,35)
-
-                if abs(motor.head_horizon-2048) > 300:
+                if abs(motor.head_horizon-2048) > 100:
                     rospy.logdebug(f'頭部馬達水平刻度偏差>步態影響的')
                     rospy.logdebug(f'rotate調整')
                     time.sleep(0.05)
@@ -456,7 +460,7 @@ class BasketBall():
                         time.sleep(0.05)
                         motor.basket_distance(BASKET_SIZE_60_90[0], BASKET_SIZE_60_90[1])
                         rospy.loginfo(f'throw_strength = {motor.throw_strength}')
-                        rospy.logdebug(f'可以投射')
+                        rospy.logdebug(f'aiming_finished -> 可以投射')
                         self.aiming_finish = True
                         time.sleep(2)
 
@@ -776,22 +780,22 @@ class MotorMove():
         rospy.loginfo(f'target.basket_x = {target.basket_x}, target.basket_y = {target.basket_y}, target.basket_size = {target.basket_size}')
         self.trace_revise(target.basket_x, target.basket_y,35)
 
-        if target.basket_size > backward_slow_size:  #大後退
+        if target.basket_size > backward_slow_size:                         #大後退
             self.MoveContinuous(-800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'大後退, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
-        elif backward_stop_size < target.basket_size < backward_slow_size:  #進入減速範圍
+        elif backward_stop_size < target.basket_size < backward_slow_size:  #進入後退減速範圍
             self.MoveContinuous(-500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入後退減速範圍, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
-        elif forward_slow_size < target.basket_size < forward_stop_size: 
+        elif forward_slow_size < target.basket_size < forward_stop_size:    #進入前進減速範圍
             self.MoveContinuous(500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入前進減速範圍, target.basket_size = {target.basket_size}')              
             time.sleep(0.05)
 
-        elif target.basket_size < forward_slow_size: 
+        elif target.basket_size < forward_slow_size:                        #大前進
             self.MoveContinuous(800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
             rospy.loginfo(f'大前進, target.basket_size = {target.basket_size}')              
             time.sleep(0.05)
