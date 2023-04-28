@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [0,100,0]         #原地踏步修正
-LEFT_CORRECT  = [0,-100,4]       #左旋修正
-RIGHT_CORRECT = [0,100,-4]       #右旋修正
+CORRECT       = [-100,50,-1]         #原地踏步修正
+LEFT_CORRECT  = [-100,-50,3]       #左旋修正
+RIGHT_CORRECT = [-100,150,-3]       #右旋修正
 #                  x , y , theta 
 
 #======================================================================================
@@ -26,7 +26,7 @@ THROW_BALL_PLUS = 1                 #line  0   left side 0 right side  4
 
 CATCH_BALL_LINE = [1650, 1590, 1540]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [2570, 2597, 2500, 2480]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+THREE_POINT_LINE = [2570, 1950, 1930, 2480]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 FIVE_POINT_LINE  = [1280, 1122, 900, 800]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 
 #THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
@@ -35,7 +35,8 @@ send = Sendmessage()
 
 class BasketBall():
     def __init__(self):
-        self.head_y_adjust = False
+        self.head_y_down_adjust = False
+        self.head_y_up_adjust = False
         self.ready_dunk = False
         self.ready_shoot = False
         self.aiming_finish = False
@@ -43,7 +44,8 @@ class BasketBall():
         self.sw = 0
     
     def initial(self):
-        self.head_y_adjust = False
+        self.head_y_down_adjust = False
+        self.head_y_up_adjust = False
         self.ready_dunk = False
         self.ready_shoot = False
         self.aiming_finish = False
@@ -138,7 +140,7 @@ class BasketBall():
 
         ######################################## switch #######################################
         rospy.logdebug(f'開始執行初始化')
-        send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
+        #send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
         time.sleep(0.05)
         send.sendBodySector(8910)   #步態調整
         time.sleep(0.05)
@@ -146,21 +148,30 @@ class BasketBall():
         
     def find_ball(self):
         target.ball_parameter()
-        if target.ball_size <= 350:   #球在視野中太小
-            rospy.logdebug(f'球在視野中太小->大範圍尋球')
-            motor.view_search_left(2428, 1668, 1800, 1200, 40, 0.05)
-            target.ball_parameter() 
 
-        elif target.ball_size > 350:   #球在視野中夠大
+        if not self.head_y_down_adjust:
+            time.sleep(1)
+            rospy.logdebug(f'頭部抬起尋框')
+            motor.move_head(2,1700,880,880,50)                
+            self.head_y_down_adjust = True
+            time.sleep(1)
+        else:
 
-            if abs(target.ball_x - 160) > 6  or abs(target.ball_y - 120) > 8:  #讓球在畫面中心
-                rospy.logdebug(f'球在視野中夠大->鎖定球')
-                target.ball_parameter()
-                motor.trace_revise(target.ball_x, target.ball_y, 25) 
-                time.sleep(0.05)
-            else: 
-                motor.reg = 2048 - motor.head_horizon
-                self.step = 'start_gait'   
+            if target.ball_size <= 350:   #球在視野中太小
+                rospy.logdebug(f'球在視野中太小->大範圍尋球')
+                motor.view_search_left(2428, 1668, 1800, 1200, 40, 0.05)
+                target.ball_parameter() 
+
+            elif target.ball_size > 350:   #球在視野中夠大
+
+                if abs(target.ball_x - 160) > 6  or abs(target.ball_y - 120) > 8:  #讓球在畫面中心
+                    rospy.logdebug(f'球在視野中夠大->鎖定球')
+                    target.ball_parameter()
+                    motor.trace_revise(target.ball_x, target.ball_y, 25) 
+                    time.sleep(0.05)
+                else: 
+                    motor.reg = 2048 - motor.head_horizon
+                    self.step = 'start_gait'   
 
     def start_gait(self):
         target.ball_parameter()
@@ -256,11 +267,11 @@ class BasketBall():
             rospy.logdebug(f'籃框在視野裡太小->尋框')
             rospy.loginfo(f'basket_size =  {target.basket_size}')
 
-            if not self.head_y_adjust:
+            if not self.head_y_up_adjust:
                 time.sleep(1)
                 rospy.logdebug(f'頭部抬起尋框')
                 motor.move_head(2,1900,880,880,50)                
-                self.head_y_adjust = True
+                self.head_y_up_adjust = True
                 time.sleep(1)
 
             else:                                   
@@ -364,7 +375,7 @@ class BasketBall():
                 time.sleep(3)
                 rospy.logdebug(f'三分球動作預備')
                 rospy.logdebug(f'頭部水平旋轉調整')
-                motor.move_head(1, 1880, 880, 880, 30)
+                motor.move_head(1, 1850, 880, 880, 30)
                 time.sleep(0.8)
                 rospy.logdebug(f'伸手準備投籃')
                 send.sendBodySector(887)
@@ -397,6 +408,7 @@ class BasketBall():
                     rospy.logdebug(f'執行3分球投籃')
                     send.sendBodySector(886)
                     rospy.logdebug(f'手臂旋轉調整')
+                    time.sleep(2)  
                     send.sendBodySector(988)    
                     rospy.logdebug(f'投籃')
                     self.step = "finish"    
