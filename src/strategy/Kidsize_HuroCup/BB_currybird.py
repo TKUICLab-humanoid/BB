@@ -18,16 +18,16 @@ RIGHT_CORRECT = [-200, 300, -3]       #右旋修正
 
 #======================================================================================
 
-BASKET_SIZE_60_90 = [2116, 899]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
-FIVEPOINT_HEAD_Y_DEGREE = [1940]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
-THROW_BALL_PLUS = 50                 #line  0   left side 0 right side  4
+BASKET_SIZE_60_90 = [1968, 806]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+FIVEPOINT_HEAD_Y_DEGREE = [1960]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
+THROW_BALL_PLUS = 100                 #line  0   left side 0 right side  4
 
 #======================================================================================
 
 CATCH_BALL_LINE = [1750, 1650, 1550]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
 THREE_POINT_LINE = [2100, 1980, 1900, 1800]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
-FIVE_POINT_LINE  = [900, 837, 800, 780]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+FIVE_POINT_LINE  = [900, 800, 780, 750]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 
 #THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
 
@@ -455,14 +455,15 @@ class BasketBall():
                     time.sleep(0.05)
                     motor.size_straight(FIVE_POINT_LINE[0], FIVE_POINT_LINE[1], FIVE_POINT_LINE[2], FIVE_POINT_LINE[3])
         else:
+
             if target.basket_x != 0 and self.aiming_finish == False:
 
-                if abs(target.basket_x-160) > 2:
+                if abs(target.basket_x - 160) > 2:
                     rospy.loginfo(f'target.basket_size = {target.basket_size}')
                     motor.WaistFix(target.basket_x, 160)
                     rospy.loginfo(f'abs(target.basket_x-160) = {abs(target.basket_x-160)}')
 
-                elif abs(target.basket_x - 160) <= 2:
+                else:
                     rospy.loginfo(f'target.basket_y - 120 = {target.basket_y - 120}')
                     # if abs(target.basket_y - 120) > 3:
                     #     motor.trace_revise(target.basket_x, target.basket_y, 30)
