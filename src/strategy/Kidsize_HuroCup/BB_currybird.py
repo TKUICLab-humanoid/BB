@@ -11,23 +11,23 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-200, 0, 0]         #原地踏步修正
-LEFT_CORRECT  = [-200, -200, 3]       #左旋修正
-RIGHT_CORRECT = [-200, 200, -3]       #右旋修正
+CORRECT       = [-200, 0, -1]         #原地踏步修正
+LEFT_CORRECT  = [-200, -300, 3]       #左旋修正
+RIGHT_CORRECT = [-200, 300, -3]       #右旋修正
 #                  x , y , theta 
 
 #======================================================================================
 
-BASKET_SIZE_60_90 =[2116, 899]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
-FIVEPOINT_HEAD_Y_DEGREE = [1960]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
-THROW_BALL_PLUS = 1                 #line  0   left side 0 right side  4
+BASKET_SIZE_60_90 = [2116, 899]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+FIVEPOINT_HEAD_Y_DEGREE = [1940]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
+THROW_BALL_PLUS = 50                 #line  0   left side 0 right side  4
 
 #======================================================================================
 
-CATCH_BALL_LINE = [1650, 1590, 1540]            #slow_degree,stop_degree,backward_degree
+CATCH_BALL_LINE = [1750, 1650, 1550]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [3100, 2960, 2850, 2500]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
-FIVE_POINT_LINE  = [1280, 1122, 900, 800]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+THREE_POINT_LINE = [2100, 1980, 1900, 1800]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+FIVE_POINT_LINE  = [900, 837, 800, 780]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 
 #THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
 
@@ -375,7 +375,7 @@ class BasketBall():
                 time.sleep(3)
                 rospy.logdebug(f'三分球動作預備')
                 rospy.logdebug(f'頭部水平旋轉調整')
-                motor.move_head(1, 1850, 880, 880, 30)
+                motor.move_head(1, 1820, 880, 880, 30)
                 time.sleep(0.8)
                 rospy.logdebug(f'伸手準備投籃')
                 send.sendBodySector(887)
@@ -464,17 +464,17 @@ class BasketBall():
 
                 elif abs(target.basket_x - 160) <= 2:
                     rospy.loginfo(f'target.basket_y - 120 = {target.basket_y - 120}')
-                    if abs(target.basket_y - 120) > 3:
-                        motor.trace_revise(target.basket_x, target.basket_y, 30)
+                    # if abs(target.basket_y - 120) > 3:
+                    #     motor.trace_revise(target.basket_x, target.basket_y, 30)
 
-                    elif abs(target.basket_y - 120) <= 3:
-                        time.sleep(1.3)
-                        time.sleep(0.05)
-                        motor.basket_distance(BASKET_SIZE_60_90[0], BASKET_SIZE_60_90[1])
-                        rospy.loginfo(f'throw_strength = {motor.throw_strength}')
-                        rospy.logdebug(f'aiming_finished -> 可以投射')
-                        self.aiming_finish = True
-                        time.sleep(2)
+                    # elif abs(target.basket_y - 120) <= 3:
+                    time.sleep(1.3)
+                    time.sleep(0.05)
+                    motor.basket_distance(BASKET_SIZE_60_90[0], BASKET_SIZE_60_90[1])
+                    rospy.loginfo(f'throw_strength = {motor.throw_strength}')
+                    rospy.logdebug(f'aiming_finished -> 可以投射')
+                    self.aiming_finish = True
+                    time.sleep(2)
 
             elif target.basket_x != 0 and self.aiming_finish == True :
                 time.sleep(0.1)
@@ -808,7 +808,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif target.basket_size < forward_slow_size:                        #大前進
-            self.MoveContinuous(800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
+            self.MoveContinuous(1000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
             rospy.loginfo(f'大前進, target.basket_size = {target.basket_size}')              
             time.sleep(0.05)
     
