@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-100,50,-1]         #原地踏步修正
-LEFT_CORRECT  = [-100,-50,3]       #左旋修正
-RIGHT_CORRECT = [-100,150,-3]       #右旋修正
+CORRECT       = [-200, 0, 0]         #原地踏步修正
+LEFT_CORRECT  = [-200, -200, 3]       #左旋修正
+RIGHT_CORRECT = [-200, 200, -3]       #右旋修正
 #                  x , y , theta 
 
 #======================================================================================
@@ -26,7 +26,7 @@ THROW_BALL_PLUS = 1                 #line  0   left side 0 right side  4
 
 CATCH_BALL_LINE = [1650, 1590, 1540]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [2570, 1950, 1930, 2480]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+THREE_POINT_LINE = [3100, 2960, 2850, 2500]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 FIVE_POINT_LINE  = [1280, 1122, 900, 800]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 
 #THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
