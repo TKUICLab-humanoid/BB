@@ -171,7 +171,27 @@ class BasketBall():
                     target.ball_parameter()
                     motor.trace_revise(target.ball_x, target.ball_y, 25) 
                     time.sleep(0.05)
+
+                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]):
+
+                    time.sleep(1.2)
+                    rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
+                    time.sleep(0.05)
+                    motor.trace_revise(target.ball_x, target.ball_y, 25) 
+                    rospy.logdebug(f'到達可夾球位置')
+                    rospy.logdebug(f'蹲下')
+                    time.sleep(1.0)
+                    send.sendBodySector(5) 
+                    time.sleep(1.5)
+                    rospy.logdebug(f'頭往右轉')
+                    motor.move_head(1, 1820, 880, 880, 50)
+                    time.sleep(2) 
+                    motor.reg = 2048 - motor.head_horizon
+                    motor.search_num = 0
+                    self.step = 'waist_fix'
+
                 else: 
+
                     motor.reg = 2048 - motor.head_horizon
                     motor.search_num = 0
                     self.step = 'start_gait'   
@@ -206,10 +226,10 @@ class BasketBall():
             rospy.logdebug(f'蹲下')
             time.sleep(1.0)
             send.sendBodySector(5) 
-            time.sleep(3)
+            time.sleep(1.5)
             rospy.logdebug(f'頭往右轉')
             motor.move_head(1, 1820, 880, 880, 50)
-            time.sleep(2.5) 
+            time.sleep(2) 
             self.step = 'waist_fix'
 
         else:
@@ -251,7 +271,7 @@ class BasketBall():
             time.sleep(1) 
         rospy.logdebug(f'腰部回正')
         motor.waist_rotate(2048,70)
-        time.sleep(3) 
+        time.sleep(2) 
 
         if motor.directly:
             rospy.logdebug(f'根據各自夾球動作回復站姿')
@@ -260,7 +280,7 @@ class BasketBall():
             send.sendBodySector(7) 
             time.sleep(2)
 
-        time.sleep(3)
+        time.sleep(2)
         self.step = 'find_basket' 
     
     def find_basket(self):
@@ -282,15 +302,7 @@ class BasketBall():
                 rospy.loginfo(f'target.basket_x = {target.basket_x}, target.basket_y = {target.basket_y}, target.basket_size = {target.basket_size}')
                 ####################################### view search #######################################
                 motor.view_search(2548, 1548, 2048, 1948, 50, 0.04)
-                # if motor.reg > 0:
-                #     rospy.logdebug(f'reg大於0 => 頭往左轉修正')
-                #     rospy.logdebug(f'左轉開始尋框 = view_search_left')
-                #     motor.view_search_left(2548, 1548, 2048, 1948, 50, 0.04)
 
-                # else:
-                #     rospy.logdebug(f'reg小於0 => 頭往右轉修正')
-                #     rospy.logdebug(f'右轉開始尋框 = view_search_right')
-                #     motor.view_search_right(2548, 1548, 2048, 1948, 50, 0.04)
         else:                                
             rospy.logdebug(f'籃框在視野裡夠大->判斷策略所需前往的位置')
 
@@ -437,7 +449,7 @@ class BasketBall():
                 rospy.logdebug(f'五分球動作預備')
                 rospy.logdebug(f'手臂往後舉')
                 send.sendBodySector(5301)
-                time.sleep(1)   
+                time.sleep(2)   
                 rospy.logdebug(f'頭部調整') 
                 rospy.logdebug(f'頭部水平旋轉調整')                                              
                 motor.move_head(1, FIVEPOINT_HEAD_Y_DEGREE[0], 880, 880, 50)
@@ -469,12 +481,7 @@ class BasketBall():
 
                 else:
                     rospy.loginfo(f'target.basket_y - 120 = {target.basket_y - 120}')
-                    # if abs(target.basket_y - 120) > 3:
-                    #     motor.trace_revise(target.basket_x, target.basket_y, 30)
-
-                    # elif abs(target.basket_y - 120) <= 3:
                     time.sleep(1.3)
-                    time.sleep(0.05)
                     motor.basket_distance(BASKET_SIZE_60_90[0], BASKET_SIZE_60_90[1])
                     rospy.loginfo(f'throw_strength = {motor.throw_strength}')
                     rospy.logdebug(f'aiming_finished -> 可以投射')
@@ -485,7 +492,7 @@ class BasketBall():
                 time.sleep(0.1)
                 rospy.logdebug(f'開爪')
                 send.sendBodySector(5502)
-                time.sleep(2)
+                time.sleep(1)
                 send.sendHandSpeed(503 ,motor.throw_strength + THROW_BALL_PLUS ) #THROW_BALL_PLUS???????
                 time.sleep(2)
                 rospy.logdebug(f'投射!!!')
@@ -575,8 +582,6 @@ class MotorMove():
         self.head_horizon = 2048                #頭部水平刻度
         self.head_vertical = 2048               #頭部垂直刻度
         self.waist_position = 2048              #腰當下的刻度
-        #self.left_search_flag = 1               #找目標物的旗標1
-        #self.right_search_flag = 1              #找目標物的旗標2
         self.search_num = 0
         self.now_x = 0                          #現在要移動的x量
         self.now_y = 0                          #現在要移動的y量
@@ -592,8 +597,6 @@ class MotorMove():
         self.head_horizon = 2048                #頭部水平刻度
         self.head_vertical = 2048               #頭部垂直刻度
         self.waist_position = 2048              #腰當下的刻度
-        #self.left_search_flag = 1               #找目標物的旗標1
-        #self.right_search_flag = 1              #找目標物的旗標2
         self.search_num = 0
         self.now_x = 0                          #現在要移動的x量
         self.now_y = 0                          #現在要移動的y量
@@ -635,82 +638,6 @@ class MotorMove():
     def waist_rotate(self, waist_x, Speed):
         send.sendSingleMotor(9, waist_x-self.waist_position, Speed)
         self.waist_position =  waist_x 
-    
-    def view_search_left(self, right_place, left_place, up_place, down_place, speed, delay):    #先往左轉
-
-        if self.left_search_flag == 3:
-            if self.head_horizon >= left_place:
-                self.move_head(1,self.head_horizon,880,880,speed)
-                self.head_horizon = self.head_horizon - speed
-                time.sleep(delay)
-            else:
-                self.left_search_flag = 4  
-                time.sleep(delay*5) 
-
-        elif self.left_search_flag == 4:
-            if self.head_vertical <= up_place:
-                self.move_head(2, self.head_vertical, 880, 880, speed)
-                self.head_vertical = self.head_vertical + speed
-                time.sleep(delay)
-            else:
-                self.left_search_flag = 1  
-                time.sleep(delay*5)
-                    
-        elif  self.left_search_flag == 1:
-            if  self.head_horizon <= right_place:
-                self.move_head(1, self.head_horizon, 880, 880, speed)
-                self.head_horizon = self.head_horizon + speed
-                time.sleep(delay) 
-            else:
-                self.left_search_flag = 2 
-                time.sleep(delay*5)      
-        
-        elif self.left_search_flag ==  2:
-            if self.head_vertical >= down_place:
-                self.move_head(2, self.head_vertical, 880, 880, speed)      #頭向下的極限??
-                self.head_vertical = self.head_vertical - speed
-                time.sleep(delay)   
-            else:
-                self.left_search_flag = 3
-                time.sleep(delay*5)
-
-    def view_search_right(self, right_place, left_place, up_place, down_place, speed,delay):    #先往右轉
-
-            if self.right_search_flag == 1:
-                if self.head_horizon >= left_place:
-                    self.move_head(1, self.head_horizon, 880, 880, speed)
-                    self.head_horizon = self.head_horizon - speed
-                    time.sleep(delay)
-                else:
-                    self.right_search_flag = 2  
-                    time.sleep(delay*5) 
-
-            elif self.right_search_flag == 4:
-                if self.head_vertical <= up_place:
-                    self.move_head(2, self.head_vertical, 880, 880, speed)
-                    self.head_vertical = self.head_vertical + speed
-                    time.sleep(delay)
-                else:
-                    self.right_search_flag = 1  
-                    time.sleep(delay*5)
-                        
-            elif  self.right_search_flag == 3:
-                if  self.head_horizon <= right_place:
-                    self.move_head(1, self.head_horizon, 880, 880, speed)
-                    self.head_horizon = self.head_horizon + speed
-                    time.sleep(delay) 
-                else:
-                    self.right_search_flag = 4 
-                    time.sleep(delay*5)      
-           
-            elif self.right_search_flag ==  2:
-                if self.head_vertical >= down_place:
-                    self.move_head(2, self.head_vertical, 880, 880, speed)      #頭向下的極限
-                    self.head_vertical = self.head_vertical - speed
-                    time.sleep(delay)   
-                else:
-                    self.right_search_flag = 3
-                    time.sleep(delay*5)
 
     ####################################### view search #######################################
     def view_search(self, right_place, left_place, up_place, down_place, speed, delay):    
@@ -855,7 +782,7 @@ class MotorMove():
         self.trace_revise(target.basket_x, target.basket_y,35)
 
         if target.basket_size > backward_slow_size:                         #大後退
-            self.MoveContinuous(-800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
+            self.MoveContinuous(-1500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'大後退, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
@@ -870,7 +797,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif target.basket_size < forward_slow_size:                        #大前進
-            self.MoveContinuous(1000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
+            self.MoveContinuous(1500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
             rospy.loginfo(f'大前進, target.basket_size = {target.basket_size}')              
             time.sleep(0.05)
     
