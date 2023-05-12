@@ -18,7 +18,7 @@ RIGHT_CORRECT = [-200, 300, -3]       #右旋修正
 
 #======================================================================================
 
-BASKET_SIZE_60_90 = [1968, 806]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+BASKET_SIZE_60_90 = [2598, 1023]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
 FIVEPOINT_HEAD_Y_DEGREE = [1960]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
 THROW_BALL_PLUS = 100                 #line  0   left side 0 right side  4
 
@@ -27,7 +27,7 @@ THROW_BALL_PLUS = 100                 #line  0   left side 0 right side  4
 CATCH_BALL_LINE = [1750, 1650, 1550]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
 THREE_POINT_LINE = [2100, 1980, 1900, 1800]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
-FIVE_POINT_LINE  = [900, 800, 780, 750]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+FIVE_POINT_LINE  = [980, 957, 780, 750]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
 
 #THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
 
@@ -92,6 +92,7 @@ class BasketBall():
                 motor.draw()
                 motor.trace_revise(target.ball_x, target.ball_y, 35)
                 rospy.loginfo(f'Head_vertical = {motor.head_vertical}')
+                #rospy.loginfo(f'Ball_size = {target.ball_size}')
                 time.sleep(0.2) 
                 self.step = 'test'
 
@@ -159,7 +160,8 @@ class BasketBall():
 
             if target.ball_size <= 350:   #球在視野中太小
                 rospy.logdebug(f'球在視野中太小->大範圍尋球')
-                motor.view_search_left(2428, 1668, 1800, 1200, 40, 0.05)
+                #motor.view_search_left(2428, 1668, 1800, 1200, 40, 0.05)
+                motor.view_search(2428, 1668, 1800, 1200, 40, 0.05)
                 target.ball_parameter() 
 
             elif target.ball_size > 350:   #球在視野中夠大
@@ -171,6 +173,7 @@ class BasketBall():
                     time.sleep(0.05)
                 else: 
                     motor.reg = 2048 - motor.head_horizon
+                    motor.search_num = 0
                     self.step = 'start_gait'   
 
     def start_gait(self):
@@ -179,7 +182,7 @@ class BasketBall():
         motor.bodyauto_close(1)
         time.sleep(0.05)
 
-        if (motor.head_vertical <= 1500) or ((motor.head_vertical < 1445) and  (1698 >= motor.head_horizon or motor.head_horizon >= 2398)):
+        if (motor.head_vertical <= 1500) or ((motor.head_vertical < 1445) and  (1698 >= motor.head_horizon or motor.head_horizon >= 2398)): #????
             rospy.logdebug(f'球太大->大倒退')
             motor.MoveContinuous(-1200+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 1) #??????
             self.step = 'walk_to_ball'
@@ -277,16 +280,17 @@ class BasketBall():
             else:                                   
                 rospy.logdebug(f'開始尋框')
                 rospy.loginfo(f'target.basket_x = {target.basket_x}, target.basket_y = {target.basket_y}, target.basket_size = {target.basket_size}')
+                ####################################### view search #######################################
+                motor.view_search(2548, 1548, 2048, 1948, 50, 0.04)
+                # if motor.reg > 0:
+                #     rospy.logdebug(f'reg大於0 => 頭往左轉修正')
+                #     rospy.logdebug(f'左轉開始尋框 = view_search_left')
+                #     motor.view_search_left(2548, 1548, 2048, 1948, 50, 0.04)
 
-                if motor.reg > 0:
-                    rospy.logdebug(f'reg大於0 => 頭往左轉修正')
-                    rospy.logdebug(f'左轉開始尋框 = view_search_left')
-                    motor.view_search_left(2548, 1548, 2048, 1948, 50, 0.04)
-
-                else:
-                    rospy.logdebug(f'reg小於0 => 頭往右轉修正')
-                    rospy.logdebug(f'右轉開始尋框 = view_search_right')
-                    motor.view_search_right(2548, 1548, 2048, 1948, 50, 0.04)
+                # else:
+                #     rospy.logdebug(f'reg小於0 => 頭往右轉修正')
+                #     rospy.logdebug(f'右轉開始尋框 = view_search_right')
+                #     motor.view_search_right(2548, 1548, 2048, 1948, 50, 0.04)
         else:                                
             rospy.logdebug(f'籃框在視野裡夠大->判斷策略所需前往的位置')
 
@@ -535,9 +539,9 @@ class TargetLocation():
         self.ball_y = 0
         self.ball_size = 0
         for j in range (self.color_mask_subject_orange):   #將所有看到的橘色物件編號
-            if 310 > send.color_mask_subject_X [0][j] > 10 and 230 > send.color_mask_subject_Y [0][j] > 10:
+            if 310 > send.color_mask_subject_X [0][j] > 10 and 230 > send.color_mask_subject_Y [0][j] > 10 and send.color_mask_subject_size [0][j] > 350:
 
-                if send.color_mask_subject_size [0][j] > 350  and send.color_mask_subject_size [0][j] > self.ball_size: #用大小過濾物件
+                if  send.color_mask_subject_size [0][j] > self.ball_size: #用大小過濾物件 #?????900待測試
                     self.ball_x =  send.color_mask_subject_X [0][j]
                     self.ball_y = send.color_mask_subject_Y [0][j]
                     self.ball_size = send.color_mask_subject_size [0][j]
@@ -551,15 +555,19 @@ class TargetLocation():
         self.basket_x = 0
         self.basket_y = 0
         self.basket_size = 0
+        
         for j in range (self.color_mask_subject_red):     #將所有看到的紅色物件編號
-            if send.color_mask_subject_size [5][j] > 500 and send.color_mask_subject_size [5][j] > self.basket_size:   #用大小過濾物件(濾雜訊)
-                self.basket_x =  send.color_mask_subject_X [5][j]
-                self.basket_y = send.color_mask_subject_Y [5][j]
-                self.basket_size = send.color_mask_subject_size [5][j]
-                self.basket_x_min = send.color_mask_subject_XMin[5][j] 
-                self.basket_y_min = send.color_mask_subject_YMin[5][j] 
-                self.basket_x_max = send.color_mask_subject_XMax[5][j] 
-                self.basket_y_max =send.color_mask_subject_YMax[5][j]
+            if send.color_mask_subject_size [5][j] > 700:
+
+                if  3000 > send.color_mask_subject_size [5][j] > self.basket_size:  #用大小過濾物件(濾雜訊)
+                    self.basket_x =  send.color_mask_subject_X [5][j]
+                    self.basket_y = send.color_mask_subject_Y [5][j]
+                    self.basket_size = send.color_mask_subject_size [5][j]
+                    self.basket_x_min = send.color_mask_subject_XMin[5][j] 
+                    self.basket_y_min = send.color_mask_subject_YMin[5][j] 
+                    self.basket_x_max = send.color_mask_subject_XMax[5][j] 
+                    self.basket_y_max =send.color_mask_subject_YMax[5][j]
+        
 
 class MotorMove():
 
@@ -567,8 +575,9 @@ class MotorMove():
         self.head_horizon = 2048                #頭部水平刻度
         self.head_vertical = 2048               #頭部垂直刻度
         self.waist_position = 2048              #腰當下的刻度
-        self.left_search_flag = 1               #找目標物的旗標1
-        self.right_search_flag = 1              #找目標物的旗標2
+        #self.left_search_flag = 1               #找目標物的旗標1
+        #self.right_search_flag = 1              #找目標物的旗標2
+        self.search_num = 0
         self.now_x = 0                          #現在要移動的x量
         self.now_y = 0                          #現在要移動的y量
         self.now_theta = 0                      #現在要旋轉的theta量
@@ -583,8 +592,9 @@ class MotorMove():
         self.head_horizon = 2048                #頭部水平刻度
         self.head_vertical = 2048               #頭部垂直刻度
         self.waist_position = 2048              #腰當下的刻度
-        self.left_search_flag = 1               #找目標物的旗標1
-        self.right_search_flag = 1              #找目標物的旗標2
+        #self.left_search_flag = 1               #找目標物的旗標1
+        #self.right_search_flag = 1              #找目標物的旗標2
+        self.search_num = 0
         self.now_x = 0                          #現在要移動的x量
         self.now_y = 0                          #現在要移動的y量
         self.now_theta = 0                      #現在要旋轉的theta量
@@ -701,6 +711,57 @@ class MotorMove():
                 else:
                     self.right_search_flag = 3
                     time.sleep(delay*5)
+
+    ####################################### view search #######################################
+    def view_search(self, right_place, left_place, up_place, down_place, speed, delay):    
+        if self.reg > 0:
+            turn_order = [3, 4, 1, 2]
+        else:
+            turn_order = [1, 4, 3, 2]
+
+        self.search_flag = turn_order[self.search_num]
+
+        if self.search_flag == 1:
+            if self.head_horizon >= left_place:
+                rospy.logdebug(f'左尋')
+                self.move_head(1, self.head_horizon, 880, 880, speed)
+                self.head_horizon = self.head_horizon - speed
+                time.sleep(delay)
+            else:
+                self.search_num += 1
+                time.sleep(delay)
+
+        elif self.search_flag == 4:
+            if self.head_vertical <= up_place:
+                rospy.logdebug(f'上尋')
+                self.move_head(2, self.head_vertical, 880, 880, speed)
+                self.head_vertical = self.head_vertical + speed
+                time.sleep(delay)
+            else:
+                self.search_num += 1  
+                time.sleep(delay*5)
+                    
+        elif  self.search_flag == 3:
+            rospy.logdebug(f'右尋')
+            if  self.head_horizon <= right_place:
+                self.move_head(1, self.head_horizon, 880, 880, speed)
+                self.head_horizon = self.head_horizon + speed
+                time.sleep(delay) 
+            else:
+                self.search_num = 0
+                time.sleep(delay*5)      
+        
+        elif self.search_flag ==  2:
+            rospy.logdebug(f'下尋')
+            if self.head_vertical >= down_place:
+                self.move_head(2, self.head_vertical, 880, 880, speed)      #頭向下的極限
+                self.head_vertical = self.head_vertical - speed
+                time.sleep(delay)   
+            else:
+                self.search_num += 1
+                time.sleep(delay*5)
+
+    ####################################### view search #######################################
       
     def trace_revise(self, x_target, y_target,speed):    #看誤差調整頭的角度(讓頭看向籃框或球)
         if x_target != 0 and y_target != 0:
@@ -755,8 +816,8 @@ class MotorMove():
 
     def Null_WaistFix(self, turn_final):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
  
-        if (self.waist_position - 10) >= turn_final:
-            self.desire_waist_degree -= 10
+        if (self.waist_position - 10) <= turn_final:
+            self.desire_waist_degree += 10
             self.waist_rotate(self.desire_waist_degree, 30)
             rospy.loginfo(f'waist_position = {self.waist_position}')
             time.sleep(0.15)
