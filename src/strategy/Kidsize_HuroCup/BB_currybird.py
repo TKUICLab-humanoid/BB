@@ -4,32 +4,30 @@ from cmath import sqrt
 from re import T
 import time
 from traceback import print_tb
-
 import numpy as np
 import rospy
 from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-200, 0, -1]         #原地踏步修正
-LEFT_CORRECT  = [-200, -300, 3]       #左旋修正
-RIGHT_CORRECT = [-200, 300, -3]       #右旋修正
-#                  x , y , theta 
+CORRECT       = [-200, 200, 0]        #原地踏步修正
+LEFT_CORRECT  = [-200, 200, 3]        #左旋修正
+RIGHT_CORRECT = [-200, 400, -3]       #右旋修正
+#                 x , y , theta 
 
 #======================================================================================
 
-BASKET_SIZE_60_90 = [2598, 1023]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
-FIVEPOINT_HEAD_Y_DEGREE = [1960]    # left side 1960 right side  1940   too left-big too right-small #投籃前頭會固定一個角度，並扭腰
-THROW_BALL_PLUS = 100                 #line  0   left side 0 right side  4
-
+BASKET_SIZE_60_90 = [2350, 1023]      #sector 111   left side 1978, 899 right side  2140, 961  #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+FIVEPOINT_HEAD_Y_DEGREE = [1945]      # 籃框左邊＝>頭往左轉（大）-朝1960 ;  籃框右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
+THROW_BALL_PLUS = 150                 #line  0   left side 0 right side  4
+#15.9 - 150
 #======================================================================================
 
-CATCH_BALL_LINE = [1750, 1650, 1550]            #slow_degree,stop_degree,backward_degree
+CATCH_BALL_LINE = [1750, 1610, 1550]            #slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1700, 1690]            #slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [2100, 1980, 1900, 1800]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
-FIVE_POINT_LINE  = [980, 957, 780, 750]       #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
-
-#THREE_POINT_LINE = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
+THREE_POINT_LINE = [2400, 1990, 1920, 1800]     #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+FIVE_POINT_LINE  = [1500, 950, 800, 750]        #backward_slow_size, backward_stop_size, forward_stop_size, forward_slow_size
+#注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
 
@@ -172,7 +170,7 @@ class BasketBall():
                     motor.trace_revise(target.ball_x, target.ball_y, 25) 
                     time.sleep(0.05)
 
-                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]):
+                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]) and (abs(motor.head_horizon-2048) <= 300):
 
                     time.sleep(1.2)
                     rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
@@ -640,7 +638,8 @@ class MotorMove():
         self.waist_position =  waist_x 
 
     ####################################### view search #######################################
-    def view_search(self, right_place, left_place, up_place, down_place, speed, delay):    
+    def view_search(self, right_place, left_place, up_place, down_place, speed, delay):   
+        rospy.loginfo(f'motor.reg =  {self.reg}')
         if self.reg > 0:
             turn_order = [3, 4, 1, 2]
         else:
@@ -651,6 +650,7 @@ class MotorMove():
         if self.search_flag == 1:
             if self.head_horizon >= left_place:
                 rospy.logdebug(f'左尋')
+                rospy.loginfo(f'左尋')
                 self.move_head(1, self.head_horizon, 880, 880, speed)
                 self.head_horizon = self.head_horizon - speed
                 time.sleep(delay)
@@ -661,6 +661,7 @@ class MotorMove():
         elif self.search_flag == 4:
             if self.head_vertical <= up_place:
                 rospy.logdebug(f'上尋')
+                rospy.loginfo(f'上尋')
                 self.move_head(2, self.head_vertical, 880, 880, speed)
                 self.head_vertical = self.head_vertical + speed
                 time.sleep(delay)
@@ -670,22 +671,24 @@ class MotorMove():
                     
         elif  self.search_flag == 3:
             rospy.logdebug(f'右尋')
+            rospy.loginfo(f'右尋')
             if  self.head_horizon <= right_place:
                 self.move_head(1, self.head_horizon, 880, 880, speed)
                 self.head_horizon = self.head_horizon + speed
                 time.sleep(delay) 
             else:
-                self.search_num = 0
+                self.search_num += 1
                 time.sleep(delay*5)      
         
         elif self.search_flag ==  2:
             rospy.logdebug(f'下尋')
+            rospy.loginfo(f'下尋')
             if self.head_vertical >= down_place:
                 self.move_head(2, self.head_vertical, 880, 880, speed)      #頭向下的極限
                 self.head_vertical = self.head_vertical - speed
                 time.sleep(delay)   
             else:
-                self.search_num += 1
+                self.search_num = 0
                 time.sleep(delay*5)
 
     ####################################### view search #######################################
