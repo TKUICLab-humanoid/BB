@@ -42,7 +42,7 @@ class Sendmessage:
         self.DIOValue = 0x00
         self.is_start = False
         self.time = 0
-        aaaa = rospy.init_node('talker', anonymous=True, log_level = rospy.DEBUG)
+        aaaa = rospy.init_node('talker', anonymous=True, log_level = rospy.INFO)
         object_list_sub = rospy.Subscriber("/Object/List",ObjectList, self.getObject)
         label_model_sub = rospy.Subscriber("/LabelModel/List",LabelModelObjectList, self.getLabelModel)
         #compress_image_sub = rospy.Subscriber("compress_image",Image, self.catchImage)
@@ -118,9 +118,12 @@ class Sendmessage:
         msg.sensor_modeset = modeset
         self.sensor_pub.publish(msg)
 
-    def sendSensorReset(self):
+    def sendSensorReset(self, reset_roll, reset_pitch, reset_yaw):
         msg = SensorSet()
         msg.sensor_modeset = 0x02
+        msg.sensor_P = reset_roll
+        msg.sensor_I = reset_pitch
+        msg.sensor_D = reset_yaw
         self.sensor_pub.publish(msg)
 
     def strategy(self):
