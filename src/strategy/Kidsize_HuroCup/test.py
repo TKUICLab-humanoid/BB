@@ -20,16 +20,16 @@ ROBBOT_HIGT = 87
 
 #======================================================================================
 
-CORRECT       = [-1900,0,1]          #原地踏步修正
-LEFT_CORRECT  = [-1900,-200,4]          #左旋修正
-RIGHT_CORRECT = [-2500,0,-3]         #右旋修正
+CORRECT       = [-1500,0,1]          #原地踏步修正
+LEFT_CORRECT  = [-1700,-200,4]          #左旋修正
+RIGHT_CORRECT = [-1600,100,-3]         #右旋修正
 #                  x , y , theta 
 
-CATCH_BALL_LINE = [2250,2380,2480] #forward_degree,slow_degree,backward_degree
+CATCH_BALL_LINE = [2150,2300,2400] #forward_degree,slow_degree,backward_degree
 TWO_POINT_LINE  = [2180,2350,2450] #forward_degree,slow_degree,backward_degree
 THREE_POINT_LINE = [900,700,500] #forward_degree,slow_degree,backward_degree
 #three_point_line = [2000,1930,1900] #forward_degree,slow_degree,backward_degree
-FIVE_POINT_LINE  = [2650,2700,2800] #forward_degree,slow_degree,backward_degree
+FIVE_POINT_LINE  = [2450,2550,2700] #forward_degree,slow_degree,backward_degree
 
 
 class Target_Location():
@@ -124,6 +124,7 @@ class Motor_Move():
         self.distance_new = 0
         self.color_size = 0
         self.directly = False
+        self.color_imu = True
 
     def initial(self):
         self.head_horizon = 2048                #頭部水平刻度
@@ -139,6 +140,7 @@ class Motor_Move():
         self.distance_new = 0
         self.color_size = 0
         self.directly = False
+        self.color_imu = True
 
 
     def move_head(self,ID,Position,max_head_horizon_size,max_head_vertical_size,Speed):  #把相對頭部變化變絕對(call 2048就變2048)
@@ -291,7 +293,7 @@ class Motor_Move():
             time.sleep(0.05)
     
         elif self.head_vertical > backward_degree: 
-            motor.MoveContinuous(-1500+CORRECT[0],0+CORRECT[1],0+CORRECT[2],100,100,2)
+            motor.MoveContinuous(-500+CORRECT[0],0+CORRECT[1],0+CORRECT[2],100,100,2)
             rospy.loginfo(f"大後退,self.head_vertical = {self.head_vertical}")                
             time.sleep(0.05)
 
@@ -454,17 +456,24 @@ class Motor_Move():
         rospy.logdebug(f"throw_strength = {self.throw_strength}")
 
     def color_correct(self, color):
-        self.basket_distance(BASKET_SIZE_100_150[0],BASKET_SIZE_100_150[1])
-        head_fix = 9 * math.cos(math.radians(90 + send.imu_value_Pitch - ((motor.head_vertical - 2086) * 360 / 4096)))
-        rospy.loginfo(f"head_fix = {head_fix}")
-        self.color_size = ((self.distance_new)**2 * color)/(self.distance_new + ROBBOT_HIGT*math.sin(math.radians(send.imu_value_Pitch)) - head_fix) ** 2
-
+        if self.color_imu:
+            self.basket_distance(BASKET_SIZE_100_150[0],BASKET_SIZE_100_150[1])
+            head_fix = 9 * math.cos(math.radians(90 + send.imu_value_Pitch - ((motor.head_vertical - 2086) * 360 / 4096)))
+            rospy.loginfo(f"head_fix = {head_fix}")
+            if send.imu_value_Pitch > 0:
+                self.color_size = ((self.distance_new)**2 * color)/(self.distance_new + ROBBOT_HIGT*math.sin(math.radians(send.imu_value_Pitch)) - head_fix) ** 2
+            else:
+                self.color_size = color
+        else:
+            self.color_size = color
 
     def basket_distance(self,six,nine):   #利用60與90公分距離測出的籃框面積推得當前機器人與籃框的距離->self.distance_new
         if target.basket_size != 0:
             sixty_distance = sqrt(abs((3600*six)/target.basket_size))
             ninty_distance = sqrt(abs((8100*nine)/target.basket_size))
         else:
+            sixty_distance = 60
+            ninty_distance = 90
             rospy.logdebug(f"Error")
         # if ( six + nine ) / 2 > target.basket_size :
         #     self.distance_new = abs(self.sixty_distance)
@@ -500,6 +509,7 @@ class BasketBall():
         self.reg = 2048
         self.sw = -1
         self.throw_ball_action = True
+
 
 
     def main(self):
@@ -663,9 +673,9 @@ class BasketBall():
             rospy.logdebug(f"回復站姿")
             send.sendBodySector(638) 
             time.sleep(2)
-        time.sleep(4)
+        # time.sleep(4)
         motor.move_head(2,2200,880,880,50)
-        time.sleep(5)
+        time.sleep(2)
         self.step = 'find_basket' 
 
     def find_basket(self):
