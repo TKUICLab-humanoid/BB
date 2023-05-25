@@ -21,7 +21,7 @@ class Sendmessage:
         self.continuous_value_pub = rospy.Publisher("/ChangeContinuousValue_Topic",Interface, queue_size=100)
         self.single_motor_data_pub = rospy.Publisher("/package/SingleMotorData",SingleMotorData, queue_size=100)
         self.sensor_pub = rospy.Publisher("sensorset",SensorSet, queue_size=100)
-        
+
         self.Web = False
         self.Label_Model = [0 for i in range(320*240)]
         # self.Label_Model = np.zeros([320*240])
@@ -118,10 +118,15 @@ class Sendmessage:
         msg.sensor_modeset = modeset
         self.sensor_pub.publish(msg)
 
-    def sendSensorReset(self):
+    
+    def sendSensorReset(self, reset_roll, reset_pitch, reset_yaw):
         msg = SensorSet()
         msg.sensor_modeset = 0x02
+        msg.sensor_P = reset_roll
+        msg.sensor_I = reset_pitch
+        msg.sensor_D = reset_yaw
         self.sensor_pub.publish(msg)
+
 
     def strategy(self):
         send = Sendmessage()
