@@ -3,7 +3,7 @@ build/
 
 devel/
 
-strategy/__pycache__
+__pycache__/
 
 \.catkin_workspace
 
