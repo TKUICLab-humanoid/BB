@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-200, 100, 0]        #原地踏步修正
-LEFT_CORRECT  = [-200, -500, 3]       #左旋修正
-RIGHT_CORRECT = [-200, 400, -3]       #右旋修正
+CORRECT       = [-200, -200, 0]        #原地踏步修正
+LEFT_CORRECT  = [-100, -400, 3]       #左旋修正
+RIGHT_CORRECT = [-100, 200, -3]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -25,9 +25,9 @@ THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 #三用電表15.7以上ˇ
 #======================================================================================
 
-CATCH_BALL_LINE = [1800, 1660, 1550]            # slow_degree,stop_degree,backward_degree
+CATCH_BALL_LINE = [1800, 1580, 1540]            # slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1790, 1700]            # slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [2000, 2450, 3000, 4000]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
+THREE_POINT_LINE = [2000, 2300, 3000, 4000]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
 FIVE_POINT_LINE  = [850, 910, 980, 1000]        # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
@@ -111,8 +111,8 @@ class BasketBall():
                 if not self.ready_shoot:
                     motor.trace_revise(target.basket_x, target.basket_y, 35)
                     self.ready_shoot = True
-                    motor.trace_revise(target.basket_x, target.basket_y, 35)
                     target.basket_parameter()
+                    send.sendBodySector(9)
                     time.sleep(3)
                     rospy.logdebug(f'五分球動作預備')
                     rospy.logdebug(f'手臂往後舉')
@@ -210,12 +210,12 @@ class BasketBall():
             time.sleep(1)
         else:
 
-            if target.ball_size <= 350:   #球在視野中太小
+            if target.ball_size <= 300:   #球在視野中太小
                 rospy.logdebug(f'球在視野中太小->大範圍尋球')
                 motor.view_search(2428, 1668, 1800, 1200, 40, 0.05)
                 target.ball_parameter() 
 
-            elif target.ball_size > 350:   #球在視野中夠大
+            elif target.ball_size > 300:   #球在視野中夠大
 
                 if abs(target.ball_x - 160) > 6  or abs(target.ball_y - 120) > 8:  #讓球在畫面中心
                     rospy.logdebug(f'球在視野中夠大->鎖定球')
@@ -223,7 +223,7 @@ class BasketBall():
                     motor.trace_revise(target.ball_x, target.ball_y, 25) 
                     time.sleep(0.05)
 
-                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]-20) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
+                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]-25) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
                     time.sleep(1.2)
                     rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
                     time.sleep(0.05)
@@ -403,40 +403,46 @@ class BasketBall():
                     time.sleep(1)
                     self.step = 'stratagy_2'
 
-                
 
-        ######################################## 二分球仿造catch_ball ######################################## 
+    ######################################## 二分球仿造catch_ball ######################################## 
     
     def stratagy_2(self):
         target.basket_parameter()
 
-        if not self.ready_dunk:
+
+        if not self.ready_dunk:  
             motor.trace_revise(target.basket_x, target.basket_y, 35)
 
-            if ((TWO_POINT_LINE[2] - 15) <= motor.head_vertical <= TWO_POINT_LINE[1]) and (abs(motor.head_horizon - 2048) <= 200):
-                self.ready_dunk = True
+            if ((TWO_POINT_LINE[2] - 15) <= motor.head_vertical <= TWO_POINT_LINE[1]): #and (abs(motor.head_horizon - 2048) <= 50): 
+                rospy.logdebug(f'到達2分球點 ->貓頭鷹')
                 rospy.loginfo(f'到達可投籃角度 STOP!!, self.head_vertical =  {motor.head_vertical}')
-                motor.bodyauto_close(0)
-                target.basket_parameter()
-                time.sleep(1)
-                rospy.logdebug(f'頭部水平旋轉調整')
-                motor.move_head(1, 1800, 880, 880, 30)
-                time.sleep(0.8)
-                rospy.logdebug(f'伸手準備投籃')
-                send.sendBodySector(887)
-                time.sleep(1.5)
-            
-            elif abs(motor.head_horizon - 2048) > 200:
-                rospy.logdebug(f'頭部馬達水平刻度偏差 > 步態影響的')
-                rospy.logdebug(f'rotate調整')
-                time.sleep(0.05)
-                motor.body_trace_rotate(2048, 40)
+                if abs(motor.head_horizon-1800) > 10:
+                    rospy.loginfo(f'rotate調整')
+                    motor.body_trace_rotate(1800, 40)
+                else:
+                    self.ready_dunk = True
+                    rospy.loginfo(f'到達可投籃大小 STOP!!, target.basket_size = {target.basket_size} ,corrected_size = {motor.corrected_size}')
+                    motor.bodyauto_close(0)
+                    time.sleep(1)
+                    target.basket_parameter()
+                    time.sleep(1)
+                    rospy.logdebug(f'伸手準備投籃')
+                    send.sendBodySector(887)
+                    time.sleep(1.5)
+            else:
 
-            else :
-                rospy.logdebug(f'頭部馬達垂直刻度與抓球角度差太多')
-                rospy.logdebug(f'straight調整')
-                time.sleep(0.05)
-                motor.degree_straight(TWO_POINT_LINE[0], TWO_POINT_LINE[1], TWO_POINT_LINE[2])
+                if abs(motor.head_horizon - 2048) > 200:
+                    rospy.logdebug(f'頭部馬達水平刻度偏差 > 步態影響的')
+                    rospy.logdebug(f'rotate調整')
+                    time.sleep(0.05)
+                    motor.body_trace_rotate(2048, 40)
+
+                else :
+                    rospy.logdebug(f'頭部馬達垂直刻度與抓球角度差太多')
+                    rospy.logdebug(f'straight調整')
+                    time.sleep(0.05)
+                    motor.degree_straight(TWO_POINT_LINE[0], TWO_POINT_LINE[1], TWO_POINT_LINE[2]) 
+
         else:            
             if target.basket_x != 0 :
 
@@ -466,9 +472,9 @@ class BasketBall():
 
             if (THREE_POINT_LINE[1] <=  motor.corrected_size <= THREE_POINT_LINE[2]): #and (abs(motor.head_horizon - 2048) <= 50): 
                 rospy.logdebug(f'到達投球點 ->貓頭鷹')
-                if abs(motor.head_horizon-1840) > 10:
+                if abs(motor.head_horizon-1810) > 10:
                     rospy.loginfo(f'rotate調整')
-                    motor.body_trace_rotate(1840, 40)
+                    motor.body_trace_rotate(1810, 40)
                 else:
                     self.ready_shoot = True
                     rospy.loginfo(f'到達可投籃大小 STOP!!, target.basket_size = {target.basket_size} ,corrected_size = {motor.corrected_size}')
@@ -654,7 +660,7 @@ class TargetLocation():
         for j in range (self.color_mask_subject_red):     #將所有看到的紅色物件編號
             if send.color_mask_subject_size [5][j] > 700:
 
-                if  6500 > send.color_mask_subject_size [5][j] > self.basket_size:  #用大小過濾物件(濾雜訊)
+                if  9500 > send.color_mask_subject_size [5][j] > self.basket_size:  #用大小過濾物件(濾雜訊)
                     self.basket_x =  send.color_mask_subject_X [5][j]
                     self.basket_y = send.color_mask_subject_Y [5][j]
                     self.basket_size = send.color_mask_subject_size [5][j]
