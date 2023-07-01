@@ -949,7 +949,7 @@ if __name__ == '__main__' :
     target = TargetLocation()
     motor = MotorMove()
     strategy = BasketBall()
-
+    rospy.init_node('BB_strategy', anonymous=True, log_level=rospy.INFO)   #初始化node
     try:
         while not rospy.is_shutdown():
             strategy.main()
