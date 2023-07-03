@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-400, 100, 1]        #原地踏步修正
-LEFT_CORRECT  = [-400, 200, 3]       #左旋修正
-RIGHT_CORRECT = [-400, 200, -3]       #右旋修正
+CORRECT       = [200, 100, -1]        #原地踏步修正
+LEFT_CORRECT  = [-300, -100, 3]       #左旋修正
+RIGHT_CORRECT = [-300, 400, -3]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -28,9 +28,9 @@ THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 CATCH_BALL_CORRECT = 2020
 #======================================================================================
 
-CATCH_BALL_LINE = [1800, 1600, 1560]            # slow_degree,stop_degree,backward_degree
+CATCH_BALL_LINE = [1800, 1650, 1560]            # slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1790, 1700]            # slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [2300, 2400, 3000, 4000]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
+THREE_POINT_LINE = [2200, 2300, 2500, 4000]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
 FIVE_POINT_LINE  = [850, 910, 1088, 1200]       # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
@@ -854,7 +854,7 @@ class MotorMove():
             rospy.loginfo(f'進入減速範圍, self.head_vertical = {self.head_vertical}')
 
         elif self.corrected_head_vertical < backward_degree: 
-            self.MoveContinuous(-500+CORRECT[0],0+CORRECT[1],0+CORRECT[2],100,100,2)
+            self.MoveContinuous(-800+CORRECT[0],0+CORRECT[1],0+CORRECT[2],100,100,2)
             rospy.loginfo(f'大後退, self.head_vertical = {self.head_vertical}')                
             
     def WaistFix(self, Target_X, TargetXCenter):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
@@ -948,7 +948,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif backward_stop_size < motor.corrected_size < backward_slow_size:  #進入後退減速範圍
-            self.MoveContinuous(-100+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
+            self.MoveContinuous(-500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入後退減速範圍, target.basket_size = {target.basket_size}, corrected_size = {motor.corrected_size}')
             time.sleep(0.05)
 
@@ -958,7 +958,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif motor.corrected_size < forward_slow_size:                        #大前進
-            self.MoveContinuous(1000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
+            self.MoveContinuous(900+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)    
             rospy.loginfo(f'大前進, target.basket_size = {target.basket_size}, corrected_size = {motor.corrected_size}')              
             time.sleep(0.05)
     
