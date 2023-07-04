@@ -41,6 +41,8 @@ class BasketBall():
         self.head_y_up_adjust = False
         self.ready_shoot = False
         self.shoot_directly = False
+        self.right_catch = False
+        self.left_catch = False
         self.step = 'begin'
         self.sw = 0
     
@@ -48,6 +50,8 @@ class BasketBall():
         self.head_y_up_adjust = False
         self.ready_shoot = False
         self.shoot_directly = False
+        self.right_catch = False
+        self.left_catch = False
         self.step = 'begin'
         self.sw = 0
     
@@ -91,7 +95,7 @@ class BasketBall():
                 motor.draw()
                 motor.trace_revise(target.ball_x, target.ball_y, 35)
                 rospy.loginfo(f'Head_vertical = {motor.head_vertical}')
-                #rospy.loginfo(f'Ball_size = {target.ball_size}')
+                rospy.loginfo(f'Ball_size = {target.ball_size}')
                 time.sleep(0.2) 
                 self.step = 'test'
 
@@ -169,15 +173,22 @@ class BasketBall():
 
         elif target.ball_size > 300:   #球在視野中夠大
 
-            if abs(target.ball_x - 160) > 10  or abs(target.ball_y - 120) > 10:  #讓球在畫面中心
+            if abs(target.ball_x - 160) > 8  or abs(target.ball_y - 120) > 8:  #讓球在畫面中心
                 rospy.logdebug(f'球在視野中夠大->鎖定球')
+                rospy.loginfo(f'Ball_size = {target.ball_size}, Head_vertical = {motor.head_vertical}')
                 target.ball_parameter()
                 motor.trace_revise(target.ball_x, target.ball_y, 25) 
-                time.sleep(0.05)
+                time.sleep(0.20)
 
-            elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1] -10) and (abs(motor.head_horizon-2048) <= 100):
+            elif (2200 <= target.ball_size <= 3500) and (abs(motor.head_horizon-2048) <= 450):
 
                 self.shoot_directly = True
+                if motor.head_horizon < 1800:
+                    send.sendBodySector(190) 
+                    self.right_catch = True
+                elif motor.head_horizon >2200:
+                    send.sendBodySector(192) 
+                    self.left_catch = True
                 rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')  
                 rospy.logdebug(f'到達可夾球位置')
                 rospy.logdebug(f'舉手手')
@@ -269,6 +280,11 @@ class BasketBall():
         rospy.logdebug(f'腰部回正')
         motor.waist_rotate(2048,70)
         time.sleep(2) 
+
+        if self.right_catch:
+            send.sendBodySector(192) 
+        if self.left_catch:
+            send.sendBodySector(190) 
 
         rospy.logdebug(f'回復站姿')
         send.sendBodySector(638) 
@@ -855,22 +871,30 @@ class MotorMove():
 
  ########################################  size_IMU_correct 副函式 ########################################
 
+    # def size_IMU_correct(self, current_size):
+    #     if target.basket_size != 0:
+    #         if self.size_correct:
+    #             self.basket_distance(BASKET_SIZE_100_150[0],BASKET_SIZE_100_150[1])
+    #             head_fix = 9 * math.cos(math.radians(90 + send.imu_value_Pitch - ((motor.head_vertical - 2086) * 360 / 4096)))
+    #             rospy.loginfo(f"head_fix = {head_fix}")
+
+    #             if send.imu_value_Pitch > 0:
+    #                 self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new + ROBBOT_HIGT*math.sin(math.radians(send.imu_value_Pitch)) - head_fix) ** 2
+    #             else:
+    #                 self.corrected_size = current_size
+
+    #         else:
+    #             self.corrected_size = current_size 
+    #     else:
+    #         self.corrected_size = current_size
     def size_IMU_correct(self, current_size):
-        if target.basket_size != 0:
-            if self.size_correct:
-                self.basket_distance(BASKET_SIZE_100_150[0],BASKET_SIZE_100_150[1])
-                head_fix = 9 * math.cos(math.radians(90 + send.imu_value_Pitch - ((motor.head_vertical - 2086) * 360 / 4096)))
-                rospy.loginfo(f"head_fix = {head_fix}")
-
-                if send.imu_value_Pitch > 0:
-                    self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new + ROBBOT_HIGT*math.sin(math.radians(send.imu_value_Pitch)) - head_fix) ** 2
-                else:
-                    self.corrected_size = current_size
-
-            else:
-                self.corrected_size = current_size 
+        self.basket_distance(BASKET_SIZE_100_150[0],BASKET_SIZE_100_150[1])
+        self.body_vertical = 7.6
+        head_fix = (ROBBOT_HIGT**2 * 2 * (1- math.cos(math.radians(send.imu_value_Pitch)))) ** 0.5
+        if send.imu_value_Pitch > 0:
+            self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new + head_fix*math.cos(math.radians(send.imu_value_Pitch + self.body_vertical))) ** 2
         else:
-            self.corrected_size = current_size
+            self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new - head_fix*math.cos(math.radians(send.imu_value_Pitch + self.body_vertical))) ** 2    
 
  ########################################  size_IMU_correct 副函式 ########################################   
 
