@@ -13,25 +13,25 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [ -1400, -900, 0]        #原地踏步修正
-LEFT_CORRECT  = [ -1800, -2100, 5]       #左旋修正
-RIGHT_CORRECT = [-1700, -700, -4]       #右旋修正
+CORRECT       = [ -1200, -400, 0]        #原地踏步修正
+LEFT_CORRECT  = [ -1600, -2000, 5]       #左旋修正
+RIGHT_CORRECT = [-1700, 400, -4]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
 
 BASKET_SIZE_100_150 = [7896, 2832]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
-FIVEPOINT_HEAD_Y_DEGREE = [2000]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
+FIVEPOINT_HEAD_Y_DEGREE = [1990]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
 THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 ROBBOT_HIGT = 87
 #15.9 - 150
 #三用電表15.7以上ˇ
 #======================================================================================
 
-CATCH_BALL_LINE = [1925, 1795, 1735]            # slow_degree,stop_degree,backward_degree
-TWO_POINT_LINE  = [1865, 1795, 1695]            # slow_degree,stop_degree,backward_degree
+CATCH_BALL_LINE = [1925, 1785, 1765]            # slow_degree,stop_degree,backward_degree
+TWO_POINT_LINE  = [1815, 1745, 1645]            # slow_degree,stop_degree,backward_degree
 THREE_POINT_LINE = [4550, 4750, 5000, 5500]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [2500, 2850, 2950, 3600]        # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+FIVE_POINT_LINE  = [2500, 2650, 2800, 3600]        # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -175,9 +175,10 @@ class BasketBall():
                 motor.trace_revise(target.ball_x, target.ball_y, 25) 
                 time.sleep(0.05)
 
-            elif (CATCH_BALL_LINE[2] -10 <= motor.head_vertical <= CATCH_BALL_LINE[1] -50) and (abs(motor.head_horizon-2048) <= 100):
+            elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1] -10) and (abs(motor.head_horizon-2048) <= 100):
 
                 self.shoot_directly = True
+                rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')  
                 rospy.logdebug(f'到達可夾球位置')
                 rospy.logdebug(f'舉手手')
                 time.sleep(1.0)
@@ -741,7 +742,7 @@ class MotorMove():
             rospy.loginfo(f'進入減速範圍, self.head_vertical = {self.head_vertical}')
 
         elif self.head_vertical < backward_degree: 
-            self.MoveContinuous(-800+CORRECT[0],0+CORRECT[1],0+CORRECT[2],300,300,2)
+            self.MoveContinuous(-500+CORRECT[0],0+CORRECT[1],0+CORRECT[2],300,300,2)
             rospy.loginfo(f'大後退, self.head_vertical = {self.head_vertical}')                
             
     def WaistFix(self, Target_X, TargetXCenter):#轉腰調整Basket.X與Baskethead_verticalBaseLine的誤差
@@ -795,11 +796,11 @@ class MotorMove():
     ########################################  size_straight副函式 ########################################
         rospy.logdebug(f'walk to size line')
         target.basket_parameter()
-        rospy.loginfo(f'target.basket_x = {target.basket_x}, target.basket_y = {target.basket_y}, target.basket_size = {target.basket_size}')
+        rospy.loginfo(f'target.basket_x = {target.basket_x}, target.basket_y = {target.basket_y}, motor.corrected_size = {motor.corrected_size}')
         self.trace_revise(target.basket_x, target.basket_y,35)
 
         if motor.corrected_size > backward_slow_size:                         #大後退
-            self.MoveContinuous(-2000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
+            self.MoveContinuous(-1800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
             rospy.loginfo(f'大後退, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
