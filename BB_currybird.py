@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [0, 0, -1]        #原地踏步修正
-LEFT_CORRECT  = [0, 0, 3]       #左旋修正
-RIGHT_CORRECT = [0, 0, -2]       #右旋修正
+CORRECT       = [-200, -100, -1]        #原地踏步修正
+LEFT_CORRECT  = [-200, -300, 2]       #左旋修正
+RIGHT_CORRECT = [-200, 200, -2]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -28,10 +28,10 @@ THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 CATCH_BALL_CORRECT = 2020
 #======================================================================================
 
-CATCH_BALL_LINE = [1800, 1650, 1560]            # slow_degree > stop_degree > backward_degree
+CATCH_BALL_LINE = [1800, 1650, 1560]             # slow_degree > stop_degree > backward_degree
 TWO_POINT_LINE  = [1950, 1750, 1650]             # slow_degree > stop_degree > backward_degree
-THREE_POINT_LINE = [2200, 2550, 2700, 4000]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [850, 910, 1088, 1200]       # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+THREE_POINT_LINE = [2200, 2550, 2600, 3100]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
+FIVE_POINT_LINE  = [850, 890, 930, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -45,7 +45,7 @@ class BasketBall():
         self.aiming_finish = False
         self.step = 'begin'
         self.sw = 0
-        self.directly = False
+        
     
     def initial(self):
         self.head_y_up_adjust = False
@@ -54,7 +54,7 @@ class BasketBall():
         self.aiming_finish = False
         self.step = 'begin'
         self.sw = 0
-        self.directly = False
+
     
     def main(self):
         if send.is_start: #send.Web 
@@ -233,6 +233,7 @@ class BasketBall():
 
                 #elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]-25) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
                 elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1] + 50 ) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
+                    motor.directly = True
                     time.sleep(1.2)
                     rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
                     time.sleep(0.05)
@@ -341,7 +342,7 @@ class BasketBall():
             time.sleep(1.5)
             send.sendBodySector(6)
             time.sleep(1) 
-            motor.directly = True
+            motor.catch_correct = True
 
         else:
             rospy.loginfo(f'正常夾球動作')
@@ -352,7 +353,7 @@ class BasketBall():
         motor.waist_rotate(2048,70)
         time.sleep(2) 
 
-        if motor.directly:
+        if motor.catch_correct:
             rospy.logdebug(f'根據各自夾球動作回復站姿')
             send.sendBodySector(444)
             time.sleep(1.5)
@@ -409,10 +410,27 @@ class BasketBall():
                     motor.trace_revise(target.basket_x, target.basket_y, 25) 
                     time.sleep(0.05)
                 else:
-                    rospy.loginfo(f'5分球')
-                    motor.bodyauto_close(1)
-                    time.sleep(1)
-                    self.step = 'stratagy_5'
+                    if motor.directly:
+                        self.ready_shoot = True
+                        self.step = 'stratagy_5'
+                        time.sleep(1)
+                        target.basket_parameter()
+                        rospy.logdebug(f'五分球動作預備')
+                        rospy.logdebug(f'手臂往後舉')
+                        send.sendBodySector(5301)
+                        time.sleep(8)   
+                        rospy.logdebug(f'頭部調整') 
+                        rospy.logdebug(f'頭部水平旋轉調整')                                              
+                        motor.move_head(1, FIVEPOINT_HEAD_Y_DEGREE[0], 880, 880, 50)
+                        time.sleep(1)
+                        rospy.logdebug(f'頭部垂直旋轉調整')
+                        motor.move_head(2, 2048, 880, 880, 50)
+                        time.sleep(1)
+                    else:
+                        rospy.loginfo(f'5分球')
+                        motor.bodyauto_close(1)
+                        time.sleep(1)
+                        self.step = 'stratagy_5'
                 
             elif self.sw == 2:
                 if abs(target.basket_x - 160) > 6  or abs(target.basket_y - 120) > 8:  #讓球在畫面中心
@@ -513,7 +531,7 @@ class BasketBall():
                 time.sleep(1.5)
             else:
 
-                if abs(motor.head_horizon - 2048) > 50:
+                if abs(motor.head_horizon - 2048) > 70:
                     rospy.loginfo(f'頭部馬達水平刻度偏差 > 步態影響的')
                     rospy.logdebug(f'rotate調整')
                     time.sleep(0.05)
@@ -569,13 +587,14 @@ class BasketBall():
                 rospy.logdebug(f'五分球動作預備')
                 rospy.logdebug(f'手臂往後舉')
                 send.sendBodySector(5301)
-                time.sleep(2)   
+                time.sleep(8)   
                 rospy.logdebug(f'頭部調整') 
                 rospy.logdebug(f'頭部水平旋轉調整')                                              
                 motor.move_head(1, FIVEPOINT_HEAD_Y_DEGREE[0], 880, 880, 50)
+                time.sleep(1)
                 rospy.logdebug(f'頭部垂直旋轉調整')
                 motor.move_head(2, 2048, 880, 880, 50)
-                time.sleep(5)
+                time.sleep(1)
 
             else:
 
@@ -710,6 +729,7 @@ class MotorMove():
         self.distance_new = 0
         self.now_state = 0
         self.directly = False
+        self.catch_correct = False
         self.reg = 2048
         self.desire_waist_degree = 2048
         self.size_correct = True
@@ -727,6 +747,7 @@ class MotorMove():
         self.throw_strength = 0                 #不知道
         self.distance_new = 0
         self.directly = False
+        self.catch_correct = False
         self.reg = 2048
         self.desire_waist_degree = 2048
         self.size_correct = True
@@ -1018,6 +1039,7 @@ class MotorMove():
         self.body_vertical = 5
         head_fix = (48**2 * 2 * (1- math.cos(math.radians(send.imu_value_Pitch)))) ** 0.5
         if send.imu_value_Pitch > 0:
+            # self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new + 48*math.sin(math.radians(send.imu_value_Pitch)))** 2
             self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new + head_fix*math.cos(math.radians(send.imu_value_Pitch + self.body_vertical))) ** 2
         else:
             self.corrected_size = ((self.distance_new)**2 * current_size) / (self.distance_new - head_fix*math.cos(math.radians(send.imu_value_Pitch + self.body_vertical))) ** 2
