@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-200, -100, -1]        #原地踏步修正
-LEFT_CORRECT  = [-200, -300, 2]       #左旋修正
-RIGHT_CORRECT = [-200, 200, -2]       #右旋修正
+CORRECT       = [-100, 100, -1]        #原地踏步修正
+LEFT_CORRECT  = [-100, -300, 2]       #左旋修正
+RIGHT_CORRECT = [-200, 100, -2]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -31,7 +31,7 @@ CATCH_BALL_CORRECT = 2020
 CATCH_BALL_LINE = [1800, 1650, 1560]             # slow_degree > stop_degree > backward_degree
 TWO_POINT_LINE  = [1950, 1750, 1650]             # slow_degree > stop_degree > backward_degree
 THREE_POINT_LINE = [2200, 2550, 2600, 3100]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [850, 890, 930, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+FIVE_POINT_LINE  = [850, 890, 950, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -592,8 +592,8 @@ class BasketBall():
                 rospy.logdebug(f'頭部水平旋轉調整')                                              
                 motor.move_head(1, FIVEPOINT_HEAD_Y_DEGREE[0], 880, 880, 50)
                 time.sleep(1)
-                rospy.logdebug(f'頭部垂直旋轉調整')
-                motor.move_head(2, 2048, 880, 880, 50)
+                # rospy.logdebug(f'頭部垂直旋轉調整')
+                # motor.move_head(2, 2048, 880, 880, 50)
                 time.sleep(1)
 
             else:
