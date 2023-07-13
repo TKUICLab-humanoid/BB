@@ -969,7 +969,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif forward_slow_size < motor.corrected_size < forward_stop_size:    #進入前進減速範圍
-            self.MoveContinuous(150+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
+            self.MoveContinuous(200+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入前進減速範圍, target.basket_size = {target.basket_size}, corrected_size = {motor.corrected_size}')              
             time.sleep(0.05)
 
