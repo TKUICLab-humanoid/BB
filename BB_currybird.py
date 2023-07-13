@@ -11,27 +11,27 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [-100, 100, -1]        #原地踏步修正
-LEFT_CORRECT  = [-100, -300, 2]       #左旋修正
-RIGHT_CORRECT = [-200, 100, -2]       #右旋修正
+CORRECT       = [0, -100, 0]        #原地踏步修正
+LEFT_CORRECT  = [-100, -200, 3]       #左旋修正
+RIGHT_CORRECT = [0, 100, -3]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
 
-BASKET_SIZE_60_90 = [2448, 957]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+BASKET_SIZE_60_90 = [2250, 901]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
 FIVEPOINT_HEAD_Y_DEGREE = [1960]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
 THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 #15.9 - 150
 #三用電表15.7以上ˇ
 #======================================================================================
 
-CATCH_BALL_CORRECT = 2020
+CATCH_BALL_CORRECT = 2025
 #======================================================================================
 
 CATCH_BALL_LINE = [1800, 1650, 1560]             # slow_degree > stop_degree > backward_degree
 TWO_POINT_LINE  = [1950, 1750, 1650]             # slow_degree > stop_degree > backward_degree
-THREE_POINT_LINE = [2200, 2550, 2600, 3100]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [850, 890, 950, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+THREE_POINT_LINE = [1700, 1900, 2200, 2700]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
+FIVE_POINT_LINE  = [850, 910, 920, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -232,7 +232,7 @@ class BasketBall():
                     time.sleep(0.05) 
 
                 #elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]-25) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
-                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1] + 50 ) and (abs(motor.head_horizon-2048) <= 300): #可直接夾球
+                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1] + 40) and (abs(motor.head_horizon-2048) <= 250): #可直接夾球
                     motor.directly = True
                     time.sleep(1.2)
                     rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
@@ -313,10 +313,10 @@ class BasketBall():
             rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
             time.sleep(0.05)
         else:
-            if abs(motor.head_horizon-1800) > 3: 
+            if abs(motor.head_horizon-1810) > 3: 
                 rospy.loginfo(f'球不在視野中間->貓頭鷹修腰')
                 # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
-                motor.Owl_Rotate(1800)
+                motor.Owl_Rotate(1810)
             else :
                 rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                 rospy.loginfo(f'球水平位置在中間')
@@ -486,7 +486,7 @@ class BasketBall():
                     rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                     time.sleep(0.05)
                 else:
-                    if abs(motor.head_horizon-1800) > 3: 
+                    if abs(motor.head_horizon-1800) > 4: 
                         rospy.loginfo(f'匡不在視野中間->貓頭鷹修腰')
                         # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                         motor.Owl_Rotate(1800)           
@@ -551,7 +551,7 @@ class BasketBall():
                     rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                     time.sleep(0.05)
                 else:
-                    if abs(motor.head_horizon-1840) > 3: 
+                    if abs(motor.head_horizon-1840) > 4: 
                         rospy.loginfo(f'匡不在視野中間->貓頭鷹修腰')
                         # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                         motor.Owl_Rotate(1840)  
@@ -594,7 +594,7 @@ class BasketBall():
                 time.sleep(1)
                 # rospy.logdebug(f'頭部垂直旋轉調整')
                 # motor.move_head(2, 2048, 880, 880, 50)
-                time.sleep(1)
+                # time.sleep(1)
 
             else:
 
@@ -894,10 +894,10 @@ class MotorMove():
 
         rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
         self.MoveW = motor.head_horizon - turn_degree
-        if abs(self.MoveW) > 3:
+        if abs(self.MoveW) > 2:
             pass
         else:
-            self.MoveW = -3 if self.MoveW < 0 else 3
+            self.MoveW = -2 if self.MoveW < 0 else 2
             # elif self.MoveW < -3:
             #     self.MoveW = -3
 
@@ -969,7 +969,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif forward_slow_size < motor.corrected_size < forward_stop_size:    #進入前進減速範圍
-            self.MoveContinuous(200+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
+            self.MoveContinuous(150+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入前進減速範圍, target.basket_size = {target.basket_size}, corrected_size = {motor.corrected_size}')              
             time.sleep(0.05)
 
