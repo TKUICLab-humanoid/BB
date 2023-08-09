@@ -11,9 +11,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [0, -100, 0]        #原地踏步修正
-LEFT_CORRECT  = [-100, -200, 3]       #左旋修正
-RIGHT_CORRECT = [0, 100, -3]       #右旋修正
+CORRECT       = [0, 0, 0]        #原地踏步修正
+LEFT_CORRECT  = [0, -200, 2]       #左旋修正
+RIGHT_CORRECT = [0, 200, -2]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -25,13 +25,13 @@ THROW_BALL_PLUS = 1                   #line  0   left side 0 right side  4
 #三用電表15.7以上ˇ
 #======================================================================================
 
-CATCH_BALL_CORRECT = 2025
+CATCH_BALL_CORRECT = 1900
 #======================================================================================
 
 CATCH_BALL_LINE = [1800, 1650, 1560]             # slow_degree > stop_degree > backward_degree
-TWO_POINT_LINE  = [1950, 1750, 1650]             # slow_degree > stop_degree > backward_degree
-THREE_POINT_LINE = [1700, 1900, 2200, 2700]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [850, 910, 920, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+TWO_POINT_LINE  = [2000, 1750, 1650]             # slow_degree > stop_degree > backward_degree
+THREE_POINT_LINE = [1700, 1950, 2200, 2700]      # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
+FIVE_POINT_LINE  = [850, 890, 910, 1200]         # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -313,7 +313,7 @@ class BasketBall():
             rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
             time.sleep(0.05)
         else:
-            if abs(motor.head_horizon-1810) > 3: 
+            if abs(motor.head_horizon-1810) > 4: 
                 rospy.loginfo(f'球不在視野中間->貓頭鷹修腰')
                 # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                 motor.Owl_Rotate(1810)
@@ -551,10 +551,10 @@ class BasketBall():
                     rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                     time.sleep(0.05)
                 else:
-                    if abs(motor.head_horizon-1840) > 4: 
+                    if abs(motor.head_horizon-1830) > 4: 
                         rospy.loginfo(f'匡不在視野中間->貓頭鷹修腰')
                         # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
-                        motor.Owl_Rotate(1840)  
+                        motor.Owl_Rotate(1830)  
 
                     else:
                         time.sleep(1)
@@ -941,7 +941,7 @@ class MotorMove():
             time.sleep(0.05)
 
         elif stop_degree < self.head_vertical < slow_degree :  #進入減速範圍
-            self.MoveContinuous(1000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
+            self.MoveContinuous(900+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 100, 100, 2)
             rospy.loginfo(f'進入減速範圍, self.head_vertical =  {self.head_vertical}')
             time.sleep(0.05)
     
