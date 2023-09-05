@@ -13,9 +13,9 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [ -1000, 50, 0]        #原地踏步修正
-LEFT_CORRECT  = [ -1000, -550, 4]       #左旋修正
-RIGHT_CORRECT = [-1000, 750, -4]       #右旋修正
+CORRECT       = [ -1000, 0, 0]        #原地踏步修正
+LEFT_CORRECT  = [ -500, -2000, 4]       #左旋修正
+RIGHT_CORRECT = [-1300, 1500, -4]       #右旋修正
 #                 x , y , theta 
 
 #======================================================================================
@@ -31,7 +31,7 @@ ROBBOT_HIGT = 87
 CATCH_BALL_LINE = [1915, 1785, 1765]            # slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1815, 1745, 1645]            # slow_degree,stop_degree,backward_degree
 THREE_POINT_LINE = [4550, 4750, 5000, 5500]     # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size #上下上下-30
-FIVE_POINT_LINE  = [2350, 2500, 2650, 3500]        # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
+FIVE_POINT_LINE  = [3350, 3500, 3650, 4500]        # forward_slow_size < forward_stop_size < backward_stop_size < backward_slow_size 
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -158,7 +158,7 @@ class BasketBall():
         motor.move_head(2,1800,880,880,50) #請動動作(擺頭)
         # send.sendBodySector(128)
         # time.sleep(0.1)
-        send.sendBodySector(334)
+        # send.sendBodySector(334)
         time.sleep(0.05)
         #send.sendBodySector(8910)   #步態調整
         time.sleep(0.05)
@@ -311,7 +311,7 @@ class BasketBall():
                 time.sleep(1)
                 rospy.logdebug(f'頭部抬起尋框')
                 motor.move_head(2,1900,880,880,50)  
-                send.sendBodySector(128)               
+                # send.sendBodySector(128)               
                 self.head_y_up_adjust = True
                 time.sleep(1)
 
@@ -535,7 +535,7 @@ class BasketBall():
                 time.sleep(1.3)
                 rospy.logdebug(f"開爪")
                 rospy.logdebug(f"投射!!!")
-                send.sendBodySector(333)
+                # send.sendBodySector(333)
                 time.sleep(1.5)
                 send.sendBodySector(467)
                 self.step ="finish"
@@ -826,12 +826,12 @@ class MotorMove():
         self.trace_revise(target.basket_x, target.basket_y,35)
 
         if motor.corrected_size > backward_slow_size:                         #大後退
-            self.MoveContinuous(-1500+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
+            self.MoveContinuous(-2000+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
             rospy.loginfo(f'大後退, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
         elif backward_stop_size < motor.corrected_size < backward_slow_size:  #進入後退減速範圍
-            self.MoveContinuous(-800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
+            self.MoveContinuous(-1800+CORRECT[0], 0+CORRECT[1], 0+CORRECT[2], 300, 300, 2)
             rospy.loginfo(f'進入後退減速範圍, target.basket_size = {target.basket_size}')
             time.sleep(0.05)
 
