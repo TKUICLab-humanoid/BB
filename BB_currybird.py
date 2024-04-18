@@ -12,14 +12,14 @@ from Python_API import Sendmessage
 
 #======================================================================================
 
-CORRECT       = [0, 0, 0]        #原地踏步修正
-LEFT_CORRECT  = [-150, -350, 3]        #左旋修正
-RIGHT_CORRECT = [-200, 750, -4]       #右旋修正
+CORRECT       = [0, -100, 0]        #原地踏步修正
+LEFT_CORRECT  = [0, -500, 3]        #左旋修正
+RIGHT_CORRECT = [150, 550, -4]       #右旋修正
 #                 x , y , theta 
 
 #=====================================================================================
 
-BASKET_SIZE_60_90 = [2600, 870]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+BASKET_SIZE_60_90 = [2295, 870]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
 FIVEPOINT_HEAD_Y_DEGREE = [1960]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
 THROW_BALL_PLUS = 200                 #line  0   left side 0 right side  4
 #15.9 - 150
@@ -28,7 +28,7 @@ THROW_BALL_PLUS = 200                 #line  0   left side 0 right side  4
 
 CATCH_BALL_LINE = [1800, 1624, 1550]            # slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1750, 1650]            # slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [1650, 1940, 1980, 2200]     # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size #上下上下-30
+THREE_POINT_LINE = [1600, 2050, 2090, 2200]     # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size #上下上下-30
 FIVE_POINT_LINE  = [750, 780, 800, 800]         # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size
 #注意 size數值調越大會離籃框越近！！！
 
@@ -177,7 +177,7 @@ class BasketBall():
                     motor.trace_revise(target.ball_x, target.ball_y, 30) 
                     time.sleep(0.05)
 
-                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]-20) and (abs(motor.head_horizon-2048) <= 300):
+                elif (CATCH_BALL_LINE[2] <= motor.head_vertical <= CATCH_BALL_LINE[1]) and (abs(motor.head_horizon-2048) <= 300):
                     time.sleep(1.2)
                     rospy.loginfo(f'到達夾球範圍 STOP!!, self.head_vertical = {motor.head_vertical}')                
                     time.sleep(0.1)
@@ -480,17 +480,17 @@ class BasketBall():
                     rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
                     time.sleep(0.05)
                 else:
-                    if abs(motor.head_horizon-1900) > 4: 
+                    if abs(motor.head_horizon-1910) > 4: 
                         rospy.loginfo(f'匡不在視野中間->貓頭鷹修腰')
                         # rospy.loginfo(f"motor.head_horizon = {motor.head_horizon}")
-                        motor.Owl_Rotate(1900)  
+                        motor.Owl_Rotate(1910)  
 
                     else:
                         time.sleep(1)
                         rospy.logdebug(f'執行3分球投籃')
                         send.sendBodySector(886)
                         rospy.logdebug(f'手臂旋轉調整')
-                        time.sleep(2)  
+                        time.sleep(3)  
                         send.sendBodySector(988)    
                         rospy.logdebug(f'投籃')
                         self.step = "finish"    
