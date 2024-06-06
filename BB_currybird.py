@@ -14,13 +14,13 @@ from Python_API import Sendmessage
 
 CORRECT       = [0, -100, 0]        #原地踏步修正
 LEFT_CORRECT  = [0, -500, 3]        #左旋修正
-RIGHT_CORRECT = [150, 550, -4]       #右旋修正
+RIGHT_CORRECT = [50, 550, -4]       #右旋修正
 #                 x , y , theta 
 
 #=====================================================================================
 
-BASKET_SIZE_60_90 = [2295, 870]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
-FIVEPOINT_HEAD_Y_DEGREE = [1960]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
+BASKET_SIZE_60_90 = [2550, 1120]       #sector 5301                                                     #投籃時測量的籃框距離方法 #五分投籃時站姿高度看籃框size測距離
+FIVEPOINT_HEAD_Y_DEGREE = [1980]      #投出去偏向左邊＝>頭往左轉（大）-朝1960 ;  投出去偏向右邊＝>頭往右轉（小）-朝1940    #投籃前頭會固定一個角度，並扭腰
 THROW_BALL_PLUS = 200                 #line  0   left side 0 right side  4
 #15.9 - 150
 #三用電表15.7以上ˇ
@@ -28,8 +28,8 @@ THROW_BALL_PLUS = 200                 #line  0   left side 0 right side  4
 
 CATCH_BALL_LINE = [1800, 1624, 1550]            # slow_degree,stop_degree,backward_degree
 TWO_POINT_LINE  = [1800, 1750, 1650]            # slow_degree,stop_degree,backward_degree
-THREE_POINT_LINE = [1600, 2050, 2090, 2200]     # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size #上下上下-30
-FIVE_POINT_LINE  = [750, 780, 800, 800]         # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size
+THREE_POINT_LINE = [1600, 2200, 2250, 2200]     # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size #上下上下-30
+FIVE_POINT_LINE  = [750, 900, 950, 900]         # forward_stop_size < forward_slow_size < backward_slow_size < backward_stop_size
 #注意 size數值調越大會離籃框越近！！！
 
 send = Sendmessage()
@@ -149,6 +149,7 @@ class BasketBall():
         #send.sendBodySector(9) #讓手回歸自我們的初始手部位置,原是AR的
         time.sleep(0.05)
         send.sendBodySector(5)   #步態調整
+        send.sendBodySector(6)   #步態調整
         time.sleep(0.05)
         self.step = 'find_ball'
         
